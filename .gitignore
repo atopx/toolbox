@@ -284,3 +284,4 @@ cython_debug/
 /configs/dev.yaml
 /configs/develop.yaml
 /configs/release.yaml
+./toolbox

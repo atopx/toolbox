@@ -18,7 +18,7 @@ func (ctl *Controller) Deal() {
 	hash := sha1.New()
 	hash.Write([]byte(strings.Join(tmp, "")))
 	if ctl.param.Signature != fmt.Sprintf("%x", hash.Sum(nil)) {
-		ctl.NewWarnResponse(http.StatusForbidden, reply)
+		ctl.NewErrorResponse(http.StatusForbidden, reply)
 		return
 	}
 	ctl.NewOkResponse(http.StatusOK, reply)

@@ -98,19 +98,7 @@ info:
   title: toolbox-api
   version: "1.0"
 paths:
-  /ping:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: pong
-          schema:
-            type: string
-      summary: ping
-  /v1/pixel/spec:
+  /api/v1/pixel/spec:
     get:
       consumes:
       - application/json
@@ -143,7 +131,7 @@ paths:
           schema:
             $ref: '#/definitions/system.ReplyError'
       summary: 计算显示器实际规格
-  /v1/wechat:
+  /api/v1/wechat:
     get:
       consumes:
       - application/json
@@ -202,4 +190,16 @@ paths:
           schema:
             $ref: '#/definitions/system.ReplyError'
       summary: 微信公众号消息监听
+  /ping:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: ping
 swagger: "2.0"

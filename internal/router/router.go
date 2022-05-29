@@ -15,14 +15,19 @@ func v1router(router *gin.RouterGroup) {
 	pixel(router.Group(pixel_path))
 }
 
-// HandlerRegister api注册
-func HandlerRegister(router *gin.Engine) {
-	v1router(router.Group("/v1"))
+// HandlerRouteRegister api注册
+func HandlerRouteRegister(router *gin.Engine) {
+	v1router(router.Group("/api/v1"))
 }
 
-// BaseRegister 基础路由注册
-func BaseRegister(router *gin.Engine) {
+// BaseRouteRegister 基础路由注册
+func BaseRouteRegister(router *gin.Engine) {
 	router.GET("/ping", base.Ping)
+
+}
+
+// TestRouteRegister 测试路由注册
+func TestRouteRegister(router *gin.Engine) {
 	switch gin.Mode() {
 	case gin.DebugMode:
 		docs.SwaggerInfo.Host = fmt.Sprintf(
