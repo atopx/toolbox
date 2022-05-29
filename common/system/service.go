@@ -2,7 +2,7 @@ package system
 
 type Service interface {
 	GetName() string
-	Start() error
+	Start(string) error
 }
 
 var handlers = make(map[string]Service)

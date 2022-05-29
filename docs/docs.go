@@ -20,26 +20,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ping": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "ping",
-                "responses": {
-                    "200": {
-                        "description": "pong",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/pixel/spec": {
+        "/api/v1/pixel/spec": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -90,7 +71,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/wechat": {
+        "/api/v1/wechat": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -176,6 +157,25 @@ const docTemplate = `{
                         "description": "系统错误",
                         "schema": {
                             "$ref": "#/definitions/system.ReplyError"
+                        }
+                    }
+                }
+            }
+        },
+        "/ping": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "ping",
+                "responses": {
+                    "200": {
+                        "description": "pong",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }

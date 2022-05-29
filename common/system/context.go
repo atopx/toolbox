@@ -2,22 +2,20 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"go.uber.org/zap/zapcore"
-	"os"
+	"strings"
 	"sync"
 	"time"
 )
 
 const CONTEXT_KEY = "server"
 
-var (
-	service, version string
-)
+var service, version string
 
-func init() {
-	service = viper.GetString("server.name")
-	version = os.Getenv("VERSION")
+func InitContextValue(tags string) {
+	index := strings.Index(tags, "-")
+	service = tags[:index]
+	version = tags[index+1:]
 }
 
 var pool = sync.Pool{
@@ -26,11 +24,12 @@ var pool = sync.Pool{
 	},
 }
 
-func NewContextValue() *ContextValue {
+func NewContextValue(client string) *ContextValue {
 	sys := pool.Get().(*ContextValue)
 	sys.TraceId = time.Now().Unix()
-	sys.Service = service
+	sys.Server = service
 	sys.Version = version
+	sys.Client = client
 	return sys
 }
 
@@ -39,16 +38,18 @@ func LoadContextValue(ctx *gin.Context) *ContextValue {
 }
 
 func ContextDone(sys *ContextValue) {
+	sys.Client = ""
 	sys.UserId = 0
 	sys.TraceId = 0
 	pool.Put(sys)
 }
 
 type ContextValue struct {
-	Service string
+	Server  string
 	Version string
 	UserId  int64
 	TraceId int64
+	Client  string
 }
 
 func (val *ContextValue) SetUserId(userId int64) {
@@ -56,9 +57,10 @@ func (val *ContextValue) SetUserId(userId int64) {
 }
 
 func (val ContextValue) MarshalLogObject(encoder zapcore.ObjectEncoder) error {
-	encoder.AddString("service", val.Service)
+	encoder.AddString("service", val.Server)
 	encoder.AddString("version", val.Version)
+	encoder.AddString("client_ip", val.Client)
 	encoder.AddInt64("trace_id", val.TraceId)
-	encoder.AddInt64("user_id", val.TraceId)
+	encoder.AddInt64("user_id", val.UserId)
 	return nil
 }

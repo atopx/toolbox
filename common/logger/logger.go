@@ -60,7 +60,7 @@ func output(ctx context.Context, level zapcore.Level, message string, fields ...
 	if entity := logger.Check(level, message); entity != nil {
 		if ctx != nil {
 			switch value := ctx.Value(system.CONTEXT_KEY).(type) {
-			case system.ContextValue:
+			case *system.ContextValue:
 				fields = append(fields, zap.Object(system.CONTEXT_KEY, value))
 			}
 		}

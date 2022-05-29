@@ -14,7 +14,7 @@ import (
 // @Response 200 object spec.Reply "调用成功"
 // @Response 400 object system.ReplyError "请求错误"
 // @Response 500 object system.ReplyError "系统错误"
-// @Router /v1/wechat [get]
+// @Router /api/v1/wechat [get]
 func WechatAuthToken(ctx *gin.Context) {
 	if controller, err := auth_token.NewController(ctx); err == nil {
 		controller.Deal()
@@ -29,7 +29,7 @@ func WechatAuthToken(ctx *gin.Context) {
 // @Response 200 object message_listen.Reply "调用成功"
 // @Response 400 object system.ReplyError "请求错误"
 // @Response 500 object system.ReplyError "系统错误"
-// @Router /v1/wechat [post]
+// @Router /api/v1/wechat [post]
 func WechatMessageListen(ctx *gin.Context) {
 	if controller, err := message_listen.NewController(ctx); err == nil {
 		controller.Deal()

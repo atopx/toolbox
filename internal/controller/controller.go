@@ -24,31 +24,15 @@ func (ctl *Controller) ContextLoader(ctx *gin.Context) {
 
 // NewOkResponse 正常的response
 func (ctl *Controller) NewOkResponse(code int, data interface{}) {
-	logger.Info(ctl.Context, http.StatusText(code))
 	ctl.Context.JSON(code, data)
 }
 
-// NewWarnResponse 请求异常的response
-func (ctl *Controller) NewWarnResponse(code int, message string) {
-	general := http.StatusText(code)
-	if message == "" {
-		message = general
-	}
-	err := system.ReplyError{Code: code, Message: message}
-	logger.Warn(ctl.Context, general, zap.Object("response", err))
-	ctl.Context.JSON(code, &err)
-}
-
-// NewErrorResponse 服务异常的response
+// NewErrorResponse 异常的response
 func (ctl *Controller) NewErrorResponse(code int, message string) {
 	// tips: 系统级别的异常返回默认的message
-	general := http.StatusText(code)
-	if message == "" {
-		message = general
-	}
-	err := system.ReplyError{Code: code, Message: general}
-	logger.Error(ctl.Context, message, zap.Object("response", err))
-	ctl.Context.JSON(code, &err)
+	reply := system.NewReplyError(code, message)
+	ctl.Context.Set(system.REPLY_ERROR_KEY, reply)
+	ctl.Context.JSON(code, &reply)
 }
 
 // NewRequestParam 结构化请求参数

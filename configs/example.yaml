@@ -1,9 +1,10 @@
 server:
-  env: dev
+  name: toolbox
+  env: release
   localhost: 127.0.0.1
   port: 8000
 
 wechat:
-  appid: wxcf001da666fa9f6e
-  secret: ff6457d542c571106c9e56abaa811131
-  token: atopx
+  appid: wx_appid
+  secret: wx_secret_key
+  token: 123456

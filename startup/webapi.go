@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 	"toolbox/common/middleware"
+	"toolbox/common/system"
 	"toolbox/internal/router"
 )
 
@@ -20,22 +21,27 @@ func (srv *WebapiService) GetName() string {
 }
 
 // Start 启动api服务
-func (srv *WebapiService) Start() error {
+func (srv *WebapiService) Start(tags string) error {
 	engine := gin.New()
 
-	// 基础路由
-	router.BaseRegister(engine)
+	// 测试路由
+	router.TestRouteRegister(engine)
 
 	// 中间件
 	engine.Use(
+		middleware.ContextMiddleware(),
+		middleware.CorsMiddleware(),
 		middleware.RecoverMiddleware(),
 		middleware.AuthMiddleware(),
-		middleware.ContextMiddleware(),
 		middleware.LoggerMiddleware(),
 	)
 
-	// 功能路由
-	router.HandlerRegister(engine)
+	// 路由注册
+	router.BaseRouteRegister(engine)
+	router.HandlerRouteRegister(engine)
+
+	// 初始化服务上下文
+	system.InitContextValue(tags)
 
 	// http server
 	server := &http.Server{

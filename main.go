@@ -24,6 +24,8 @@ import (
 // @contact.url    https://github.com/atopx/toolbox.git
 // @contact.email  3940422@qq.com
 
+var tags string
+
 func main() {
 	// 系统初始化
 	services := system.AllService()
@@ -43,7 +45,6 @@ func main() {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Panicf("load config error: %s", err)
 	}
-
 	// 日志初始化
 	var loglevel zapcore.Level
 	mode := viper.GetString("server.env")
@@ -64,7 +65,7 @@ func main() {
 	logger.Debug(nil, "start server.", zap.String("run_mode", mode), zap.String("log_level", loglevel.String()))
 
 	// 启动服务
-	if err := service.Start(); err != nil {
+	if err := service.Start(tags); err != nil {
 		logger.Panic(nil, "start server panic", zap.Error(err))
 	}
 }
