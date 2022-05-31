@@ -8,11 +8,14 @@
 ./control.sh {start|stop|restart|status}
 ```
 
+## 完整系统架构
+
+![系统架构](./draft.png)
 
 ## todo list
 
 - [ ] 认证
-- [ ] 密码管理（存储、检索、对接alfred） 
+- [ ] 密码管理（存储、检索、对接alfred）
 - [ ] 笔记管理
 - [ ] DDNS服务
 - [ ] 路由管理
@@ -23,8 +26,3 @@
 - [ ] 媒体服务
 - [ ] 时间机器
 - [ ] 内网穿透
-
-
-## system architecture (draft)
-
-![系统架构](./draft.png)
