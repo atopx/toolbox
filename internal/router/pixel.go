@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	v1 "toolbox/api/v1"
+
+	"github.com/gin-gonic/gin"
 )
 
 const pixel_path = "pixel"

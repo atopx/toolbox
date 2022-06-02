@@ -1,4 +1,4 @@
-package auth_token
+package wol
 
 import (
 	"toolbox/internal/controller"
@@ -21,8 +21,9 @@ func NewController(ctx *gin.Context) (*Controller, error) {
 }
 
 type Param struct {
-	Signature string `json:"Signature" form:"signature"` // 签名
-	Timestamp string `json:"Timestamp" form:"timestamp"` // 时间戳
-	Nonce     string `json:"Nonce" form:"nonce"`         // 随机字符串
-	Echostr   string `json:"Echostr" form:"echostr"`     // 回填字符串
+	MacAddr string `form:"mac_addr"` // mac地址
+}
+
+type Reply struct {
+	Message string `json:"message"`
 }

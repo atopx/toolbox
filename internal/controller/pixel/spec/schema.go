@@ -1,9 +1,10 @@
 package spec
 
 import (
-	"github.com/gin-gonic/gin"
 	"toolbox/internal/controller"
 	"toolbox/internal/model/pixel"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {

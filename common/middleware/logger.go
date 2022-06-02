@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"time"
 	"toolbox/common/logger"
 	"toolbox/common/system"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // LoggerMiddleware 日志中间件

@@ -1,11 +1,12 @@
 package system
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap/zapcore"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap/zapcore"
 )
 
 const CONTEXT_KEY = "server"
@@ -14,8 +15,10 @@ var service, version string
 
 func InitContextValue(tags string) {
 	index := strings.Index(tags, "-")
-	service = tags[:index]
-	version = tags[index+1:]
+	if index > 0 {
+		service = tags[:index]
+		version = tags[index+1:]
+	}
 }
 
 var pool = sync.Pool{

@@ -82,11 +82,15 @@ definitions:
     type: object
   system.ReplyError:
     properties:
-      code:
-        description: 状态码
-        type: integer
       message:
         description: 异常消息
+        type: string
+      trace_id:
+        type: integer
+    type: object
+  wol.Reply:
+    properties:
+      message:
         type: string
     type: object
 info:
@@ -98,6 +102,31 @@ info:
   title: toolbox-api
   version: "1.0"
 paths:
+  /api/v1/home/wol:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: mac地址
+        in: query
+        name: macAddr
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/wol.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 远程开机
   /api/v1/pixel/spec:
     get:
       consumes:

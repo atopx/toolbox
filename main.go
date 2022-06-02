@@ -1,16 +1,18 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"log"
 	"strings"
 	"toolbox/common/logger"
 	"toolbox/common/system"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	_ "toolbox/docs"
 	_ "toolbox/startup"
@@ -38,7 +40,7 @@ func main() {
 
 	service := system.GetService(serviceName)
 	if service == nil {
-		logger.Error(nil, "no register service.")
+		log.Panicf("no register service.")
 	}
 
 	viper.SetConfigFile(configPath)
@@ -60,12 +62,12 @@ func main() {
 		loglevel = zap.InfoLevel
 	}
 	if err := logger.Setup(loglevel.String()); err != nil {
-		logger.Fatal(nil, "invalid run mode", zap.String("mode", mode))
+		log.Panicf("invalid run mode: %s", mode)
 	}
-	logger.Debug(nil, "start server.", zap.String("run_mode", mode), zap.String("log_level", loglevel.String()))
+	log.Printf("start server by %s[%s].\n", mode, loglevel.String())
 
 	// 启动服务
 	if err := service.Start(tags); err != nil {
-		logger.Panic(nil, "start server panic", zap.Error(err))
+		logger.Panic(context.TODO(), "start server panic", zap.Error(err))
 	}
 }

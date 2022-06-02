@@ -1,8 +1,9 @@
 package v1
 
 import (
-	"github.com/gin-gonic/gin"
 	"toolbox/internal/controller/pixel/spec"
+
+	"github.com/gin-gonic/gin"
 )
 
 // PixelSpec
