@@ -20,6 +20,45 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/home/wol": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "远程开机",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "mac地址",
+                        "name": "macAddr",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/wol.Reply"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/pixel/spec": {
             "get": {
                 "consumes": [
@@ -298,12 +337,19 @@ const docTemplate = `{
         "system.ReplyError": {
             "type": "object",
             "properties": {
-                "code": {
-                    "description": "状态码",
-                    "type": "integer"
-                },
                 "message": {
                     "description": "异常消息",
+                    "type": "string"
+                },
+                "trace_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "wol.Reply": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }

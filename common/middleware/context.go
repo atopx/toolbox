@@ -1,8 +1,9 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
 	"toolbox/common/system"
+
+	"github.com/gin-gonic/gin"
 )
 
 // ContextMiddleware 上下文中间件

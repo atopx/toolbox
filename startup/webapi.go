@@ -2,8 +2,6 @@ package startup
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,6 +10,9 @@ import (
 	"toolbox/common/middleware"
 	"toolbox/common/system"
 	"toolbox/internal/router"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 type WebapiService struct{}
@@ -74,7 +75,6 @@ func start(server *http.Server) (err error) {
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			err = server.Close()
-			break
 		}
 	}
 	return err

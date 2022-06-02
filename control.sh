@@ -7,6 +7,11 @@ function build() {
 	go build -o $SERVICE_NAME -tags=jsoniter -ldflags '-w -s -X main.tags=$SERVICE_NAME-$VERSION'
 }
 
+function swagger() {
+	cd $PWD
+	$GOPATH/bin/swag init
+}
+
 function status() {
 	auth_pid=$(ps -ef |grep $SERVICE_NAME|grep -v grep|awk '{print $2}')
 	if [[ x$auth_pid == x"" ]]; then
@@ -61,6 +66,9 @@ case "$1" in
     build)
         build
         ;;
+	swagger)
+		swagger
+		;;
     start)
         start
         ;;

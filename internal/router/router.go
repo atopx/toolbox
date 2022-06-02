@@ -2,17 +2,19 @@ package router
 
 import (
 	"fmt"
+	"toolbox/api/base"
+	"toolbox/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	files "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
-	"toolbox/api/base"
-	"toolbox/docs"
 )
 
 func v1router(router *gin.RouterGroup) {
 	wechat(router.Group(wechat_path))
 	pixel(router.Group(pixel_path))
+	home(router.Group(home_path))
 }
 
 // HandlerRouteRegister api注册

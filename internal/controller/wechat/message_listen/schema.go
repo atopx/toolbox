@@ -1,9 +1,10 @@
 package message_listen
 
 import (
-	"github.com/gin-gonic/gin"
 	"toolbox/internal/controller"
 	"toolbox/internal/model/wechat"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {

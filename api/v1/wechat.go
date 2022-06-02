@@ -1,9 +1,10 @@
 package v1
 
 import (
-	"github.com/gin-gonic/gin"
 	"toolbox/internal/controller/wechat/auth_token"
 	"toolbox/internal/controller/wechat/message_listen"
+
+	"github.com/gin-gonic/gin"
 )
 
 // WechatAuthToken

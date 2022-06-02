@@ -3,10 +3,11 @@ package auth_token
 import (
 	"crypto/sha1"
 	"fmt"
-	"github.com/spf13/viper"
 	"net/http"
 	"sort"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 func (ctl *Controller) Deal() {

@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -10,6 +8,9 @@ import (
 	"strings"
 	"toolbox/common/logger"
 	"toolbox/common/system"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // RecoverMiddleware 崩溃恢复中间件
