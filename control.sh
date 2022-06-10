@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 SERVICE_NAME="toolbox"
 VERSION="v1.0.0"
