@@ -13,7 +13,7 @@ import (
 func LoggerMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// request
-		logger.Info(ctx, "request", zap.String("path", ctx.Request.URL.Path), zap.String("client", ctx.ClientIP()))
+		logger.Info(ctx, "request", zap.String("path", ctx.Request.URL.Path))
 
 		// 执行接口逻辑
 		begin := time.Now()

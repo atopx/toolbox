@@ -12,7 +12,10 @@ func (ctl *Controller) Deal() {
 		FromUserName: ctl.param.ToUserName,
 		CreateTime:   time.Now().Unix(),
 		MsgType:      "text",
+		MsgId:        ctl.param.MsgId,
+		MsgDataId:    ctl.param.MsgDataId,
+		Idx:          ctl.param.Idx,
 		Content:      content,
 	}
-	ctl.NewOkResponse(http.StatusOK, reply)
+	ctl.Context.XML(http.StatusOK, reply)
 }

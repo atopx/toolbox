@@ -4,7 +4,7 @@ SERVICE_NAME="toolbox"
 VERSION="v1.0.0"
 
 function build() {
-	go build -o $SERVICE_NAME -tags=jsoniter -ldflags '-w -s -X main.tags=$SERVICE_NAME-$VERSION'
+	go build -o $SERVICE_NAME -tags=jsoniter -ldflags "-w -s -X main.tags=$SERVICE_NAME-$VERSION"
 }
 
 function swagger() {
