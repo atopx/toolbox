@@ -2,6 +2,7 @@ package auth_token
 
 import (
 	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 	"sort"
@@ -11,16 +12,16 @@ import (
 )
 
 func (ctl *Controller) Deal() {
-	var reply string
 	tmp := []string{viper.GetString("wechat.token"), ctl.param.Timestamp, ctl.param.Nonce}
 	sort.Slice(tmp, func(i, j int) bool {
-		return i > j
+		return tmp[i] < tmp[j]
 	})
 	hash := sha1.New()
 	hash.Write([]byte(strings.Join(tmp, "")))
-	if ctl.param.Signature != fmt.Sprintf("%x", hash.Sum(nil)) {
-		ctl.NewErrorResponse(http.StatusForbidden, reply)
+	signature := hex.EncodeToString(hash.Sum(nil))
+	if ctl.param.Signature != signature {
+		ctl.NewErrorResponse(http.StatusForbidden, fmt.Sprintf("expect: %s, current: %s", ctl.param.Signature, signature))
 		return
 	}
-	ctl.NewOkResponse(http.StatusOK, reply)
+	ctl.Context.String(http.StatusOK, ctl.param.Echostr)
 }
