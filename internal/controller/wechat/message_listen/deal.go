@@ -6,16 +6,12 @@ import (
 )
 
 func (ctl *Controller) Deal() {
-	content := "123123123"
-	reply := Reply{
+	reply := xml{
 		ToUserName:   ctl.param.FromUserName,
 		FromUserName: ctl.param.ToUserName,
 		CreateTime:   time.Now().Unix(),
-		MsgType:      "text",
-		MsgId:        ctl.param.MsgId,
-		MsgDataId:    ctl.param.MsgDataId,
-		Idx:          ctl.param.Idx,
-		Content:      content,
+		MsgType:      ctl.param.MsgType,
+		Content:      ctl.param.Content,
 	}
 	ctl.Context.XML(http.StatusOK, reply)
 }
