@@ -59,6 +59,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/json/format": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "json格式化",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "json字符串",
+                        "name": "jsonStr",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/format.Reply"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/json/trans": {
             "get": {
                 "consumes": [
@@ -67,7 +106,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "json反转义",
+                "summary": "json去除转义",
                 "parameters": [
                     {
                         "type": "string",
@@ -299,6 +338,10 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "format.Reply": {
+            "type": "object",
+            "additionalProperties": true
+        },
         "message_listen.Param": {
             "type": "object",
             "properties": {
