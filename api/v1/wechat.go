@@ -27,7 +27,7 @@ func WechatAuthToken(ctx *gin.Context) {
 // @Accept xml
 // @Produce json
 // @Param param body message_listen.Param true "请求参数"
-// @Response 200 object message_listen.Reply "调用成功"
+// @Response 200 object message_listen.Xml "调用成功"
 // @Response 400 object system.ReplyError "请求错误"
 // @Response 500 object system.ReplyError "系统错误"
 // @Router /api/v1/wechat [post]

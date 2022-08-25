@@ -50,6 +50,45 @@
                 }
             }
         },
+        "/api/v1/json/trans": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "json反转义",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "json字符串",
+                        "name": "jsonStr",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/trans.Reply"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/pixel/spec": {
             "get": {
                 "consumes": [
@@ -174,7 +213,45 @@
                     "200": {
                         "description": "调用成功",
                         "schema": {
-                            "$ref": "#/definitions/message_listen.Reply"
+                            "$ref": "#/definitions/message_listen.Xml"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/wechat/scheduler": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "命令调度器",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "command",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/miniapp.Reply"
                         }
                     },
                     "400": {
@@ -228,12 +305,33 @@
                     "description": "发送方帐号（一个OpenID）",
                     "type": "string"
                 },
-                "Idx": {
-                    "description": "多图文时第几篇文章，从1开始（消息如果来自文章时才有）",
+                "MsgId": {
+                    "description": "消息id，64位整型",
                     "type": "string"
                 },
-                "MsgDataId": {
-                    "description": "消息的数据ID（消息如果来自文章时才有）",
+                "MsgType": {
+                    "description": "消息类型，文本为text",
+                    "type": "string"
+                },
+                "ToUserName": {
+                    "description": "开发者微信号",
+                    "type": "string"
+                }
+            }
+        },
+        "message_listen.Xml": {
+            "type": "object",
+            "properties": {
+                "Content": {
+                    "description": "文本消息内容",
+                    "type": "string"
+                },
+                "CreateTime": {
+                    "description": "消息创建时间 （整型）",
+                    "type": "integer"
+                },
+                "FromUserName": {
+                    "description": "发送方帐号（一个OpenID）",
                     "type": "string"
                 },
                 "MsgId": {
@@ -250,39 +348,16 @@
                 }
             }
         },
-        "message_listen.Reply": {
+        "miniapp.Reply": {
             "type": "object",
             "properties": {
-                "Content": {
-                    "description": "文本消息内容",
+                "cost": {
                     "type": "string"
                 },
-                "CreateTime": {
-                    "description": "消息创建时间 （整型）",
-                    "type": "integer"
-                },
-                "FromUserName": {
-                    "description": "发送方帐号（一个OpenID）",
+                "message": {
                     "type": "string"
                 },
-                "Idx": {
-                    "description": "多图文时第几篇文章，从1开始（消息如果来自文章时才有）",
-                    "type": "string"
-                },
-                "MsgDataId": {
-                    "description": "消息的数据ID（消息如果来自文章时才有）",
-                    "type": "string"
-                },
-                "MsgId": {
-                    "description": "消息id，64位整型",
-                    "type": "string"
-                },
-                "MsgType": {
-                    "description": "消息类型，文本为text",
-                    "type": "string"
-                },
-                "ToUserName": {
-                    "description": "开发者微信号",
+                "status": {
                     "type": "string"
                 }
             }
@@ -336,6 +411,10 @@
                     "type": "integer"
                 }
             }
+        },
+        "trans.Reply": {
+            "type": "object",
+            "additionalProperties": true
         },
         "wol.Reply": {
             "type": "object",
