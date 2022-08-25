@@ -213,6 +213,30 @@ paths:
           schema:
             $ref: '#/definitions/system.ReplyError'
       summary: 计算显示器实际规格
+  /api/v1/resource/get:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: filename
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 获取文件资源
   /api/v1/wechat:
     get:
       consumes:

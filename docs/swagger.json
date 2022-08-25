@@ -179,6 +179,44 @@
                 }
             }
         },
+        "/api/v1/resource/get": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取文件资源",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "filename",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/wechat": {
             "get": {
                 "consumes": [
