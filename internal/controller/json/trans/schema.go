@@ -1,11 +1,16 @@
-package message_listen
+package trans
 
 import (
 	"toolbox/internal/controller"
-	"toolbox/internal/model/wechat"
 
 	"github.com/gin-gonic/gin"
 )
+
+type Param struct {
+	JsonStr string `form:"json_str"` // json字符串
+}
+
+type Reply map[string]interface{}
 
 type Controller struct {
 	param *Param
@@ -20,8 +25,3 @@ func NewController(ctx *gin.Context) (*Controller, error) {
 	}
 	return &ctl, nil
 }
-
-type Param wechat.Message
-
-// tips: xml名字不能改，会影响root tag name
-type Xml wechat.Message

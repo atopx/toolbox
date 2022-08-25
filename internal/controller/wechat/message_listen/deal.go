@@ -6,7 +6,7 @@ import (
 )
 
 func (ctl *Controller) Deal() {
-	reply := xml{
+	reply := Xml{
 		ToUserName:   ctl.param.FromUserName,
 		FromUserName: ctl.param.ToUserName,
 		CreateTime:   time.Now().Unix(),

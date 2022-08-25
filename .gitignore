@@ -208,3 +208,4 @@ cython_debug/
 /configs/release.yaml
 ./toolbox
 **/__debug_bin
+.Ds_Store

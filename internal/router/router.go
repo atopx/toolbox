@@ -15,6 +15,7 @@ func v1router(router *gin.RouterGroup) {
 	wechat(router.Group(wechat_path))
 	pixel(router.Group(pixel_path))
 	home(router.Group(home_path))
+	json(router.Group(json_path))
 }
 
 // HandlerRouteRegister api注册
