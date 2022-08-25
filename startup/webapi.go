@@ -10,6 +10,7 @@ import (
 	"toolbox/common/middleware"
 	"toolbox/common/system"
 	"toolbox/internal/router"
+	"toolbox/scheduler"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -21,8 +22,17 @@ func (srv *WebapiService) GetName() string {
 	return "webapi"
 }
 
+func (srv *WebapiService) crontab() {
+	crontab := scheduler.New()
+	crontab.Start()
+}
+
 // Start 启动api服务
 func (srv *WebapiService) Start(tags string) error {
+	// start crontab schedule
+	srv.crontab()
+
+	// new engine
 	engine := gin.New()
 
 	// 测试路由
