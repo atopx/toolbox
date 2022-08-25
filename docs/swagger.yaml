@@ -130,6 +130,31 @@ paths:
           schema:
             $ref: '#/definitions/system.ReplyError'
       summary: 远程开机
+  /api/v1/json/compress:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: json字符串
+        in: query
+        name: json_str
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: json压缩
   /api/v1/json/format:
     get:
       consumes:

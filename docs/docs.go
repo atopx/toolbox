@@ -59,6 +59,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/json/compress": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "json压缩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "json字符串",
+                        "name": "json_str",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ReplyError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/json/format": {
             "get": {
                 "consumes": [

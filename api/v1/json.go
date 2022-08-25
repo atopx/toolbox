@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"toolbox/internal/controller/json/compress"
 	"toolbox/internal/controller/json/format"
 	"toolbox/internal/controller/json/trans"
 
@@ -33,6 +34,21 @@ func JsonTrans(ctx *gin.Context) {
 // @Router /api/v1/json/format [get]
 func JsonFormat(ctx *gin.Context) {
 	if controller, err := format.NewController(ctx); err == nil {
+		controller.Deal()
+	}
+}
+
+// JsonCompress
+// @summary json压缩
+// @Accept json
+// @Produce json
+// @Param param query compress.Param true "请求参数"
+// @Response 200 object string "调用成功"
+// @Response 400 object system.ReplyError "请求错误"
+// @Response 500 object system.ReplyError "系统错误"
+// @Router /api/v1/json/compress [get]
+func JsonCompress(ctx *gin.Context) {
+	if controller, err := compress.NewController(ctx); err == nil {
 		controller.Deal()
 	}
 }
