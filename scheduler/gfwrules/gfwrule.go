@@ -1,6 +1,7 @@
 package gfwrules
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,8 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// const Cron = "50 7 * * *"
-const Cron = "*/1 * * * *"
+// Cron 每天凌晨7点更新
+const Cron = "0 7 * * *"
 
 const (
 	// 直连域名列表 direct.txt
@@ -66,7 +67,7 @@ func fatch(url string) error {
 		return errors.Errorf("[GFWDownloader] http client get %s error: %s", url, err.Error())
 	}
 	defer response.Body.Close()
-	filename := path.Base(request.URL.Path)
+	filename := fmt.Sprintf("./resource/gfwrules/%s", path.Base(request.URL.Path))
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return errors.Errorf("[GFWDownloader] read %s error: %s", filename, err.Error())
