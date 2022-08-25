@@ -63,7 +63,7 @@
                     {
                         "type": "string",
                         "description": "json字符串",
-                        "name": "jsonStr",
+                        "name": "json_str",
                         "in": "query"
                     }
                 ],
@@ -102,7 +102,7 @@
                     {
                         "type": "string",
                         "description": "json字符串",
-                        "name": "jsonStr",
+                        "name": "json_str",
                         "in": "query"
                     }
                 ],

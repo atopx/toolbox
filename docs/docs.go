@@ -72,7 +72,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "json字符串",
-                        "name": "jsonStr",
+                        "name": "json_str",
                         "in": "query"
                     }
                 ],
@@ -111,7 +111,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "json字符串",
-                        "name": "jsonStr",
+                        "name": "json_str",
                         "in": "query"
                     }
                 ],

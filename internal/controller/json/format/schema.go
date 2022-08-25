@@ -7,7 +7,7 @@ import (
 )
 
 type Param struct {
-	JsonStr string `form:"json_str"` // json字符串
+	JsonStr string `form:"json_str" json:"json_str"` // json字符串
 }
 
 type Reply map[string]interface{}

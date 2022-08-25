@@ -137,7 +137,7 @@ paths:
       parameters:
       - description: json字符串
         in: query
-        name: jsonStr
+        name: json_str
         type: string
       produces:
       - application/json
@@ -162,7 +162,7 @@ paths:
       parameters:
       - description: json字符串
         in: query
-        name: jsonStr
+        name: json_str
         type: string
       produces:
       - application/json
