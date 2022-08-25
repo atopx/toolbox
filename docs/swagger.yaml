@@ -1,4 +1,7 @@
 definitions:
+  format.Reply:
+    additionalProperties: true
+    type: object
   message_listen.Param:
     properties:
       Content:
@@ -127,6 +130,31 @@ paths:
           schema:
             $ref: '#/definitions/system.ReplyError'
       summary: 远程开机
+  /api/v1/json/format:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: json字符串
+        in: query
+        name: jsonStr
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/format.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: json格式化
   /api/v1/json/trans:
     get:
       consumes:
@@ -151,7 +179,7 @@ paths:
           description: 系统错误
           schema:
             $ref: '#/definitions/system.ReplyError'
-      summary: json反转义
+      summary: json去除转义
   /api/v1/pixel/spec:
     get:
       consumes:
