@@ -6,5 +6,5 @@ func init() {
 	// api服务
 	system.SetService(&WebapiService{})
 
-	// TODO 其他任务，如定时任务、异步任务
+	// TODO 其他任务，如异步任务
 }

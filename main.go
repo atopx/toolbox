@@ -37,7 +37,6 @@ func main() {
 	configPath := *flag.String("c", "configs/develop.yaml", "config file path.")
 	serviceName := *flag.String("s", services[0], fmt.Sprintf("service start-up: [ %s ]", strings.Join(services, " | ")))
 	flag.Parse()
-
 	service := system.GetService(serviceName)
 	if service == nil {
 		log.Panicf("no register service.")

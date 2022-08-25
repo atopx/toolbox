@@ -11,8 +11,6 @@ type CaiYunApi struct {
 	url string
 }
 
-
-
 type CaiYunData struct {
 	Status     string    `json:"status"`
 	ApiVersion string    `json:"api_version"`
