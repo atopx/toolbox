@@ -338,7 +338,7 @@ const docTemplate = `{
                     "200": {
                         "description": "调用成功",
                         "schema": {
-                            "$ref": "#/definitions/message_listen.Xml"
+                            "$ref": "#/definitions/wechat.Message"
                         }
                     },
                     "400": {
@@ -448,35 +448,6 @@ const docTemplate = `{
                 }
             }
         },
-        "message_listen.Xml": {
-            "type": "object",
-            "properties": {
-                "Content": {
-                    "description": "文本消息内容",
-                    "type": "string"
-                },
-                "CreateTime": {
-                    "description": "消息创建时间 （整型）",
-                    "type": "integer"
-                },
-                "FromUserName": {
-                    "description": "发送方帐号（一个OpenID）",
-                    "type": "string"
-                },
-                "MsgId": {
-                    "description": "消息id，64位整型",
-                    "type": "string"
-                },
-                "MsgType": {
-                    "description": "消息类型，文本为text",
-                    "type": "string"
-                },
-                "ToUserName": {
-                    "description": "开发者微信号",
-                    "type": "string"
-                }
-            }
-        },
         "miniapp.Reply": {
             "type": "object",
             "properties": {
@@ -544,6 +515,35 @@ const docTemplate = `{
         "trans.Reply": {
             "type": "object",
             "additionalProperties": true
+        },
+        "wechat.Message": {
+            "type": "object",
+            "properties": {
+                "Content": {
+                    "description": "文本消息内容",
+                    "type": "string"
+                },
+                "CreateTime": {
+                    "description": "消息创建时间 （整型）",
+                    "type": "integer"
+                },
+                "FromUserName": {
+                    "description": "发送方帐号（一个OpenID）",
+                    "type": "string"
+                },
+                "MsgId": {
+                    "description": "消息id，64位整型",
+                    "type": "string"
+                },
+                "MsgType": {
+                    "description": "消息类型，文本为text",
+                    "type": "string"
+                },
+                "ToUserName": {
+                    "description": "开发者微信号",
+                    "type": "string"
+                }
+            }
         },
         "wol.Reply": {
             "type": "object",

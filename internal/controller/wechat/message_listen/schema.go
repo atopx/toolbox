@@ -24,4 +24,4 @@ func NewController(ctx *gin.Context) (*Controller, error) {
 type Param wechat.Message
 
 // tips: xml名字不能改，会影响root tag name
-type Xml wechat.Message
+type xml wechat.Message
