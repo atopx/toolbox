@@ -1,6 +1,6 @@
 # toolbox
 
-一个玩具工具箱(restful最佳实践, api模板)
+一个玩具工具箱(restful最佳实践, api模板, 包含一些实用工具)
 
 ## control
 
@@ -20,6 +20,7 @@
 
 ## todo list
 
+- [x] 微信公众号
 - [ ] 认证
 - [ ] 密码管理（存储、检索、对接alfred）
 - [ ] 笔记管理
