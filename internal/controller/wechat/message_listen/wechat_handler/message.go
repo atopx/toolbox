@@ -6,6 +6,7 @@ type MessageHandler struct{}
 
 func (h *MessageHandler) Deal() string {
 	var messages = []string{
+		"atopx: All commands.",
 		"ts: 时间戳工具(timestamp)",
 		"wt: 天气预报(weather) TODO",
 		"json: JSO对象转义、格式化",
