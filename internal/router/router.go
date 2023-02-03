@@ -17,6 +17,7 @@ func v1router(router *gin.RouterGroup) {
 	home(router.Group(home_path))
 	json(router.Group(json_path))
 	resource(router.Group(resource_path))
+	tool(router.Group(tool_path))
 }
 
 // HandlerRouteRegister api注册
