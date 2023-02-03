@@ -2,22 +2,21 @@ package dblog
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"strconv"
+	"strings"
 )
 
 func (ctl *Controller) Deal() {
-	jsonStr, err := strconv.Unquote(fmt.Sprintf("\"%s\"", ctl.param.JsonStr))
-	if err != nil {
+	dblog := make(map[string]interface{})
+	if err := json.Unmarshal([]byte(ctl.param.JsonStr), &dblog); err != nil {
 		ctl.NewErrorResponse(http.StatusBadRequest, err.Error())
 		return
 	}
-	result := make(map[string]interface{})
-	fmt.Println(jsonStr)
-	if err = json.Unmarshal([]byte(jsonStr), &result); err != nil {
-		ctl.NewErrorResponse(http.StatusBadRequest, err.Error())
-		return
+	result := Reply{Message: dblog["message"].(string)}
+	temp := strings.Split(result.Message, "] ")
+	if len(temp) > 1 {
+		result.Sql = strings.TrimSpace(temp[len(temp)-1])
+
 	}
 	ctl.NewOkResponse(http.StatusOK, result)
 }

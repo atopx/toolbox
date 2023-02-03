@@ -14,7 +14,6 @@ func (ctl *Controller) Deal() {
 		return
 	}
 	result := make(map[string]interface{})
-	fmt.Println(jsonStr)
 	if err = json.Unmarshal([]byte(jsonStr), &result); err != nil {
 		ctl.NewErrorResponse(http.StatusBadRequest, err.Error())
 		return

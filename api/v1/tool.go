@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"toolbox/internal/controller/json/trans"
+	"toolbox/internal/controller/tool/dblog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +16,7 @@ import (
 // @Response 500 object system.ReplyError "系统错误"
 // @Router /api/v1/tool/dblog [get]
 func DbLogDraw(ctx *gin.Context) {
-	if controller, err := trans.NewController(ctx); err == nil {
+	if controller, err := dblog.NewController(ctx); err == nil {
 		controller.Deal()
 	}
 }

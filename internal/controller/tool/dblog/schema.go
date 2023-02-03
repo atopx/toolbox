@@ -10,7 +10,10 @@ type Param struct {
 	JsonStr string `form:"json_str" json:"json_str"` // json字符串
 }
 
-type Reply map[string]interface{}
+type Reply struct {
+	Message string `json:"message"`
+	Sql     string `json:"sql"`
+}
 
 type Controller struct {
 	param *Param
