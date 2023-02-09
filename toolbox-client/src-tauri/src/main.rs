@@ -1,12 +1,15 @@
 #![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
+all(not(debug_assertions), target_os = "windows"),
+windows_subsystem = "windows"
 )]
 
 #[tauri::command]
-fn dblog(name: &str) -> String {
-    println!("INPUT:: {}", name);
-    return String::from("select * from order;");
+fn dblog(value: &str) -> String {
+    let mut result = value.split("] ").last().unwrap();
+    result = result.split("\",").next().unwrap();
+    let mut sql = String::from(result);
+    sql.push(';');
+    return sql;
 }
 
 fn main() {

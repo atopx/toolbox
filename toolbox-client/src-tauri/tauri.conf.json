@@ -33,7 +33,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "top.itmeng.toolbox",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -60,10 +60,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "resizable": true,
-        "title": "toolbox-client",
-        "width": 800
+        "height": 1200,
+        "resizable": false,
+        "title": "toolbox",
+        "width": 1000
       }
     ]
   }
