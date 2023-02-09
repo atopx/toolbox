@@ -9,5 +9,5 @@ import (
 const tool_path = "tool"
 
 func tool(router *gin.RouterGroup) {
-	router.GET("/dblog", v1.DbLogDraw)
+	router.POST("/dblog", v1.DbLogDraw)
 }
