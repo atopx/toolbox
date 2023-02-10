@@ -5,10 +5,15 @@ windows_subsystem = "windows"
 
 #[tauri::command]
 fn dblog(value: &str) -> String {
-    let mut result = value.split("] ").last().unwrap();
-    result = result.split("\",").next().unwrap();
-    let mut sql = String::from(result);
-    sql.push(';');
+    let mut temp = value.split("] ").last().unwrap();
+    temp = result.split("\",").next().unwrap();
+
+    let mut result = String::from(temp);
+    result = result.replace("\n", " ");
+    result = result.replace("\t", " ");
+    result.push(';');
+
+    println!("{}", sql);
     return sql;
 }
 
