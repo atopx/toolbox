@@ -1,0 +1,9 @@
+.sidemenu {
+    height: 800px;
+    width: 140px;
+}
+
+.laysite .layui-site {
+    display: flex;
+    
+}
