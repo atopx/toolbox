@@ -39,8 +39,6 @@ func RecoverMiddleware() gin.HandlerFunc {
 					ctx.Abort()
 					return
 				}
-				track := make([]byte, 1<<16)
-				system.GetRuntimeStack(&track)
 				logger.Error(ctx, "recovery from panic",
 					zap.Any("error", err),
 					zap.ByteString("body", body),

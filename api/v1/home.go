@@ -20,7 +20,3 @@ func HomeWol(ctx *gin.Context) {
 		controller.Deal()
 	}
 }
-
-func HomeWol2(ctx *gin.Context) {
-	panic("123123")
-}

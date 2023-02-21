@@ -10,5 +10,4 @@ const home_path = "home"
 
 func home(router *gin.RouterGroup) {
 	router.GET("/wol", v1.HomeWol)
-	router.GET("/wol2", v1.HomeWol2)
 }
