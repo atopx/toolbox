@@ -1,13 +1,13 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 
 	"superserver/common/logger"
 	"superserver/server"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -24,20 +24,33 @@ import (
 // @contact.url    https://github.com/atopx/superserver.git
 
 func main() {
+	// 配置初始化
 	configPath := flag.String("c", "configs/develop.yaml", "config file path.")
 	flag.Parse()
 	viper.SetConfigFile(*configPath)
 	if err := viper.ReadInConfig(); err != nil {
 		viper.Set("server.mode", "release")
-		viper.Set("server.listen_addr", "127.0.0.1")
-		viper.Set("server.listen_port", 8000)
-		viper.Set("server.admin_user", "superuser")
-		viper.Set("server.admin_pass", "superuser")
-		log.Println("user default config:", err)
+		viper.Set("server.addr", "127.0.0.1")
+		viper.Set("server.port", 8000)
+		viper.Set("server.admin.user", "superuser")
+		viper.Set("server.admin.pass", "superuser")
+		log.Println("useing default server config:")
+		for key, value := range viper.GetStringMap("server") {
+			log.Printf(" - %s: %v\n", key, value)
+		}
+	}
+	var loglevel zapcore.Level
+	mode := viper.GetString("server.mode")
+	switch mode {
+	case "dev", "develop", "test", "debug":
+		gin.SetMode(gin.DebugMode)
+		loglevel = zap.DebugLevel
+	default:
+		gin.SetMode(gin.ReleaseMode)
+		loglevel = zap.InfoLevel
 	}
 
 	// 日志初始化
-	var loglevel zapcore.Level
 	if err := logger.Setup(zapcore.InfoLevel.String()); err != nil {
 		log.Panicf("logger setup failed: %s", err.Error())
 	}
@@ -45,6 +58,6 @@ func main() {
 
 	// 启动服务
 	if err := server.New().Start(); err != nil {
-		logger.Panic(context.TODO(), "start server panic", zap.Error(err))
+		log.Panicf("start server failed: %s", err.Error())
 	}
 }

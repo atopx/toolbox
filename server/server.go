@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 type Server struct{}
@@ -41,15 +42,13 @@ func (srv *Server) Start() error {
 
 	// http server
 	server := &http.Server{
-		Addr:           fmt.Sprintf(":%s", 8000),
+		Addr:           fmt.Sprintf("%s:%d", viper.GetString("server.addr"), viper.GetInt("server.port")),
 		Handler:        engine,
 		ReadTimeout:    30 * time.Second,
 		WriteTimeout:   30 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	fmt.Println(server.Addr)
 	return start(server)
-
 }
 
 // start 优雅启停
