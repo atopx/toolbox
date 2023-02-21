@@ -7,10 +7,7 @@ import (
 	"superserver/common/logger"
 	"superserver/server"
 
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	_ "superserver/docs"
 )
@@ -32,6 +29,7 @@ func main() {
 		viper.Set("server.mode", "release")
 		viper.Set("server.addr", "127.0.0.1")
 		viper.Set("server.port", 8000)
+		viper.Set("server.loglevel", "info")
 		viper.Set("server.admin.user", "superuser")
 		viper.Set("server.admin.pass", "superuser")
 		log.Println("useing default server config:")
@@ -39,19 +37,9 @@ func main() {
 			log.Printf(" - %s: %v\n", key, value)
 		}
 	}
-	var loglevel zapcore.Level
-	mode := viper.GetString("server.mode")
-	switch mode {
-	case "dev", "develop", "test", "debug":
-		gin.SetMode(gin.DebugMode)
-		loglevel = zap.DebugLevel
-	default:
-		gin.SetMode(gin.ReleaseMode)
-		loglevel = zap.InfoLevel
-	}
 
 	// 日志初始化
-	if err := logger.Setup(loglevel.String()); err != nil {
+	if err := logger.Setup(viper.GetString("server.loglevel")); err != nil {
 		log.Panicf("logger setup failed: %s", err.Error())
 	}
 

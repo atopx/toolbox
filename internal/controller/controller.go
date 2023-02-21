@@ -19,7 +19,7 @@ type Controller struct {
 }
 
 func (ctl *Controller) SetDatabase(db *gorm.DB) {
-	ctl.db = db
+	ctl.db = db.WithContext(ctl.Context)
 }
 
 func (ctl *Controller) GetDatabase() *gorm.DB {

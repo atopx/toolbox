@@ -7,7 +7,6 @@ import (
 	"os/signal"
 	"superserver/common/logger"
 	"superserver/common/middleware"
-	"superserver/internal/router"
 	"syscall"
 	"time"
 
@@ -15,36 +14,31 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Server struct{}
+type Server struct {
+	engine *gin.Engine
+}
 
-func New() *Server { return &Server{} }
-
-// Start 启动api服务
-func (srv *Server) Start() error {
-
-	// new http engine
-	engine := gin.New()
-
-	// 测试路由
-	router.TestRouteRegister(engine)
-
-	// 中间件
-	engine.Use(
+func New() *Server {
+	gin.SetMode(viper.GetString("mode"))
+	srv := &Server{engine: gin.New()}
+	srv.engine.Use(
 		middleware.CorsMiddleware(),
 		middleware.RecoverMiddleware(),
 		middleware.LoggerMiddleware(),
-		middleware.AuthMiddleware(),
 	)
+	return srv
+}
 
+// Start 启动api服务
+func (srv *Server) Start() error {
 	// 路由注册
-	router.BaseRouteRegister(engine)
-	router.HandlerRouteRegister(engine)
+	srv.Route()
 
 	// http server
 	listen := fmt.Sprintf("%s:%d", viper.GetString("server.addr"), viper.GetInt("server.port"))
 	server := &http.Server{
 		Addr:           listen,
-		Handler:        engine,
+		Handler:        srv.engine,
 		ReadTimeout:    60 * time.Second,
 		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 20,
