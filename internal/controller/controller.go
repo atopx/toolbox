@@ -15,7 +15,7 @@ import (
 type Controller struct {
 	Context *gin.Context
 	db      *gorm.DB
-	trace   system.Trace
+	chain   *system.ChainContext
 }
 
 func (ctl *Controller) SetDatabase(db *gorm.DB) {
@@ -29,19 +29,20 @@ func (ctl *Controller) GetDatabase() *gorm.DB {
 // ContextLoader 上下文加载器
 func (ctl *Controller) ContextLoader(ctx *gin.Context) {
 	ctl.Context = ctx
+	message, _ := ctx.Get(system.ChainContextKey)
+	ctl.chain = message.(*system.ChainContext)
 }
 
 // NewOkResponse 正常的response
 func (ctl *Controller) NewOkResponse(code int, data interface{}) {
-	ctl.Context.JSON(code, data)
+	ctl.chain.WriteNormal(data)
+	ctl.Context.JSON(code, ctl.chain)
 }
 
 // NewErrorResponse 异常的response
 func (ctl *Controller) NewErrorResponse(code int, message string) {
-	// tips: 系统级别的异常返回默认的message
-	reply := system.NewReplyError(ctl.trace.Id, code, message)
-	ctl.Context.Set(system.REPLY_ERROR_KEY, reply)
-	ctl.Context.JSON(code, &reply)
+	ctl.chain.WriteAbnomal(system.CHAIN_BAD, message)
+	ctl.Context.JSON(code, ctl.chain)
 }
 
 // NewRequestParam 结构化请求参数

@@ -44,9 +44,12 @@ func RecoverMiddleware() gin.HandlerFunc {
 				logger.Error(ctx, "recovery from panic",
 					zap.Any("error", err),
 					zap.ByteString("body", body),
-					zap.ByteString("track", track),
+					zap.Stack("stack"),
 				)
-				ctx.AbortWithStatus(http.StatusInternalServerError)
+				value, _ := ctx.Get(system.ChainContextKey)
+				message := value.(*system.ChainContext)
+				message.WriteAbnomal(system.CHAIN_ERROR, http.StatusText(http.StatusInternalServerError))
+				ctx.AbortWithStatusJSON(http.StatusInternalServerError, message)
 			}
 		}()
 		ctx.Next()

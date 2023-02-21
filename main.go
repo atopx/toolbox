@@ -51,10 +51,9 @@ func main() {
 	}
 
 	// 日志初始化
-	if err := logger.Setup(zapcore.InfoLevel.String()); err != nil {
+	if err := logger.Setup(loglevel.String()); err != nil {
 		log.Panicf("logger setup failed: %s", err.Error())
 	}
-	log.Printf("start server by [%s].\n", loglevel.String())
 
 	// 启动服务
 	if err := server.New().Start(); err != nil {

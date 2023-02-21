@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"superserver/common/logger"
 	"superserver/common/middleware"
 	"superserver/internal/router"
 	"syscall"
@@ -29,11 +30,10 @@ func (srv *Server) Start() error {
 
 	// 中间件
 	engine.Use(
-		middleware.ContextMiddleware(),
 		middleware.CorsMiddleware(),
 		middleware.RecoverMiddleware(),
-		middleware.AuthMiddleware(),
 		middleware.LoggerMiddleware(),
+		middleware.AuthMiddleware(),
 	)
 
 	// 路由注册
@@ -41,13 +41,15 @@ func (srv *Server) Start() error {
 	router.HandlerRouteRegister(engine)
 
 	// http server
+	listen := fmt.Sprintf("%s:%d", viper.GetString("server.addr"), viper.GetInt("server.port"))
 	server := &http.Server{
-		Addr:           fmt.Sprintf("%s:%d", viper.GetString("server.addr"), viper.GetInt("server.port")),
+		Addr:           listen,
 		Handler:        engine,
-		ReadTimeout:    30 * time.Second,
-		WriteTimeout:   30 * time.Second,
+		ReadTimeout:    60 * time.Second,
+		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+	logger.System("server listen: http://%s", listen)
 	return start(server)
 }
 

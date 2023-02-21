@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"superserver/common/system"
@@ -34,6 +35,10 @@ func Setup(level string) (err error) {
 	return err
 }
 
+func System(message string, v ...any) {
+	logger.Info(fmt.Sprintf(message, v...))
+}
+
 func Debug(ctx context.Context, message string, fields ...zapcore.Field) {
 	output(ctx, zap.DebugLevel, message, fields...)
 }
@@ -60,12 +65,15 @@ func Panic(ctx context.Context, message string, fields ...zapcore.Field) {
 
 func output(ctx context.Context, level zapcore.Level, message string, fields ...zapcore.Field) {
 	if entity := logger.Check(level, message); entity != nil {
-		if ctx != nil {
-			switch value := ctx.Value(system.TRACE_KEY).(type) {
-			case *system.Trace:
-				fields = append(fields, zap.Object(system.TRACE_KEY, value))
-			}
+		var trace zap.Field
+
+		switch message := ctx.Value(system.ChainContextKey).(type) {
+		case *system.ChainContext:
+			trace = zap.Int64("trace_id", message.TraceId)
+		default:
+			trace = zap.Int64("trace_id", 0)
 		}
+		fields = append(fields, trace)
 		entity.Write(fields...)
 	}
 }
