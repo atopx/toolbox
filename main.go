@@ -34,15 +34,14 @@ func main() {
 	if len(services) == 0 {
 		log.Panicf("no register service.")
 	}
-	configPath := *flag.String("c", "configs/develop.yaml", "config file path.")
-	serviceName := *flag.String("s", services[0], fmt.Sprintf("service start-up: [ %s ]", strings.Join(services, " | ")))
+	configPath := flag.String("c", "configs/develop.yaml", "config file path.")
+	serviceName := flag.String("s", services[0], fmt.Sprintf("service start-up: [ %s ]", strings.Join(services, " | ")))
 	flag.Parse()
-	service := system.GetService(serviceName)
+	service := system.GetService(*serviceName)
 	if service == nil {
-		log.Panicf("no register service.")
+		log.Panicf("no register service: %s", *serviceName)
 	}
-
-	viper.SetConfigFile(configPath)
+	viper.SetConfigFile(*configPath)
 	if err := viper.ReadInConfig(); err != nil {
 		log.Panicf("load config error: %s", err)
 	}
