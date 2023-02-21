@@ -16,6 +16,7 @@ func LoggerMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// set context
 		traceMessage := system.NewChainContext()
+		defer traceMessage.Recycle()
 		ctx.Set(system.ChainContextKey, traceMessage)
 
 		// request
