@@ -1,0 +1,360 @@
+definitions:
+  format.Reply:
+    additionalProperties: true
+    type: object
+  message_listen.Param:
+    properties:
+      Content:
+        description: 文本消息内容
+        type: string
+      CreateTime:
+        description: 消息创建时间 （整型）
+        type: integer
+      FromUserName:
+        description: 发送方帐号（一个OpenID）
+        type: string
+      MsgId:
+        description: 消息id，64位整型
+        type: string
+      MsgType:
+        description: 消息类型，文本为text
+        type: string
+      ToUserName:
+        description: 开发者微信号
+        type: string
+    type: object
+  miniapp.Reply:
+    properties:
+      cost:
+        type: string
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  pixel.Spec:
+    properties:
+      length_cm:
+        description: 长度(厘米)
+        type: number
+      length_inch:
+        description: 长度(英尺)
+        type: number
+      rate:
+        description: 分辨率
+        type: number
+    type: object
+  spec.Reply:
+    properties:
+      height:
+        $ref: '#/definitions/pixel.Spec'
+        description: 宽数据
+      ppi:
+        description: 显示PPI
+        type: number
+      size:
+        description: 显示器尺寸
+        type: number
+      width:
+        $ref: '#/definitions/pixel.Spec'
+        description: 高数据
+    type: object
+  system.ReplyError:
+    properties:
+      message:
+        description: 异常消息
+        type: string
+      trace_id:
+        type: integer
+    type: object
+  trans.Reply:
+    additionalProperties: true
+    type: object
+  wechat.Message:
+    properties:
+      Content:
+        description: 文本消息内容
+        type: string
+      CreateTime:
+        description: 消息创建时间 （整型）
+        type: integer
+      FromUserName:
+        description: 发送方帐号（一个OpenID）
+        type: string
+      MsgId:
+        description: 消息id，64位整型
+        type: string
+      MsgType:
+        description: 消息类型，文本为text
+        type: string
+      ToUserName:
+        description: 开发者微信号
+        type: string
+    type: object
+  wol.Reply:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact:
+    email: 3940422@qq.com
+    name: atopx
+    url: https://github.com/atopx/toolbox.git
+  description: 工具箱api
+  title: toolbox-api
+  version: "1.0"
+paths:
+  /api/v1/home/wol:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: mac地址
+        in: query
+        name: macAddr
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/wol.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 远程开机
+  /api/v1/json/compress:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: json字符串
+        in: query
+        name: json_str
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: json压缩
+  /api/v1/json/format:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: json字符串
+        in: query
+        name: json_str
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/format.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: json格式化
+  /api/v1/json/trans:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: json字符串
+        in: query
+        name: json_str
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/trans.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: json去除转义
+  /api/v1/pixel/spec:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: '分辨率: 高'
+        in: query
+        name: height_rate
+        type: number
+      - description: 显示器尺寸
+        in: query
+        name: size
+        type: number
+      - description: '分辨率: 宽'
+        in: query
+        name: width_rate
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/spec.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 计算显示器实际规格
+  /api/v1/resource/get:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: filename
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 获取文件资源
+  /api/v1/wechat:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: '分辨率: 高'
+        in: query
+        name: height_rate
+        type: number
+      - description: 显示器尺寸
+        in: query
+        name: size
+        type: number
+      - description: '分辨率: 宽'
+        in: query
+        name: width_rate
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/spec.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 微信公众号token认证
+    post:
+      consumes:
+      - text/xml
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/message_listen.Param'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/wechat.Message'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 微信公众号消息监听
+  /api/v1/wechat/scheduler:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: command
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/miniapp.Reply'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ReplyError'
+      summary: 命令调度器
+  /ping:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: ping
+swagger: "2.0"
