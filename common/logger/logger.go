@@ -35,6 +35,10 @@ func Setup(level string) (err error) {
 	return err
 }
 
+func GetLogger() *zap.Logger {
+	return logger
+}
+
 func System(message string, v ...any) {
 	logger.Info(fmt.Sprintf(message, v...))
 }

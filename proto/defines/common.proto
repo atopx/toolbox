@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "proto/common_iface";
+
+enum RangeScope {
+    RANGE_ALL = 0; // 含左右
+    RANGE_LEFT = 1; // 含左
+    RANGE_RIGHT = 2; // 含右
+}
+
+message Pager {
+    int32 index = 1; // 页码
+    int32 size = 2; // 数量
+    int64 count = 3; // 总数量
+    bool disabled = 5; // 禁用分页
+}
+
+message RangeI64 {
+    int64 left = 1; // 区间左
+    int64 right = 2; // 区间右
+    RangeScope scope =3; // 应用范围
+}

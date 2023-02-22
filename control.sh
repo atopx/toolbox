@@ -7,6 +7,10 @@ function build() {
 	go build -o $SERVICE_NAME -tags=jsoniter -ldflags "-w -s"
 }
 
+function proto() {
+	protoc --go_out=. proto/*/*.proto
+}
+
 function swagger() {
 	$GOPATH/bin/swag init
 }
@@ -90,6 +94,9 @@ case "$1" in
     build)
         build
         ;;
+	proto)
+		proto
+		;;
     clean)
         clean
         ;;
@@ -109,5 +116,5 @@ case "$1" in
         status
         ;;
     *)
-    info "Usage: $0 {build|clean|swagger|start|stop|restart|status}"
+    info "Usage: $0 {build|proto|clean|swagger|start|stop|restart|status}"
 esac

@@ -7,26 +7,43 @@ import (
 	"os/signal"
 	"superserver/common/logger"
 	"superserver/common/middleware"
+	"superserver/internal/model/user"
+	"superserver/pkg"
 	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
 type Server struct {
 	engine *gin.Engine
+	db     *gorm.DB
 }
 
 func New() *Server {
 	gin.SetMode(viper.GetString("mode"))
-	srv := &Server{engine: gin.New()}
+	db, err := pkg.NewDbClient(viper.GetString("dbpath"), logger.NewGormLogger())
+	if err != nil {
+		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
+	}
+	srv := &Server{engine: gin.New(), db: db}
+	srv.InitData()
 	srv.engine.Use(
 		middleware.CorsMiddleware(),
 		middleware.RecoverMiddleware(),
 		middleware.ContextMiddleware(),
 	)
 	return srv
+}
+
+func (srv *Server) InitData() error {
+	err := user.NewDao(srv.db).InitSystemUser()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // Start 启动api服务

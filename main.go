@@ -30,6 +30,7 @@ func main() {
 		viper.Set("server.addr", "127.0.0.1")
 		viper.Set("server.port", 8000)
 		viper.Set("server.loglevel", "info")
+		viper.Set("server.dbpath", "super.db")
 		viper.Set("server.admin.user", "superuser")
 		viper.Set("server.admin.pass", "superuser")
 		log.Println("useing default server config:")

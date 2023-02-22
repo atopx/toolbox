@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "proto/user_iface";
+
+enum UserStatus {
+    USER_STATUS_NORMAL = 0; // 正常
+    USER_STATUS_DISABLE = 1; // 禁用
+}
+
+
+enum UserRole {
+    USER_ROLE_GUEST = 0; // 游客
+    USER_ROLE_USER = 1; // 普通用户
+    USER_ROLE_ADMIN = 2; // 管理员
+    USER_ROLE_SYSTEM = 3; // 系统内置
+}
+
