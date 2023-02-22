@@ -11,8 +11,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// LoggerMiddleware 日志中间件
-func LoggerMiddleware() gin.HandlerFunc {
+// ContextMiddleware 日志中间件
+func ContextMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// set context
 		traceMessage := system.NewChainContext()

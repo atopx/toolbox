@@ -24,7 +24,7 @@ func New() *Server {
 	srv.engine.Use(
 		middleware.CorsMiddleware(),
 		middleware.RecoverMiddleware(),
-		middleware.LoggerMiddleware(),
+		middleware.ContextMiddleware(),
 	)
 	return srv
 }
