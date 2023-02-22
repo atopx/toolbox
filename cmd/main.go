@@ -33,7 +33,7 @@ func ComputerOff() error {
 		Timeout:         10 * time.Second,
 		User:            "atopx",
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Auth:            []ssh.AuthMethod{ssh.Password("mengfei")},
+		Auth:            []ssh.AuthMethod{ssh.Password("123456")},
 	}
 
 	client, err := ssh.Dial("tcp", "192.168.0.100:22", config)
@@ -41,7 +41,6 @@ func ComputerOff() error {
 		return fmt.Errorf("connect server failed: %s", err.Error())
 	}
 	defer client.Close()
-
 	sess, err := client.NewSession()
 	if err != nil {
 		return fmt.Errorf("login shell failed: %s", err.Error())
@@ -50,9 +49,22 @@ func ComputerOff() error {
 	return sess.Start("shutdown -s -t 0")
 }
 
-func main() {
-	err := ComputerOff()
+type ComputerStatus string
+
+const (
+	ComputerStatusOnline  ComputerStatus = "ONLINE"
+	ComputerStatusOffline ComputerStatus = "OFFLINE"
+)
+
+func ComputerCheck() ComputerStatus {
+	conn, err := net.DialTimeout("tcp", "home.itmeng.top:3389", time.Second*10)
 	if err != nil {
-		panic(err)
+		return ComputerStatusOffline
 	}
+	conn.Close()
+	return ComputerStatusOnline
+}
+
+func main() {
+	fmt.Println("current computer status:", ComputerCheck())
 }
