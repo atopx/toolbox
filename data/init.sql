@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS su_computer (
     password varchar ( 64 ) NOT NULL DEFAULT '', -- 用户密码
     lan_hostname varchar ( 64 ) NOT NULL DEFAULT '', -- 局域网地址
     wan_hostname varchar ( 64 ) NOT NULL DEFAULT '', -- 广域网地址
-    address char ( 17 ) NOT NULL DEFAULT '', -- 物理地址
+    address char ( 12 ) NOT NULL DEFAULT '', -- 物理地址
     power_status tinyint NOT NULL DEFAULT 0, -- 电源状态
     scan_time bigint NOT NULL DEFAULT 0, -- 最后一次扫描时间
     creator integer not null, -- 创建人
@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS su_computer_port (
 
 CREATE TABLE IF NOT EXISTS su_user (
     id integer PRIMARY KEY AUTOINCREMENT, -- 自增ID
+    name varchar ( 64 )  NOT NULL, -- 名称
     username varchar ( 64 ) NOT NULL DEFAULT '', -- 用户名
     password varchar ( 64 ) NOT NULL DEFAULT '', -- 用户密码
     role tinyint not null default 0, -- 用户角色

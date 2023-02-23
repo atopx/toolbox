@@ -15,11 +15,8 @@ import (
 type Controller struct {
 	Context *gin.Context
 	db      *gorm.DB
-	chain   *system.ChainContext
-}
-
-func (ctl *Controller) SetDatabase(db *gorm.DB) {
-	ctl.db = db.WithContext(ctl.Context)
+	chain   *system.ChainMessage
+	Params  any
 }
 
 func (ctl *Controller) GetDatabase() *gorm.DB {
@@ -27,14 +24,27 @@ func (ctl *Controller) GetDatabase() *gorm.DB {
 }
 
 // ContextLoader 上下文加载器
-func (ctl *Controller) ContextLoader(ctx *gin.Context) {
-	ctl.Context = ctx
-	message, _ := ctx.Get(system.ChainContextKey)
-	ctl.chain = message.(*system.ChainContext)
+func (ctl *Controller) ContextLoader() {
+	ctl.chain = system.GetChainMessage(ctl.Context)
+}
+
+// HandleLoader 句柄加载器
+func (ctl *Controller) HandleLoader(handler *system.Handler) {
+	ctl.db = handler.Db
+}
+
+// ParamLoader 参数加载器
+func (ctl *Controller) RequestLoader() error {
+	err := ctl.Context.ShouldBind(ctl.Params)
+	if err != nil {
+		logger.Error(ctl.Context, "bind param error", zap.Error(err))
+		ctl.Context.JSON(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+	}
+	return err
 }
 
 // NewOkResponse 正常的response
-func (ctl *Controller) NewOkResponse(code int, data interface{}) {
+func (ctl *Controller) NewOkResponse(code int, data any) {
 	ctl.chain.WriteNormal(data)
 	ctl.Context.JSON(code, ctl.chain)
 }
@@ -45,12 +55,9 @@ func (ctl *Controller) NewErrorResponse(code int, message string) {
 	ctl.Context.JSON(code, ctl.chain)
 }
 
-// NewRequestParam 结构化请求参数
-func (ctl *Controller) NewRequestParam(param interface{}) error {
-	err := ctl.Context.ShouldBind(param)
-	if err != nil {
-		logger.Error(ctl.Context, "bind param error", zap.Error(err))
-		ctl.Context.JSON(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
-	}
-	return err
+type Iface interface {
+	ContextLoader()
+	HandleLoader(*system.Handler)
+	RequestLoader() error
+	Deal()
 }

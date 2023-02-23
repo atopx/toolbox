@@ -9,10 +9,11 @@ import (
 )
 
 func (ctl *Controller) Deal() {
+	params := ctl.Params.(*Params)
 	// TODO 验证是否有删除权限， 创建人或管理员
 
 	dao := computer.NewDao(ctl.GetDatabase())
-	po := computer.NewComputer(ctl.param.Id)
+	po := computer.NewComputer(params.Id)
 	err := dao.Load(po)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctl.NewErrorResponse(http.StatusBadRequest, "无效的主机ID")

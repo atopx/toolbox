@@ -6,14 +6,15 @@ import (
 )
 
 func (ctl *Controller) Deal() {
+	params := ctl.Params.(*Params)
 	dao := computer.NewDao(ctl.GetDatabase())
-	data, err := dao.Filter(&ctl.param.Filter, ctl.param.Page)
+	data, err := dao.Filter(&params.Filter, params.Page)
 	if err != nil {
 		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
 		return
 	}
 	reply := &Reply{
-		Page: ctl.param.Page,
+		Page: params.Page,
 		List: make([]ComputerVo, len(data)),
 	}
 	for i, po := range data {

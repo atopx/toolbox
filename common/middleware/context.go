@@ -12,13 +12,12 @@ import (
 )
 
 // ContextMiddleware 日志中间件
-func ContextMiddleware() gin.HandlerFunc {
+func (m *Middleware) ContextMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// set context
-		traceMessage := system.NewChainContext()
-		defer traceMessage.Recycle()
-		ctx.Set(system.ChainContextKey, traceMessage)
-
+		chain := system.NewChainMessage()
+		chain.IntoContext(ctx)
+		defer chain.Recycle()
 		// request
 		logger.Info(ctx, "request", zap.String("path", ctx.Request.URL.Path), zap.String("client", ctx.ClientIP()))
 
@@ -26,14 +25,14 @@ func ContextMiddleware() gin.HandlerFunc {
 		beginTime := time.Now()
 		ctx.Next()
 		cost := zap.String("cost", time.Since(beginTime).String())
-		switch traceMessage.GetLevel() {
+		switch chain.GetLevel() {
 		case system.CHAIN_BAD:
-			logger.Warn(ctx, "response", cost, zap.String("warn", traceMessage.Message))
+			logger.Warn(ctx, "response", cost, zap.String("warn", chain.Message))
 		case system.CHAIN_ERROR:
-			logger.Error(ctx, "response", cost, zap.String("error", traceMessage.Message))
+			logger.Error(ctx, "response", cost, zap.String("error", chain.Message))
 		default:
 			logger.Info(ctx, "response", cost)
 		}
-		traceMessage.Message = http.StatusText(ctx.Writer.Status())
+		chain.Message = http.StatusText(ctx.Writer.Status())
 	}
 }

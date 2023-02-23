@@ -3,6 +3,7 @@ package user
 import (
 	"superserver/internal/model"
 	"superserver/proto/user_iface"
+	"sync"
 )
 
 type User struct {
@@ -14,4 +15,7 @@ type User struct {
 	Status   user_iface.UserStatus // 用户状态
 }
 
-var SystemUser *User
+var (
+	once       sync.Once
+	SystemUser *User
+)

@@ -11,41 +11,50 @@ import (
 )
 
 func (ctl *Controller) Deal() {
-	if ctl.param.Name == "" {
+	params := ctl.Params.(*Params)
+	if params.Name == "" {
 		ctl.NewErrorResponse(http.StatusBadRequest, "名称不能为空")
 		return
 	}
-	if ctl.param.Address == "" {
+	if params.Address == "" {
 		ctl.NewErrorResponse(http.StatusBadRequest, "MAC地址不能为空")
 		return
 	}
 
 	dao := computer.NewDao(ctl.GetDatabase())
-
-	if !errors.Is(dao.FilterBy("name", ctl.param.Name), gorm.ErrRecordNotFound) {
+	_, err := dao.FilterBy("name", params.Name)
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		if err != nil {
+			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
+			return
+		}
 		ctl.NewErrorResponse(http.StatusBadRequest, "名称已存在")
 		return
 	}
-
-	if !errors.Is(dao.FilterBy("address", ctl.param.Name), gorm.ErrRecordNotFound) {
+	_, err = dao.FilterBy("address", params.Name)
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		if err != nil {
+			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
+			return
+		}
 		ctl.NewErrorResponse(http.StatusBadRequest, "MAC地址已存在")
 		return
 	}
 
 	cpt := computer.Computer{
-		Name:        ctl.param.Name,
-		Username:    ctl.param.Username,
-		Password:    ctl.param.Password,
-		LanHostname: ctl.param.LanHostname,
-		WanHostname: ctl.param.WanHostname,
-		Address:     ctl.param.Address,
+		Name:        params.Name,
+		Username:    params.Username,
+		Password:    params.Password,
+		LanHostname: params.LanHostname,
+		WanHostname: params.WanHostname,
+		Address:     params.Address,
 		PowerStatus: computer_iface.ComputerPowerStatus_COMPUTER_POWER_UNKNOWN,
 		// TODO 待修改
 		Creator: user.SystemUser.Id,
 		Updator: user.SystemUser.Id,
 	}
 	if err := dao.Create(&cpt); err != nil {
-		ctl.NewErrorResponse(http.StatusInternalServerError, "创建主机失败, 请联系管理员")
+		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 		return
 	}
 

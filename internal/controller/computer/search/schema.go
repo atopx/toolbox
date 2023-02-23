@@ -9,20 +9,14 @@ import (
 )
 
 type Controller struct {
-	param *Param
 	controller.Controller
 }
 
-func NewController(ctx *gin.Context) (*Controller, error) {
-	ctl := Controller{param: new(Param)}
-	ctl.ContextLoader(ctx)
-	if err := ctl.NewRequestParam(ctl.param); err != nil {
-		return nil, err
-	}
-	return &ctl, nil
+func NewController(ctx *gin.Context) *Controller {
+	return &Controller{Controller: controller.Controller{Params: new(Params), Context: ctx}}
 }
 
-type Param struct {
+type Params struct {
 	Page   *common_iface.Pager `json:"page"`
 	Filter computer.Filter     `json:"filter"`
 }

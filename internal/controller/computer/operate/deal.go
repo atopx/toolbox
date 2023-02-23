@@ -2,6 +2,7 @@ package operate
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"superserver/internal/model/computer"
 	"superserver/proto/computer_iface"
@@ -10,7 +11,8 @@ import (
 )
 
 func (ctl *Controller) Deal() {
-	if ctl.param.Operate == nil || ctl.param.Id <= 0 {
+	params := ctl.Params.(*Params)
+	if params.Operate == nil || params.Id <= 0 {
 		ctl.NewErrorResponse(http.StatusBadRequest, "无效的操作")
 		return
 	}
@@ -19,22 +21,20 @@ func (ctl *Controller) Deal() {
 
 	// 验证主机是否有效
 	dao := computer.NewDao(ctl.GetDatabase())
-	po := computer.NewComputer(ctl.param.Id)
+	po := computer.NewComputer(params.Id)
 	err := dao.Load(po)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctl.NewErrorResponse(http.StatusBadRequest, "无效的主机ID")
 		return
 	}
 
-	switch *ctl.param.Operate {
+	switch *params.Operate {
 	case computer_iface.ComputerOperate_COMPUTER_OPERATE_OFF:
-		// TODO 关机
-
+		fmt.Println("// TODO 关机")
 	case computer_iface.ComputerOperate_COMPUTER_OPERATE_ON:
-		// TODO 开机
-
+		fmt.Println("// TODO 开机")
 	case computer_iface.ComputerOperate_COMPUTER_OPERATE_DETECT:
-		// TODO 探测
+		fmt.Println("// TODO 探测")
 	}
 
 	ctl.NewOkResponse(http.StatusOK, &Reply{})

@@ -39,6 +39,10 @@ func GetLogger() *zap.Logger {
 	return logger
 }
 
+func AddCallerSkip(n int) *zap.Logger {
+	return logger.WithOptions(zap.AddCallerSkip(n))
+}
+
 func System(message string, v ...any) {
 	logger.Info(fmt.Sprintf(message, v...))
 }
@@ -69,15 +73,11 @@ func Panic(ctx context.Context, message string, fields ...zapcore.Field) {
 
 func output(ctx context.Context, level zapcore.Level, message string, fields ...zapcore.Field) {
 	if entity := logger.Check(level, message); entity != nil {
-		var trace zap.Field
-
-		switch message := ctx.Value(system.ChainContextKey).(type) {
-		case *system.ChainContext:
-			trace = zap.Int64("trace_id", message.TraceId)
-		default:
-			trace = zap.Int64("trace_id", 0)
+		var traceId int64
+		if chain := system.GetChainMessageWithContext(ctx); chain != nil {
+			traceId = chain.TraceId
 		}
-		fields = append(fields, trace)
+		fields = append(fields, zap.Int64("trace_id", traceId))
 		entity.Write(fields...)
 	}
 }

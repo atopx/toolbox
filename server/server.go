@@ -7,6 +7,8 @@ import (
 	"os/signal"
 	"superserver/common/logger"
 	"superserver/common/middleware"
+	"superserver/docs"
+	"superserver/internal/api"
 	"superserver/internal/model/user"
 	"superserver/pkg"
 	"syscall"
@@ -14,13 +16,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	files "github.com/swaggo/files"
+	swagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
-
-type Server struct {
-	engine *gin.Engine
-	db     *gorm.DB
-}
 
 func New() *Server {
 	gin.SetMode(viper.GetString("mode"))
@@ -29,28 +28,44 @@ func New() *Server {
 		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
 	}
 	srv := &Server{engine: gin.New(), db: db}
-	srv.InitData()
+	srv.middle = middleware.New()
 	srv.engine.Use(
-		middleware.CorsMiddleware(),
-		middleware.RecoverMiddleware(),
-		middleware.ContextMiddleware(),
+		srv.middle.CorsMiddleware(),
+		srv.middle.RecoverMiddleware(),
+		srv.middle.ContextMiddleware(),
 	)
 	return srv
 }
 
-func (srv *Server) InitData() error {
-	err := user.NewDao(srv.db).InitSystemUser()
-	if err != nil {
-		return err
+type Server struct {
+	engine *gin.Engine
+	db     *gorm.DB
+	app    *api.Api
+	middle *middleware.Middleware
+}
+
+func (srv *Server) Route() {
+	srv.app = api.New(srv.db, srv.engine)
+	if gin.Mode() == gin.DebugMode {
+		docs.SwaggerInfo.Host = fmt.Sprintf(
+			"%s:%d",
+			viper.GetString("server.localhost"),
+			viper.GetInt("server.port"),
+		)
+		srv.engine.GET("/swagger/*any", swagger.WrapHandler(files.Handler))
 	}
-	return nil
+}
+
+func (srv *Server) InitData() {
+	user.NewDao(srv.db)
 }
 
 // Start 启动api服务
 func (srv *Server) Start() error {
 	// 路由注册
 	srv.Route()
-
+	// 初始化数据
+	srv.InitData()
 	// http server
 	listen := fmt.Sprintf("%s:%d", viper.GetString("server.addr"), viper.GetInt("server.port"))
 	server := &http.Server{

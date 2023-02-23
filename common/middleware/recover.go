@@ -15,7 +15,7 @@ import (
 )
 
 // RecoverMiddleware 崩溃恢复中间件
-func RecoverMiddleware() gin.HandlerFunc {
+func (m *Middleware) RecoverMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -44,10 +44,9 @@ func RecoverMiddleware() gin.HandlerFunc {
 					zap.ByteString("body", body),
 					zap.Stack("stack"),
 				)
-				value, _ := ctx.Get(system.ChainContextKey)
-				message := value.(*system.ChainContext)
-				message.WriteAbnomal(system.CHAIN_ERROR, http.StatusText(http.StatusInternalServerError))
-				ctx.AbortWithStatusJSON(http.StatusInternalServerError, message)
+				chain := system.GetChainMessage(ctx)
+				chain.WriteAbnomal(system.CHAIN_ERROR, http.StatusText(http.StatusInternalServerError))
+				ctx.AbortWithStatusJSON(http.StatusInternalServerError, chain)
 			}
 		}()
 		ctx.Next()
