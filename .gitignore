@@ -200,3 +200,5 @@ cython_debug/
 
 # JetBrains
 .idea/
+
+*.db
