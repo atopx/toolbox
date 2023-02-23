@@ -11,10 +11,6 @@ import (
 )
 
 func NewDbClient(dbpath string, logger glog.Interface) (*gorm.DB, error) {
-	if dbpath == "" {
-		dbpath = "super.data"
-	}
-
 	if logger == nil {
 		logger = glog.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer（日志输出的目标，前缀和日志包含的内容——译者注）

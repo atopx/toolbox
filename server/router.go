@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"superserver/api/base"
 	"superserver/docs"
-	"superserver/internal/controller/user"
+	"superserver/internal/controller/computer"
 
 	files "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
@@ -16,8 +16,8 @@ import (
 func (srv *Server) routeV1Group() {
 	v1group := srv.engine.Group("/api/v1")
 
-	// user router
-	user.Route(v1group)
+	// computer router
+	computer.Route(v1group)
 
 }
 

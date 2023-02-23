@@ -24,7 +24,7 @@ type Server struct {
 
 func New() *Server {
 	gin.SetMode(viper.GetString("mode"))
-	db, err := pkg.NewDbClient(viper.GetString("dbpath"), logger.NewGormLogger())
+	db, err := pkg.NewDbClient(viper.GetString("server.dbpath"), logger.NewGormLogger())
 	if err != nil {
 		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
 	}

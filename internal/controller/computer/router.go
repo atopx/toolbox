@@ -9,8 +9,8 @@ import (
 func Route(router *gin.RouterGroup) {
 	group := router.Group("computer")
 	group.POST("/search", v1.ComputerSearch)
-	group.POST("/search", v1.ComputerCreate)
-	group.POST("/search", v1.ComputerUpdate)
+	group.POST("/create", v1.ComputerCreate)
+	group.POST("/update", v1.ComputerUpdate)
 	group.DELETE("/delete", v1.ComputerDelete)
 	group.HEAD("/operate", v1.ComputerSearch)
 }
