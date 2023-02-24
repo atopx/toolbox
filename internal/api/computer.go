@@ -15,7 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param param body create.Params true "请求参数"
-// @Response 200 object create.Reply "调用成功"
+// @Response 200 object system.ChainMessage "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
 // @Router /api/computer/create [post]
@@ -28,7 +28,7 @@ func (a *Api) ComputerCreate(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param param body update.Params true "请求参数"
-// @Response 200 object update.Reply "调用成功"
+// @Response 200 object system.ChainMessage "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
 // @Router /api/computer/update [post]
@@ -41,7 +41,7 @@ func (a *Api) ComputerUpdate(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param param body delete.Params true "请求参数"
-// @Response 200 object delete.Reply "调用成功"
+// @Response 200 object system.ChainMessage{data=delete.Reply} "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
 // @Router /api/computer/delete [delete]
@@ -54,7 +54,7 @@ func (a *Api) ComputerDelete(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param param body search.Params true "请求参数"
-// @Response 200 object search.Reply "调用成功"
+// @Response 200 object system.ChainMessage{data=search.Reply} "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
 // @Router /api/computer/search [post]
@@ -67,7 +67,7 @@ func (a *Api) ComputerSearch(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param param body operate.Params true "请求参数"
-// @Response 200 object operate.Reply "调用成功"
+// @Response 200 object system.ChainMessage "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
 // @Router /api/computer/operate [post]

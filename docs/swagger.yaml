@@ -149,8 +149,6 @@ definitions:
       wan_hostname:
         type: string
     type: object
-  create.Reply:
-    type: object
   delete.Params:
     properties:
       id:
@@ -164,8 +162,6 @@ definitions:
         type: integer
       operate:
         $ref: '#/definitions/computer_iface.ComputerOperate'
-    type: object
-  operate.Reply:
     type: object
   search.ComputerVo:
     properties:
@@ -252,8 +248,6 @@ definitions:
       wan_hostname:
         type: string
     type: object
-  update.Reply:
-    type: object
 info:
   contact:
     email: 3940422@qq.com
@@ -280,7 +274,7 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/create.Reply'
+            $ref: '#/definitions/system.ChainMessage'
         "400":
           description: 请求错误
           schema:
@@ -307,7 +301,12 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/delete.Reply'
+            allOf:
+            - $ref: '#/definitions/system.ChainMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/delete.Reply'
+              type: object
         "400":
           description: 请求错误
           schema:
@@ -334,7 +333,7 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/operate.Reply'
+            $ref: '#/definitions/system.ChainMessage'
         "400":
           description: 请求错误
           schema:
@@ -361,7 +360,12 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/search.Reply'
+            allOf:
+            - $ref: '#/definitions/system.ChainMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/search.Reply'
+              type: object
         "400":
           description: 请求错误
           schema:
@@ -388,7 +392,7 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/update.Reply'
+            $ref: '#/definitions/system.ChainMessage'
         "400":
           description: 请求错误
           schema:

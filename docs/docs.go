@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "调用成功",
                         "schema": {
-                            "$ref": "#/definitions/create.Reply"
+                            "$ref": "#/definitions/system.ChainMessage"
                         }
                     },
                     "400": {
@@ -85,7 +85,19 @@ const docTemplate = `{
                     "200": {
                         "description": "调用成功",
                         "schema": {
-                            "$ref": "#/definitions/delete.Reply"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/system.ChainMessage"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/delete.Reply"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -127,7 +139,7 @@ const docTemplate = `{
                     "200": {
                         "description": "调用成功",
                         "schema": {
-                            "$ref": "#/definitions/operate.Reply"
+                            "$ref": "#/definitions/system.ChainMessage"
                         }
                     },
                     "400": {
@@ -169,7 +181,19 @@ const docTemplate = `{
                     "200": {
                         "description": "调用成功",
                         "schema": {
-                            "$ref": "#/definitions/search.Reply"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/system.ChainMessage"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/search.Reply"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -211,7 +235,7 @@ const docTemplate = `{
                     "200": {
                         "description": "调用成功",
                         "schema": {
-                            "$ref": "#/definitions/update.Reply"
+                            "$ref": "#/definitions/system.ChainMessage"
                         }
                     },
                     "400": {
@@ -449,9 +473,6 @@ const docTemplate = `{
                 }
             }
         },
-        "create.Reply": {
-            "type": "object"
-        },
         "delete.Params": {
             "type": "object",
             "properties": {
@@ -473,9 +494,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/computer_iface.ComputerOperate"
                 }
             }
-        },
-        "operate.Reply": {
-            "type": "object"
         },
         "search.ComputerVo": {
             "type": "object",
@@ -598,9 +616,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "update.Reply": {
-            "type": "object"
         }
     }
 }`
