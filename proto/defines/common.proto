@@ -20,3 +20,21 @@ message RangeI64 {
     int64 right = 2; // 区间右
     RangeScope scope =3; // 应用范围
 }
+
+message AccessStatus {
+    ACCESS_NORMAL = 0; // 默认状态, 需要验证权限
+    ACCESS_ANONYMOUS = 1; // 可匿名访问，无需验证权限
+    ACCESS_DISABLED = 2; // 已禁用，无需验证权限
+}
+
+message AccessMethod {
+    ACCESS_METHOD_GET     = 0;
+	ACCESS_METHOD_HEAD    = 1;
+	ACCESS_METHOD_POST    = 2;
+	ACCESS_METHOD_PUT     = 3;
+	ACCESS_METHOD_PATCH   = 4;
+	ACCESS_METHOD_DELETE  = 5;
+	ACCESS_METHOD_CONNECT = 6;
+	ACCESS_METHOD_OPTIONS = 7;
+	ACCESS_METHOD_TRACE   = 8;
+}

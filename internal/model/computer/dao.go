@@ -20,7 +20,6 @@ func (*ComputerDao) Tablename() string {
 func NewDao(db *gorm.DB) *ComputerDao {
 	dao := &ComputerDao{BaseDao: model.BaseDao{Db: db}}
 	dao.BaseDao.Tablename = dao.Tablename()
-	once.Do(func() { dao.init() })
 	return dao
 }
 
@@ -60,29 +59,4 @@ func (dao *ComputerDao) Filter(filter *Filter, pager *common_iface.Pager) (compu
 	tx.Count(&pager.Count)
 	err = tx.Find(&computers).Error
 	return computers, err
-}
-
-func (dao *ComputerDao) init() {
-	if !dao.Db.Migrator().HasTable(dao.Tablename()) {
-		err := dao.Db.Exec(`CREATE TABLE IF NOT EXISTS su_computer (
-			id integer PRIMARY KEY AUTOINCREMENT, -- 自增ID
-			name varchar ( 64 )  NOT NULL, -- 名称
-			username varchar ( 64 ) NOT NULL DEFAULT '', -- 用户名
-			password varchar ( 64 ) NOT NULL DEFAULT '', -- 用户密码
-			lan_hostname varchar ( 64 ) NOT NULL DEFAULT '', -- 局域网地址
-			wan_hostname varchar ( 64 ) NOT NULL DEFAULT '', -- 广域网地址
-			address char ( 12 ) NOT NULL DEFAULT '', -- 物理地址
-			power_status tinyint NOT NULL DEFAULT 0, -- 电源状态
-			scan_time bigint NOT NULL DEFAULT 0, -- 最后一次扫描时间
-			creator integer not null, -- 创建人
-			updator integer not null, -- 更新人
-			create_time bigint not null, -- 创建时间
-			update_time bigint not null, -- 更新时间
-			delete_time bigint not null default 0 -- 删除时间
-		);`).Error
-		if err != nil {
-			panic(err)
-		}
-	}
-
 }

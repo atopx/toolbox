@@ -1,6 +1,10 @@
 package middleware
 
-type Middleware struct{}
+import "gorm.io/gorm"
+
+type Middleware struct {
+	db *gorm.DB
+}
 
 func New() *Middleware {
 	return &Middleware{}

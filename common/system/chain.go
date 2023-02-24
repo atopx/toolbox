@@ -32,7 +32,7 @@ func GetChainMessage(ctx *gin.Context) *ChainMessage {
 	if chain, exists := ctx.Get(chainContextKey); exists {
 		return chain.(*ChainMessage)
 	}
-	return nil
+	return NewChainMessage()
 }
 
 func GetChainMessageWithContext(ctx context.Context) *ChainMessage {
@@ -40,14 +40,17 @@ func GetChainMessageWithContext(ctx context.Context) *ChainMessage {
 	case *ChainMessage:
 		return value
 	}
-	return nil
+	return NewChainMessage()
 }
 
 type ChainMessage struct {
-	TraceId int64      `json:"trace_id"` // 链路ID
-	Message string     `json:"message"`  // 异常消息
-	Data    any        `json:"data,omitempty"`
-	level   ChainLevel `json:"-"` // not export
+	TraceId int64  `json:"trace_id"` // 链路ID
+	Message string `json:"message"`  // 异常消息
+	Data    any    `json:"data,omitempty"`
+
+	// not export fields
+	level  ChainLevel `json:"-"`
+	UserId int        `json:"-"`
 }
 
 func (m *ChainMessage) WriteNormal(data any) {
@@ -69,6 +72,7 @@ func (m *ChainMessage) GetLevel() ChainLevel {
 
 func (m *ChainMessage) Recycle() {
 	m.TraceId = 0
+	m.UserId = 0
 	m.Data = nil
 	m.Message = ""
 	m.level = CHAIN_NORMAL

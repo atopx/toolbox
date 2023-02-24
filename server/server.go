@@ -9,8 +9,10 @@ import (
 	"superserver/common/middleware"
 	"superserver/docs"
 	"superserver/internal/api"
+	"superserver/internal/model/access"
 	"superserver/internal/model/user"
 	"superserver/pkg"
+	"superserver/proto/user_iface"
 	"syscall"
 	"time"
 
@@ -23,7 +25,12 @@ import (
 
 func New() *Server {
 	gin.SetMode(viper.GetString("mode"))
-	db, err := pkg.NewDbClient(viper.GetString("server.dbpath"), logger.NewGormLogger())
+	switch viper.GetString("database.type") {
+	case "mysql":
+
+	}
+
+	db, err := pkg.NewDbClient(viper.GetStringMap("database"), logger.NewGormLogger())
 	if err != nil {
 		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
 	}
@@ -58,6 +65,33 @@ func (srv *Server) Route() {
 
 func (srv *Server) InitData() {
 	user.NewDao(srv.db)
+
+	// init system user
+	user.SystemUser = &user.User{
+		Name:     "系统管理员",
+		Username: viper.GetString("admin.user"),
+		Role:     user_iface.UserRole_USER_ROLE_SYSTEM,
+		Status:   user_iface.UserStatus_USER_STATUS_NORMAL,
+	}
+	user.SystemUser.SetPassword(viper.GetString("admin.pass"))
+	err := user.NewDao(srv.db).Upsert(user.SystemUser)
+	if err != nil {
+		panic(err)
+	}
+
+	// init access
+	var accessList []access.Access
+	for _, routeInfo := range srv.engine.Routes() {
+		accessList = append(accessList, access.Access{
+			Path: routeInfo.Path,
+			// Method:  routeInfo.Method,
+			Handler: routeInfo.Handler,
+		})
+	}
+	err = access.NewDao(srv.db).BatchUpsert(accessList)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Start 启动api服务

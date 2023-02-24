@@ -1,44 +1,69 @@
+CREATE TABLE su_computer (
+	id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+	name VARCHAR ( 64 ) NOT NULL default '' COMMENT '名称',
+	username VARCHAR ( 64 ) NOT NULL default '' COMMENT '登录用户',
+	password VARCHAR ( 64 ) NOT NULL default '' COMMENT '登录密码',
+	lan_hostname VARCHAR ( 64 ) NOT NULL default '' COMMENT '局域网地址',
+	wan_hostname VARCHAR ( 64 ) NOT NULL default '' COMMENT '广域网地址',
+	address CHAR ( 12 ) NOT NULL default '' COMMENT '物理地址',
+	power_status TINYINT NOT NULL DEFAULT 0 COMMENT '电源状态',
+	scan_time BIGINT NOT NULL DEFAULT 0 COMMENT '最后一次扫描时间',
+	creator INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '创建人',
+	updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
+	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+) ENGINE = INNODB COMMENT = '主机表';
 
-CREATE TABLE IF NOT EXISTS su_computer (
-    id integer PRIMARY KEY AUTOINCREMENT, -- 自增ID
-    name varchar ( 64 )  NOT NULL, -- 名称
-    username varchar ( 64 ) NOT NULL DEFAULT '', -- 用户名
-    password varchar ( 64 ) NOT NULL DEFAULT '', -- 用户密码
-    lan_hostname varchar ( 64 ) NOT NULL DEFAULT '', -- 局域网地址
-    wan_hostname varchar ( 64 ) NOT NULL DEFAULT '', -- 广域网地址
-    address char ( 12 ) NOT NULL DEFAULT '', -- 物理地址
-    power_status tinyint NOT NULL DEFAULT 0, -- 电源状态
-    scan_time bigint NOT NULL DEFAULT 0, -- 最后一次扫描时间
-    creator integer not null, -- 创建人
-    updator integer not null, -- 更新人
-    create_time bigint not null, -- 创建时间
-    update_time bigint not null, -- 更新时间
-    delete_time bigint not null default 0 -- 删除时间
-);
 
-CREATE TABLE IF NOT EXISTS su_computer_port (
-    id integer PRIMARY KEY AUTOINCREMENT,
-    computer_id integer not null, -- 主机ID
-    port integer not null default 0, -- 网络端口 
-    protocol tinyint not null default 0, -- 应用协议
-    tranport tinyint not null default 0, -- 传输协议
-    use_type tinyint not null default 0, -- 用途
-    desc text not null default '', -- 备注
-    creator integer not null, -- 创建人
-    updator integer not null, -- 更新人
-    create_time bigint not null, -- 创建时间
-    update_time bigint not null, -- 更新时间
-    delete_time bigint not null default 0 -- 删除时间
-);
+CREATE TABLE su_computer_port (
+	id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+	computer_id INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '主机ID',
+	port INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '网络端口',
+	protocol TINYINT NOT NULL DEFAULT 0 COMMENT '应用协议',
+	tranport TINYINT NOT NULL DEFAULT 0 COMMENT '传输协议',
+	use_type TINYINT NOT NULL DEFAULT 0 COMMENT '用途',
+	descr varchar(1024)  NOT NULL default '' COMMENT '描述',
+	creator INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '创建人',
+	updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
+	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+) ENGINE = INNODB COMMENT = '主机端口表';
 
-CREATE TABLE IF NOT EXISTS su_user (
-    id integer PRIMARY KEY AUTOINCREMENT, -- 自增ID
-    name varchar ( 64 )  NOT NULL, -- 名称
-    username varchar ( 64 ) NOT NULL DEFAULT '', -- 用户名
-    password varchar ( 64 ) NOT NULL DEFAULT '', -- 用户密码
-    role tinyint not null default 0, -- 用户角色
-    status tinyint not null default 0, -- 用户状态
-    create_time bigint not null, -- 创建时间
-    update_time bigint not null, -- 更新时间
-    delete_time bigint not null default 0 -- 删除时间
-);
+
+CREATE TABLE su_user (
+	id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+	name VARCHAR ( 64 ) NOT NULL default '' COMMENT '姓名',
+	username VARCHAR ( 64 ) NOT NULL default '' COMMENT '登录用户',
+	password VARCHAR ( 64 ) NOT NULL default '' COMMENT '登录密码',
+	role TINYINT NOT NULL DEFAULT 0 COMMENT '用户角色',
+	status TINYINT NOT NULL DEFAULT 0 COMMENT '用户状态',
+	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+) ENGINE = INNODB COMMENT = '用户基础表';
+
+
+CREATE TABLE su_access (
+	id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+	path VARCHAR ( 64 ) NOT NULL default '' COMMENT '资源路径',
+	handler VARCHAR ( 64 ) NOT NULL default '' COMMENT '处理器',
+	method TINYINT NOT NULL DEFAULT 0 COMMENT '请求方法',
+	status TINYINT NOT NULL DEFAULT 0 COMMENT '资源状态',
+	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+) ENGINE = INNODB COMMENT = '请求资源表';
+
+
+CREATE TABLE su_permission (
+	id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+	access_id INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '资源ID',
+	role_id TINYINT NOT NULL DEFAULT 0 COMMENT '角色ID',
+	creator INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '创建人',
+	updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
+	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+) ENGINE = INNODB COMMENT = '角色资源权限表';

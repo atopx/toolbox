@@ -2,10 +2,14 @@ package pkg
 
 import (
 	"testing"
+
+	"github.com/spf13/viper"
 )
 
 func TestNewDbClient(t *testing.T) {
-	db, err := NewDbClient("test.db", nil)
+	viper.SetConfigFile("../config.yaml")
+	viper.ReadInConfig()
+	db, err := NewDbClient(viper.GetStringMap("database"), nil)
 	if err != nil {
 		t.Error(err)
 	}

@@ -3,7 +3,6 @@ package computer
 import (
 	"superserver/internal/model"
 	"superserver/proto/computer_iface"
-	"sync"
 )
 
 type Computer struct {
@@ -28,5 +27,3 @@ func (m *Computer) GetId() any {
 func NewComputer(id int) *Computer {
 	return &Computer{Base: model.Base{Id: id}}
 }
-
-var once sync.Once

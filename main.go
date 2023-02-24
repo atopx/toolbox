@@ -22,7 +22,7 @@ import (
 
 func main() {
 	// 配置初始化
-	configPath := flag.String("c", "configs/develop.yaml", "config file path.")
+	configPath := flag.String("c", "config.yaml", "config file path.")
 	flag.Parse()
 	viper.SetConfigFile(*configPath)
 	if err := viper.ReadInConfig(); err != nil {
@@ -30,9 +30,9 @@ func main() {
 		viper.Set("server.addr", "127.0.0.1")
 		viper.Set("server.port", 8000)
 		viper.Set("server.loglevel", "info")
-		viper.Set("server.dbpath", "super.db")
-		viper.Set("server.admin.user", "superuser")
-		viper.Set("server.admin.pass", "superuser")
+		viper.Set("database.dbpath", "super.db")
+		viper.Set("admin.user", "superuser")
+		viper.Set("admin.pass", "superuser")
 		log.Println("useing default server config:")
 		for key, value := range viper.GetStringMap("server") {
 			log.Printf(" - %s: %v\n", key, value)

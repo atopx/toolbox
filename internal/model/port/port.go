@@ -3,7 +3,6 @@ package port
 import (
 	"superserver/internal/model"
 	"superserver/proto/computer_iface"
-	"sync"
 )
 
 type ComputerPort struct {
@@ -18,4 +17,6 @@ type ComputerPort struct {
 	Updator    int                                  // 更新人
 }
 
-var once sync.Once
+func (m *ComputerPort) GetId() any {
+	return m.Id
+}
