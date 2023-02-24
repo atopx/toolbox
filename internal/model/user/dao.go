@@ -47,7 +47,7 @@ func (dao *UserDao) GetUserMapByIds(ids []int) (map[int]*User, error) {
 		return result, nil
 	}
 	var users []*User
-	err := dao.Connection().Where("id in ?", ids).Find(users).Error
+	err := dao.Connection().Where("id in ?", ids).Find(&users).Error
 	if err != nil {
 		return result, err
 	}

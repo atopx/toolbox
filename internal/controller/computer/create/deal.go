@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"superserver/internal/model/computer"
-	"superserver/internal/model/user"
 	"superserver/proto/computer_iface"
 
 	"gorm.io/gorm"
@@ -47,12 +46,12 @@ func (ctl *Controller) Deal() {
 		Password:    params.Password,
 		LanHostname: params.LanHostname,
 		WanHostname: params.WanHostname,
-		Address:     params.Address,
 		PowerStatus: computer_iface.ComputerPowerStatus_COMPUTER_POWER_UNKNOWN,
-		// TODO 待修改
-		Creator: user.SystemUser.Id,
-		Updator: user.SystemUser.Id,
+		Creator:     ctl.GetOperator(),
+		Updater:     ctl.GetOperator(),
 	}
+	cpt.SetAddress(params.Address)
+
 	if err := dao.Create(&cpt); err != nil {
 		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 		return

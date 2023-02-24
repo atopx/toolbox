@@ -28,6 +28,10 @@ func (ctl *Controller) ContextLoader() {
 	ctl.chain = system.GetChainMessage(ctl.Context)
 }
 
+func (ctl *Controller) GetOperator() int {
+	return ctl.chain.UserId
+}
+
 // HandleLoader 句柄加载器
 func (ctl *Controller) HandleLoader(handler *system.Handler) {
 	ctl.db = handler.Db

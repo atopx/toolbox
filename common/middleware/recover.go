@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -39,11 +40,13 @@ func (m *Middleware) RecoverMiddleware() gin.HandlerFunc {
 					ctx.Abort()
 					return
 				}
+				stack := zap.Stack("stack")
 				logger.Error(ctx, "recovery from panic",
 					zap.Any("error", err),
 					zap.ByteString("body", body),
-					zap.Stack("stack"),
+					stack,
 				)
+				log.Println(stack.String)
 				chain := system.GetChainMessage(ctx)
 				chain.WriteAbnomal(system.CHAIN_ERROR, http.StatusText(http.StatusInternalServerError))
 				ctx.AbortWithStatusJSON(http.StatusInternalServerError, chain)

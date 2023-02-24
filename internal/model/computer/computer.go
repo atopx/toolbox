@@ -1,6 +1,7 @@
 package computer
 
 import (
+	"superserver/common/utils"
 	"superserver/internal/model"
 	"superserver/proto/computer_iface"
 )
@@ -16,7 +17,7 @@ type Computer struct {
 	Address     string                             // 物理地址
 	PowerStatus computer_iface.ComputerPowerStatus // 电源状态
 	Creator     int                                // 创建人
-	Updator     int                                // 更新人
+	Updater     int                                // 更新人
 	ScanTime    int64                              // 最后一次扫描时间
 }
 
@@ -26,4 +27,12 @@ func (m *Computer) GetId() any {
 
 func NewComputer(id int) *Computer {
 	return &Computer{Base: model.Base{Id: id}}
+}
+
+func (m *Computer) SetAddress(address string) {
+	m.Address = utils.MACEncode(address)
+}
+
+func (m *Computer) GetAddress() string {
+	return utils.MACDecode(m.Address)
 }

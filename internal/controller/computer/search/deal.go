@@ -17,7 +17,7 @@ func (ctl *Controller) Deal() {
 
 	var userIds []int
 	for _, po := range data {
-		userIds = append(userIds, po.Creator, po.Updator)
+		userIds = append(userIds, po.Creator, po.Updater)
 	}
 	userMap, err := user.NewDao(ctl.GetDatabase()).GetUserMapByIds(userIds)
 	if err != nil {
@@ -34,7 +34,7 @@ func (ctl *Controller) Deal() {
 		if user, ok := userMap[po.Creator]; ok {
 			vo.Creator = user.Name
 		}
-		if user, ok := userMap[po.Updator]; ok {
+		if user, ok := userMap[po.Updater]; ok {
 			vo.Updator = user.Name
 		}
 		reply.List = append(reply.List, vo)
@@ -50,7 +50,7 @@ func (ctl *Controller) NewComputerVo(po *computer.Computer) ComputerVo {
 		Password:    po.Password,
 		LanHostname: po.LanHostname,
 		WanHostname: po.WanHostname,
-		Address:     po.Address,
+		Address:     po.GetAddress(),
 		PowerStatus: po.PowerStatus.String(),
 		CreateTime:  po.CreateTime,
 		UpdateTime:  po.UpdateTime,
