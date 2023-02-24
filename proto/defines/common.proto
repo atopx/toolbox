@@ -21,13 +21,13 @@ message RangeI64 {
     RangeScope scope =3; // 应用范围
 }
 
-message AccessStatus {
+enum AccessStatus {
     ACCESS_NORMAL = 0; // 默认状态, 需要验证权限
     ACCESS_ANONYMOUS = 1; // 可匿名访问，无需验证权限
     ACCESS_DISABLED = 2; // 已禁用，无需验证权限
 }
 
-message AccessMethod {
+enum AccessMethod {
     ACCESS_METHOD_GET     = 0;
 	ACCESS_METHOD_HEAD    = 1;
 	ACCESS_METHOD_POST    = 2;
