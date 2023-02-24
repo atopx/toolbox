@@ -27,10 +27,9 @@ func main() {
 	viper.SetConfigFile(*configPath)
 	if err := viper.ReadInConfig(); err != nil {
 		viper.Set("server.mode", "release")
-		viper.Set("server.addr", "127.0.0.1")
+		viper.Set("server.host", "127.0.0.1")
 		viper.Set("server.port", 8000)
 		viper.Set("server.loglevel", "info")
-		viper.Set("database.dbpath", "super.db")
 		viper.Set("admin.user", "superuser")
 		viper.Set("admin.pass", "superuser")
 		log.Println("useing default server config:")

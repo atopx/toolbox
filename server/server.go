@@ -26,22 +26,13 @@ import (
 
 func New() *Server {
 	gin.SetMode(viper.GetString("mode"))
-	switch viper.GetString("database.type") {
-	case "mysql":
-
-	}
-
 	db, err := pkg.NewDbClient(viper.GetStringMap("database"), logger.NewGormLogger())
 	if err != nil {
 		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
 	}
-	srv := &Server{engine: gin.New(), db: db}
-	srv.middle = middleware.New()
-	srv.engine.Use(
-		srv.middle.CorsMiddleware(),
-		srv.middle.RecoverMiddleware(),
-		srv.middle.ContextMiddleware(),
-	)
+	srv := &Server{engine: gin.New(), db: db, middle: middleware.New()}
+	srv.listen = fmt.Sprintf("%s:%d", viper.GetString("server.host"), viper.GetInt("server.port"))
+	srv.engine.Use(srv.middle.CorsMiddleware(), srv.middle.RecoverMiddleware(), srv.middle.ContextMiddleware())
 	return srv
 }
 
@@ -50,17 +41,15 @@ type Server struct {
 	db     *gorm.DB
 	app    *api.Api
 	middle *middleware.Middleware
+	listen string
 }
 
 func (srv *Server) Route() {
 	srv.app = api.New(srv.db, srv.engine)
 	if gin.Mode() == gin.DebugMode {
-		docs.SwaggerInfo.Host = fmt.Sprintf(
-			"%s:%d",
-			viper.GetString("server.localhost"),
-			viper.GetInt("server.port"),
-		)
+		docs.SwaggerInfo.Host = srv.listen
 		srv.engine.GET("/swagger/*any", swagger.WrapHandler(files.Handler))
+		logger.System("swagger web: http://%s/swagger/index.html", srv.listen)
 	}
 }
 
@@ -102,15 +91,14 @@ func (srv *Server) Start() error {
 	// 初始化数据
 	srv.InitData()
 	// http server
-	listen := fmt.Sprintf("%s:%d", viper.GetString("server.addr"), viper.GetInt("server.port"))
 	server := &http.Server{
-		Addr:           listen,
+		Addr:           srv.listen,
 		Handler:        srv.engine,
 		ReadTimeout:    60 * time.Second,
 		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	logger.System("server listen: http://%s", listen)
+	logger.System("server listen: http://%s", srv.listen)
 	return start(server)
 }
 

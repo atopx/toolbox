@@ -19,7 +19,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/computer/create": {
+        "/api/computer/create": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -61,7 +61,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/computer/delete": {
+        "/api/computer/delete": {
             "delete": {
                 "consumes": [
                     "application/json"
@@ -103,7 +103,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/computer/operate": {
+        "/api/computer/operate": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -145,7 +145,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/computer/search": {
+        "/api/computer/search": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -187,7 +187,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/computer/update": {
+        "/api/computer/update": {
             "post": {
                 "consumes": [
                     "application/json"

@@ -263,7 +263,7 @@ info:
   title: superserver
   version: 0.1.0
 paths:
-  /api/v1/computer/create:
+  /api/computer/create:
     post:
       consumes:
       - application/json
@@ -290,7 +290,7 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 创建主机
-  /api/v1/computer/delete:
+  /api/computer/delete:
     delete:
       consumes:
       - application/json
@@ -317,7 +317,7 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 删除主机
-  /api/v1/computer/operate:
+  /api/computer/operate:
     post:
       consumes:
       - application/json
@@ -344,7 +344,7 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 操作主机
-  /api/v1/computer/search:
+  /api/computer/search:
     post:
       consumes:
       - application/json
@@ -371,7 +371,7 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 查询主机
-  /api/v1/computer/update:
+  /api/computer/update:
     post:
       consumes:
       - application/json

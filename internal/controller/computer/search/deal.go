@@ -3,6 +3,7 @@ package search
 import (
 	"net/http"
 	"superserver/internal/model/computer"
+	"superserver/internal/model/user"
 )
 
 func (ctl *Controller) Deal() {
@@ -10,21 +11,40 @@ func (ctl *Controller) Deal() {
 	dao := computer.NewDao(ctl.GetDatabase())
 	data, err := dao.Filter(&params.Filter, params.Page)
 	if err != nil {
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
+		ctl.NewErrorResponse(http.StatusInternalServerError, "[10000]系统错误,请联系管理员")
+		return
+	}
+
+	var userIds []int
+	for _, po := range data {
+		userIds = append(userIds, po.Creator, po.Updator)
+	}
+	userMap, err := user.NewDao(ctl.GetDatabase()).GetUserMapByIds(userIds)
+	if err != nil {
+		ctl.NewErrorResponse(http.StatusInternalServerError, "[10001]系统错误,请联系管理员")
 		return
 	}
 	reply := &Reply{
 		Page: params.Page,
-		List: make([]ComputerVo, len(data)),
+		List: []ComputerVo{},
 	}
-	for i, po := range data {
-		reply.List[i] = ctl.NewComputerVo(&po)
+
+	for _, po := range data {
+		vo := ctl.NewComputerVo(&po)
+		if user, ok := userMap[po.Creator]; ok {
+			vo.Creator = user.Name
+		}
+		if user, ok := userMap[po.Updator]; ok {
+			vo.Updator = user.Name
+		}
+		reply.List = append(reply.List, vo)
 	}
 	ctl.NewOkResponse(http.StatusOK, reply)
 }
 
 func (ctl *Controller) NewComputerVo(po *computer.Computer) ComputerVo {
-	vo := ComputerVo{
+	return ComputerVo{
+		Id:          po.Id,
 		Name:        po.Name,
 		Username:    po.Username,
 		Password:    po.Password,
@@ -35,10 +55,5 @@ func (ctl *Controller) NewComputerVo(po *computer.Computer) ComputerVo {
 		CreateTime:  po.CreateTime,
 		UpdateTime:  po.UpdateTime,
 		ScanTime:    po.ScanTime,
-
-		// TODO
-		// Creator:     po.Creator,
-		// Updator:     po.Updator,
 	}
-	return vo
 }

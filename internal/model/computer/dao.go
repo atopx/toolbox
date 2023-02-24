@@ -41,7 +41,7 @@ func (dao *ComputerDao) Filter(filter *Filter, pager *common_iface.Pager) (compu
 	}
 
 	if filter.Hostname != "" {
-		tx.Where("lan_ostname like ? or wan_hostname like ?", utils.NewLikeValue(filter.Hostname), utils.NewLikeValue(filter.Hostname))
+		tx.Where("lan_hostname like ? or wan_hostname like ?", utils.NewLikeValue(filter.Hostname), utils.NewLikeValue(filter.Hostname))
 	}
 
 	if filter.Address != "" {

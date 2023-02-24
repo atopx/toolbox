@@ -18,7 +18,7 @@ import (
 // @Response 200 object create.Reply "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/v1/computer/create [post]
+// @Router /api/computer/create [post]
 func (a *Api) ComputerCreate(ctx *gin.Context) {
 	a.Scheduler(create.NewController(ctx))
 }
@@ -31,7 +31,7 @@ func (a *Api) ComputerCreate(ctx *gin.Context) {
 // @Response 200 object update.Reply "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/v1/computer/update [post]
+// @Router /api/computer/update [post]
 func (a *Api) ComputerUpdate(ctx *gin.Context) {
 	a.Scheduler(update.NewController(ctx))
 }
@@ -44,7 +44,7 @@ func (a *Api) ComputerUpdate(ctx *gin.Context) {
 // @Response 200 object delete.Reply "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/v1/computer/delete [delete]
+// @Router /api/computer/delete [delete]
 func (a *Api) ComputerDelete(ctx *gin.Context) {
 	a.Scheduler(delete.NewController(ctx))
 }
@@ -57,7 +57,7 @@ func (a *Api) ComputerDelete(ctx *gin.Context) {
 // @Response 200 object search.Reply "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/v1/computer/search [post]
+// @Router /api/computer/search [post]
 func (a *Api) ComputerSearch(ctx *gin.Context) {
 	a.Scheduler(search.NewController(ctx))
 }
@@ -70,7 +70,7 @@ func (a *Api) ComputerSearch(ctx *gin.Context) {
 // @Response 200 object operate.Reply "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/v1/computer/operate [post]
+// @Router /api/computer/operate [post]
 func (a *Api) ComputerOperate(ctx *gin.Context) {
 	a.Scheduler(operate.NewController(ctx))
 }
