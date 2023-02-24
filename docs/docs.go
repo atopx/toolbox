@@ -104,7 +104,7 @@ const docTemplate = `{
             }
         },
         "/api/v1/computer/operate": {
-            "head": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],

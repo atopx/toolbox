@@ -12,7 +12,7 @@ function proto() {
 }
 
 function swagger() {
-	$GOPATH/bin/swag init
+	swag init
 }
 
 function status() {

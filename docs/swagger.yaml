@@ -318,7 +318,7 @@ paths:
             $ref: '#/definitions/system.ChainMessage'
       summary: 删除主机
   /api/v1/computer/operate:
-    head:
+    post:
       consumes:
       - application/json
       parameters:
