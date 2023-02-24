@@ -12,8 +12,11 @@ CREATE TABLE su_computer (
 	updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
 	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
 	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
-  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
 ) ENGINE = INNODB COMMENT = '主机表';
+ALTER TABLE su_computer ADD UNIQUE address_idx(address);
+ALTER TABLE su_computer ADD FULLTEXT cname(name,username);
+ALTER TABLE su_computer ADD FULLTEXT chostname(lan_hostname,wan_hostname);
 
 
 CREATE TABLE su_computer_port (
@@ -28,8 +31,10 @@ CREATE TABLE su_computer_port (
 	updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
 	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
 	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
-  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
 ) ENGINE = INNODB COMMENT = '主机端口表';
+ALTER TABLE su_computer_port ADD UNIQUE cport (computer_id, port);
+ALTER TABLE su_computer_port ADD INDEX cpid(computer_id);
 
 
 CREATE TABLE su_user (
@@ -41,8 +46,10 @@ CREATE TABLE su_user (
 	status TINYINT NOT NULL DEFAULT 0 COMMENT '用户状态',
 	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
 	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
-  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒'
 ) ENGINE = INNODB COMMENT = '用户基础表';
+ALTER TABLE su_user ADD UNIQUE uname_index (username);
+ALTER TABLE su_user ADD UNIQUE unamepass (username, password);
 
 
 CREATE TABLE su_access (
@@ -53,8 +60,9 @@ CREATE TABLE su_access (
 	status TINYINT NOT NULL DEFAULT 0 COMMENT '资源状态',
 	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
 	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
-  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒'
 ) ENGINE = INNODB COMMENT = '请求资源表';
+ALTER TABLE su_access ADD UNIQUE access_path (path);
 
 
 CREATE TABLE su_permission (
@@ -65,5 +73,7 @@ CREATE TABLE su_permission (
 	updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
 	create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
 	update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
-  delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒' 
 ) ENGINE = INNODB COMMENT = '角色资源权限表';
+ALTER TABLE su_permission ADD UNIQUE role_access (access_id, role_id);
+

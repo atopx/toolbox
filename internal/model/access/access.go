@@ -2,6 +2,7 @@ package access
 
 import (
 	"superserver/internal/model"
+	"superserver/proto/common_iface"
 	"sync"
 )
 
@@ -10,8 +11,8 @@ type Access struct {
 
 	Path    string
 	Handler string
-	Method  int32
-	Status  int32
+	Method  common_iface.AccessMethod
+	Status  common_iface.AccessStatus
 }
 
 func (m *Access) GetId() any {

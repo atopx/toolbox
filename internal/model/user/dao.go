@@ -28,7 +28,7 @@ func (dao *UserDao) init() {
 		Name:     "系统管理员",
 		Username: viper.GetString("admin.user"),
 		Role:     user_iface.UserRole_USER_ROLE_SYSTEM,
-		Status:   user_iface.UserStatus_USER_STATUS_NORMAL,
+		Status:   user_iface.UserStatus_USER_NORMAL,
 	}
 	SystemUser.SetPassword(viper.GetString("admin.pass"))
 	err := dao.Connection().Where(User{Username: SystemUser.Username, Role: SystemUser.Role}).FirstOrCreate(&SystemUser).Error

@@ -12,6 +12,7 @@ import (
 	"superserver/internal/model/access"
 	"superserver/internal/model/user"
 	"superserver/pkg"
+	"superserver/proto/common_iface"
 	"superserver/proto/user_iface"
 	"syscall"
 	"time"
@@ -71,7 +72,7 @@ func (srv *Server) InitData() {
 		Name:     "系统管理员",
 		Username: viper.GetString("admin.user"),
 		Role:     user_iface.UserRole_USER_ROLE_SYSTEM,
-		Status:   user_iface.UserStatus_USER_STATUS_NORMAL,
+		Status:   user_iface.UserStatus_USER_NORMAL,
 	}
 	user.SystemUser.SetPassword(viper.GetString("admin.pass"))
 	err := user.NewDao(srv.db).Upsert(user.SystemUser)
@@ -83,8 +84,8 @@ func (srv *Server) InitData() {
 	var accessList []access.Access
 	for _, routeInfo := range srv.engine.Routes() {
 		accessList = append(accessList, access.Access{
-			Path: routeInfo.Path,
-			// Method:  routeInfo.Method,
+			Path:    routeInfo.Path,
+			Method:  common_iface.AccessMethod(common_iface.AccessMethod_value[routeInfo.Method]),
 			Handler: routeInfo.Handler,
 		})
 	}

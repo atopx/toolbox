@@ -6,6 +6,7 @@ import (
 	"superserver/common/system"
 	"superserver/internal/model/access"
 	"superserver/internal/model/permission"
+	"superserver/proto/common_iface"
 	"superserver/proto/user_iface"
 
 	"github.com/gin-gonic/gin"
@@ -36,8 +37,8 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 		}
 		acces := value.(*access.Access)
 
-		// 系统管理员直接放行 & TODO common_iface.AccessStatus_ANY...
-		if user_iface.UserRole(claims.RoleId) != user_iface.UserRole_USER_ROLE_SYSTEM && acces.Status != 1 {
+		// 系统管理员直接放行或匿名接口
+		if user_iface.UserRole(claims.RoleId) != user_iface.UserRole_USER_ROLE_SYSTEM && acces.Status != common_iface.AccessStatus_ACCESS_ANONYMOUS {
 			if !permission.NewDao(m.db).Inspector(claims.RoleId, acces.Id) {
 				chain.Message = "无权限"
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
