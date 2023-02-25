@@ -1,11 +1,8 @@
 package user
 
 import (
-	"superserver/internal/model"
-	"superserver/proto/user_iface"
-
-	"github.com/spf13/viper"
 	"gorm.io/gorm"
+	"superserver/internal/model"
 )
 
 type UserDao struct {
@@ -19,26 +16,11 @@ func (*UserDao) Tablename() string {
 func NewDao(db *gorm.DB) *UserDao {
 	dao := &UserDao{BaseDao: model.BaseDao{Db: db}}
 	dao.BaseDao.Tablename = dao.Tablename()
-	once.Do(func() { dao.init() })
 	return dao
 }
 
-func (dao *UserDao) init() {
-	SystemUser = &User{
-		Name:     "系统管理员",
-		Username: viper.GetString("admin.user"),
-		Role:     user_iface.UserRole_USER_ROLE_SYSTEM,
-		Status:   user_iface.UserStatus_USER_NORMAL,
-	}
-	SystemUser.SetPassword(viper.GetString("admin.pass"))
-	err := dao.Connection().Where(User{Username: SystemUser.Username, Role: SystemUser.Role}).FirstOrCreate(&SystemUser).Error
-	if err != nil {
-		panic(err)
-	}
-}
-
 func (dao *UserDao) Upsert(user *User) error {
-	return dao.Connection().Where(User{Username: SystemUser.Username, Role: SystemUser.Role}).FirstOrCreate(&SystemUser).Error
+	return dao.Connection().Where(User{Username: SystemUser.Username, Role: SystemUser.Role}).FirstOrCreate(user).Error
 }
 
 func (dao *UserDao) GetUserMapByIds(ids []int) (map[int]*User, error) {
@@ -55,4 +37,13 @@ func (dao *UserDao) GetUserMapByIds(ids []int) (map[int]*User, error) {
 		result[user.Id] = user
 	}
 	return result, nil
+}
+
+func (dao *UserDao) GetUserByUsername(username string, excludeDeleted bool) (user *User, err error) {
+	tx := dao.Connection().Where("username = ?", username)
+	if excludeDeleted {
+		tx.Scopes(dao.NotDeleted)
+	}
+	err = tx.First(user).Error
+	return user, err
 }

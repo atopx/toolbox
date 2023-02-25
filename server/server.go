@@ -54,9 +54,8 @@ func (srv *Server) Route() {
 }
 
 func (srv *Server) InitData() {
-	user.NewDao(srv.db)
-
 	// init system user
+	user.NewDao(srv.db)
 	user.SystemUser = &user.User{
 		Name:     "系统管理员",
 		Username: viper.GetString("admin.user"),

@@ -26,12 +26,12 @@ func (m *User) GetId() any {
 	return m.Id
 }
 
-func (u *User) SetPassword(password string) {
-	u.Password = u.Crypto(password)
+func (m *User) SetPassword(password string) {
+	m.Password = m.Crypto(password)
 }
 
-func (u *User) ComparePassword(password string) bool {
-	return u.Password == u.Crypto(password)
+func (m *User) ComparePassword(password string) bool {
+	return m.Password == m.Crypto(password)
 }
 
 func (*User) Crypto(password string) string {

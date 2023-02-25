@@ -30,7 +30,7 @@ func (ctl *Controller) Deal() {
 		ctl.NewErrorResponse(http.StatusBadRequest, "名称已存在")
 		return
 	}
-	_, err = dao.FilterBy("address", params.Name)
+	_, err = dao.FilterBy("address", params.Address)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err != nil {
 			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")

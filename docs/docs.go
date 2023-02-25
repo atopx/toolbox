@@ -253,7 +253,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/ping": {
+        "/api/ping": {
             "get": {
                 "consumes": [
                     "application/json"

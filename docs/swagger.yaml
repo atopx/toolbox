@@ -402,7 +402,7 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 更新主机
-  /ping:
+  /api/ping:
     get:
       consumes:
       - application/json
