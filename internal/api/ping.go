@@ -8,6 +8,7 @@ import (
 
 // Ping
 // @summary ping
+// Tags 测试
 // @Accept json
 // @Produce json
 // @Response 200 string pong "pong"

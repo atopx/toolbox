@@ -12,6 +12,7 @@ import (
 
 // ComputerCreate
 // @summary 创建主机
+// Tags 主机
 // @Accept json
 // @Produce json
 // @Param param body create.Params true "请求参数"
@@ -25,6 +26,7 @@ func (a *Api) ComputerCreate(ctx *gin.Context) {
 
 // ComputerUpdate
 // @summary 更新主机
+// Tags 主机
 // @Accept json
 // @Produce json
 // @Param param body update.Params true "请求参数"
@@ -38,6 +40,7 @@ func (a *Api) ComputerUpdate(ctx *gin.Context) {
 
 // ComputerDelete
 // @summary 删除主机
+// Tags 主机
 // @Accept json
 // @Produce json
 // @Param param body delete.Params true "请求参数"
@@ -51,6 +54,7 @@ func (a *Api) ComputerDelete(ctx *gin.Context) {
 
 // ComputerSearch
 // @summary 查询主机
+// Tags 主机
 // @Accept json
 // @Produce json
 // @Param param body search.Params true "请求参数"
@@ -64,6 +68,7 @@ func (a *Api) ComputerSearch(ctx *gin.Context) {
 
 // ComputerOperate
 // @summary 操作主机
+// Tags 主机
 // @Accept json
 // @Produce json
 // @Param param body operate.Params true "请求参数"

@@ -39,11 +39,12 @@ func (dao *UserDao) GetUserMapByIds(ids []int) (map[int]*User, error) {
 	return result, nil
 }
 
-func (dao *UserDao) GetUserByUsername(username string, excludeDeleted bool) (user *User, err error) {
+func (dao *UserDao) GetUserByUsername(username string, excludeDeleted bool) (*User, error) {
 	tx := dao.Connection().Where("username = ?", username)
 	if excludeDeleted {
 		tx.Scopes(dao.NotDeleted)
 	}
-	err = tx.First(user).Error
-	return user, err
+	var user User
+	err := tx.First(&user).Error
+	return &user, err
 }

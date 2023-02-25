@@ -13,13 +13,20 @@ type Api struct {
 	router  *gin.RouterGroup
 }
 
+func New(db *gorm.DB, engine *gin.Engine) *Api {
+	api := &Api{router: engine.Group("/api")}
+	api.handler = &system.Handler{Db: db}
+	api.router.GET("/ping", Ping)
+	api.RouteComputer()
+	api.RouteUser()
+	return api
+}
+
 func (a *Api) RouteUser() {
 	group := a.router.Group("/user")
 	{
 		group.POST("/create", a.UserCreate)
 		group.POST("/login", a.UserLogin)
-		group.POST("/operate", a.ComputerOperate)
-		group.DELETE("/delete", a.ComputerDelete)
 	}
 }
 
@@ -32,14 +39,6 @@ func (a *Api) RouteComputer() {
 		group.POST("/operate", a.ComputerOperate)
 		group.DELETE("/delete", a.ComputerDelete)
 	}
-}
-
-func New(db *gorm.DB, engine *gin.Engine) *Api {
-	api := &Api{router: engine.Group("/api")}
-	api.handler = &system.Handler{Db: db}
-	api.router.GET("/ping", Ping)
-	api.RouteComputer()
-	return api
 }
 
 func (a *Api) Scheduler(ctl controller.Iface) {

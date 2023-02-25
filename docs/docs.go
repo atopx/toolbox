@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/create.Params"
+                            "$ref": "#/definitions/superserver_internal_controller_computer_create.Params"
                         }
                     }
                 ],
@@ -271,6 +271,90 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/user/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "用户注册、创建用户",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_user_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/login.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -444,35 +528,6 @@ const docTemplate = `{
                 "ComputerPowerStatus_COMPUTER_POWER_ON"
             ]
         },
-        "create.Params": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "default_ports": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/computer_iface.ComputerPortProtocol"
-                    }
-                },
-                "lan_hostname": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                },
-                "wan_hostname": {
-                    "type": "string"
-                }
-            }
-        },
         "delete.Params": {
             "type": "object",
             "properties": {
@@ -483,6 +538,17 @@ const docTemplate = `{
         },
         "delete.Reply": {
             "type": "object"
+        },
+        "login.Params": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
         },
         "operate.Params": {
             "type": "object",
@@ -574,6 +640,49 @@ const docTemplate = `{
                 },
                 "page": {
                     "$ref": "#/definitions/common_iface.Pager"
+                }
+            }
+        },
+        "superserver_internal_controller_computer_create.Params": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "default_ports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/computer_iface.ComputerPortProtocol"
+                    }
+                },
+                "lan_hostname": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "wan_hostname": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_user_create.Params": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },

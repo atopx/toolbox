@@ -130,31 +130,19 @@ definitions:
     - ComputerPowerStatus_COMPUTER_POWER_UNKNOWN
     - ComputerPowerStatus_COMPUTER_POWER_OFF
     - ComputerPowerStatus_COMPUTER_POWER_ON
-  create.Params:
-    properties:
-      address:
-        type: string
-      default_ports:
-        items:
-          $ref: '#/definitions/computer_iface.ComputerPortProtocol'
-        type: array
-      lan_hostname:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-      wan_hostname:
-        type: string
-    type: object
   delete.Params:
     properties:
       id:
         type: integer
     type: object
   delete.Reply:
+    type: object
+  login.Params:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
     type: object
   operate.Params:
     properties:
@@ -221,6 +209,34 @@ definitions:
       page:
         $ref: '#/definitions/common_iface.Pager'
     type: object
+  superserver_internal_controller_computer_create.Params:
+    properties:
+      address:
+        type: string
+      default_ports:
+        items:
+          $ref: '#/definitions/computer_iface.ComputerPortProtocol'
+        type: array
+      lan_hostname:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+      wan_hostname:
+        type: string
+    type: object
+  superserver_internal_controller_user_create.Params:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   system.ChainMessage:
     properties:
       data: {}
@@ -267,7 +283,7 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/create.Params'
+          $ref: '#/definitions/superserver_internal_controller_computer_create.Params'
       produces:
       - application/json
       responses:
@@ -414,4 +430,58 @@ paths:
           schema:
             type: string
       summary: ping
+  /api/user/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_user_create.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 用户注册、创建用户
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/login.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 用户登录
 swagger: "2.0"

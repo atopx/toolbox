@@ -2,7 +2,9 @@ package create
 
 import (
 	"errors"
+	"go.uber.org/zap"
 	"net/http"
+	"superserver/common/logger"
 	"superserver/internal/model/user"
 	"superserver/proto/user_iface"
 
@@ -28,6 +30,7 @@ func (ctl *Controller) Deal() {
 	_, err := dao.GetUserByUsername(params.Username, true)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err != nil {
+			logger.Error(ctl.Context, "create user dao.GetUserByUsername failed", zap.Error(err))
 			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 			return
 		}

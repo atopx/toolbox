@@ -1,13 +1,17 @@
 package middleware
 
 import (
+	"go.uber.org/zap"
 	"net/http"
 	"strings"
+	"superserver/common/logger"
 	"superserver/common/system"
 	"superserver/internal/model/access"
 	"superserver/internal/model/permission"
 	"superserver/proto/common_iface"
+	"superserver/proto/ecode_iface"
 	"superserver/proto/user_iface"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,9 +25,15 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
 			return
 		}
-		claims, err := system.GetClaims(token)
+		claims, err := system.UnSignClaims(token)
 		if err != nil {
-			chain.Message = err.Error()
+			logger.Error(ctx, "auth system.UnSignClaims failed", zap.Error(err))
+			chain.Message = ecode_iface.ECode_AUTH_INVALID.String()
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			return
+		}
+		if claims.ExpiresAt.Before(time.Now().Local()) {
+			chain.Message = ecode_iface.ECode_AUTH_EXPIRED.String()
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
 			return
 		}
