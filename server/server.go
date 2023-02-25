@@ -25,7 +25,7 @@ import (
 )
 
 func New() *Server {
-	gin.SetMode(viper.GetString("mode"))
+	gin.SetMode(viper.GetString("server.mode"))
 	db, err := pkg.NewDbClient(viper.GetStringMap("database"), logger.NewGormLogger())
 	if err != nil {
 		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
