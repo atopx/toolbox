@@ -5,6 +5,7 @@ import (
 	"superserver/internal/controller/permission/access"
 	"superserver/internal/controller/permission/create"
 	"superserver/internal/controller/permission/delete"
+	"superserver/internal/controller/permission/search"
 )
 
 // PermissionAccess
@@ -26,13 +27,13 @@ func (a *Api) PermissionAccess(ctx *gin.Context) {
 // @Tags 角色权限
 // @Accept json
 // @Produce json
-// @Param param body create.Params true "请求参数"
+// @Param param body search.Params true "请求参数"
 // @Response 200 object system.ChainMessage "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
 // @Router /api/permission/search [post]
 func (a *Api) PermissionSearch(ctx *gin.Context) {
-	a.Scheduler(create.NewController(ctx))
+	a.Scheduler(search.NewController(ctx))
 }
 
 // PermissionCreate

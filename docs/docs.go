@@ -422,7 +422,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/superserver_internal_controller_permission_create.Params"
+                            "$ref": "#/definitions/superserver_internal_controller_permission_search.Params"
                         }
                     }
                 ],
@@ -479,7 +479,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "主机"
+                    "角色"
                 ],
                 "summary": "创建角色",
                 "parameters": [
@@ -524,7 +524,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "主机"
+                    "角色"
                 ],
                 "summary": "删除角色",
                 "parameters": [
@@ -569,7 +569,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "主机"
+                    "角色"
                 ],
                 "summary": "角色列表",
                 "parameters": [
@@ -626,7 +626,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "主机"
+                    "角色"
                 ],
                 "summary": "更新角色",
                 "parameters": [
@@ -769,7 +769,7 @@ const docTemplate = `{
                 "keyword": {
                     "type": "string"
                 },
-                "method": {
+                "methods": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/common_iface.AccessMethod"
@@ -887,6 +887,12 @@ const docTemplate = `{
                 },
                 "hostname": {
                     "type": "string"
+                },
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "keyword": {
                     "type": "string"
@@ -1008,6 +1014,50 @@ const docTemplate = `{
                 }
             }
         },
+        "permission.Filter": {
+            "type": "object",
+            "properties": {
+                "access_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "access_methods": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/common_iface.AccessMethod"
+                    }
+                },
+                "create_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                },
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "keyword": {
+                    "type": "string"
+                },
+                "role_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_natures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_iface.RoleNature"
+                    }
+                },
+                "update_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                }
+            }
+        },
         "role.Filter": {
             "type": "object",
             "properties": {
@@ -1023,7 +1073,7 @@ const docTemplate = `{
                 "keyword": {
                     "type": "string"
                 },
-                "nature": {
+                "natures": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/user_iface.RoleNature"
@@ -1087,32 +1137,6 @@ const docTemplate = `{
                 },
                 "wan_hostname": {
                     "description": "广域网地址",
-                    "type": "string"
-                }
-            }
-        },
-        "search.RoleVo": {
-            "type": "object",
-            "properties": {
-                "create_time": {
-                    "type": "integer"
-                },
-                "creator": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "nature": {
-                    "$ref": "#/definitions/user_iface.RoleNature"
-                },
-                "update_time": {
-                    "type": "integer"
-                },
-                "updater": {
                     "type": "string"
                 }
             }
@@ -1222,11 +1246,19 @@ const docTemplate = `{
         "superserver_internal_controller_permission_delete.Params": {
             "type": "object",
             "properties": {
-                "access_id": {
+                "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "superserver_internal_controller_permission_search.Params": {
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "$ref": "#/definitions/permission.Filter"
                 },
-                "role_id": {
-                    "type": "integer"
+                "page": {
+                    "$ref": "#/definitions/common_iface.Pager"
                 }
             }
         },
@@ -1266,8 +1298,34 @@ const docTemplate = `{
                 "search": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/search.RoleVo"
+                        "$ref": "#/definitions/superserver_internal_controller_role_search.RoleVo"
                     }
+                }
+            }
+        },
+        "superserver_internal_controller_role_search.RoleVo": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nature": {
+                    "$ref": "#/definitions/user_iface.RoleNature"
+                },
+                "update_time": {
+                    "type": "integer"
+                },
+                "updater": {
+                    "type": "string"
                 }
             }
         },

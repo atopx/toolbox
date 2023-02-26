@@ -9,7 +9,7 @@ definitions:
         type: array
       keyword:
         type: string
-      method:
+      methods:
         items:
           $ref: '#/definitions/common_iface.AccessMethod'
         type: array
@@ -95,6 +95,10 @@ definitions:
         $ref: '#/definitions/common_iface.RangeI64'
       hostname:
         type: string
+      ids:
+        items:
+          type: integer
+        type: array
       keyword:
         type: string
       power_status:
@@ -190,6 +194,35 @@ definitions:
       operate:
         $ref: '#/definitions/computer_iface.ComputerOperate'
     type: object
+  permission.Filter:
+    properties:
+      access_ids:
+        items:
+          type: integer
+        type: array
+      access_methods:
+        items:
+          $ref: '#/definitions/common_iface.AccessMethod'
+        type: array
+      create_time_range:
+        $ref: '#/definitions/common_iface.RangeI64'
+      ids:
+        items:
+          type: integer
+        type: array
+      keyword:
+        type: string
+      role_ids:
+        items:
+          type: integer
+        type: array
+      role_natures:
+        items:
+          $ref: '#/definitions/user_iface.RoleNature'
+        type: array
+      update_time_range:
+        $ref: '#/definitions/common_iface.RangeI64'
+    type: object
   role.Filter:
     properties:
       create_time_range:
@@ -200,7 +233,7 @@ definitions:
         type: array
       keyword:
         type: string
-      nature:
+      natures:
         items:
           $ref: '#/definitions/user_iface.RoleNature'
         type: array
@@ -247,23 +280,6 @@ definitions:
         type: string
       wan_hostname:
         description: 广域网地址
-        type: string
-    type: object
-  search.RoleVo:
-    properties:
-      create_time:
-        type: integer
-      creator:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      nature:
-        $ref: '#/definitions/user_iface.RoleNature'
-      update_time:
-        type: integer
-      updater:
         type: string
     type: object
   superserver_internal_controller_computer_create.Params:
@@ -334,10 +350,15 @@ definitions:
     type: object
   superserver_internal_controller_permission_delete.Params:
     properties:
-      access_id:
+      id:
         type: integer
-      role_id:
-        type: integer
+    type: object
+  superserver_internal_controller_permission_search.Params:
+    properties:
+      filter:
+        $ref: '#/definitions/permission.Filter'
+      page:
+        $ref: '#/definitions/common_iface.Pager'
     type: object
   superserver_internal_controller_role_create.Params:
     properties:
@@ -362,8 +383,25 @@ definitions:
         $ref: '#/definitions/common_iface.Pager'
       search:
         items:
-          $ref: '#/definitions/search.RoleVo'
+          $ref: '#/definitions/superserver_internal_controller_role_search.RoleVo'
         type: array
+    type: object
+  superserver_internal_controller_role_search.RoleVo:
+    properties:
+      create_time:
+        type: integer
+      creator:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      nature:
+        $ref: '#/definitions/user_iface.RoleNature'
+      update_time:
+        type: integer
+      updater:
+        type: string
     type: object
   superserver_internal_controller_role_udpate.Params:
     properties:
@@ -666,7 +704,7 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/superserver_internal_controller_permission_create.Params'
+          $ref: '#/definitions/superserver_internal_controller_permission_search.Params'
       produces:
       - application/json
       responses:
@@ -727,7 +765,7 @@ paths:
             $ref: '#/definitions/system.ChainMessage'
       summary: 创建角色
       tags:
-      - 主机
+      - 角色
   /api/role/delete:
     delete:
       consumes:
@@ -756,7 +794,7 @@ paths:
             $ref: '#/definitions/system.ChainMessage'
       summary: 删除角色
       tags:
-      - 主机
+      - 角色
   /api/role/search:
     post:
       consumes:
@@ -790,7 +828,7 @@ paths:
             $ref: '#/definitions/system.ChainMessage'
       summary: 角色列表
       tags:
-      - 主机
+      - 角色
   /api/role/update:
     post:
       consumes:
@@ -819,7 +857,7 @@ paths:
             $ref: '#/definitions/system.ChainMessage'
       summary: 更新角色
       tags:
-      - 主机
+      - 角色
   /api/user/create:
     post:
       consumes:

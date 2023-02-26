@@ -2,9 +2,7 @@ package role
 
 import (
 	"errors"
-	"superserver/common/utils"
 	"superserver/internal/model"
-	"superserver/proto/common_iface"
 	"superserver/proto/user_iface"
 
 	"gorm.io/gorm"
@@ -29,27 +27,20 @@ func (dao *RoleDao) FindByName(name string) (role Role, err error) {
 	return role, err
 }
 
-func (dao *RoleDao) Filter(filter *Filter, pager *common_iface.Pager) (computers []Role, err error) {
-	if filter == nil {
-		filter = new(Filter)
+func (dao *RoleDao) GetRoleMapByIds(ids []int) (map[int]*Role, error) {
+	result := make(map[int]*Role)
+	if len(ids) == 0 {
+		return result, nil
 	}
-	if pager == nil {
-		pager = &common_iface.Pager{Disabled: true}
+	var roles []*Role
+	err := dao.Connection().Where("id in ?", ids).Find(&roles).Error
+	if err != nil {
+		return result, err
 	}
-	tx := dao.Connection().Where("delete_time = 0")
-	if filter.Keyword != "" {
-		tx.Where("name like ?", utils.NewLikeValue(filter.Keyword))
+	for _, role := range roles {
+		result[role.Id] = role
 	}
-
-	if len(filter.Nature) > 0 {
-		tx.Where("nature in ?", filter.Nature)
-	}
-	tx.Scopes(dao.Range("create_time", filter.CreateTimeRange))
-	tx.Scopes(dao.Range("update_time", filter.UpdateTimeRange))
-	tx.Scopes(dao.Paginate(pager))
-	tx.Count(&pager.Count)
-	err = tx.Find(&computers).Error
-	return computers, err
+	return result, nil
 }
 
 func (dao *RoleDao) LoadSystemRole() (err error) {

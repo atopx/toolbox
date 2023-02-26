@@ -10,7 +10,7 @@ import (
 
 // RoleCreate
 // @summary 创建角色
-// @Tags 主机
+// @Tags 角色
 // @Accept json
 // @Produce json
 // @Param param body create.Params true "请求参数"
@@ -24,7 +24,7 @@ func (a *Api) RoleCreate(ctx *gin.Context) {
 
 // RoleUpdate
 // @summary 更新角色
-// @Tags 主机
+// @Tags 角色
 // @Accept json
 // @Produce json
 // @Param param body update.Params true "请求参数"
@@ -38,7 +38,7 @@ func (a *Api) RoleUpdate(ctx *gin.Context) {
 
 // RoleDelete
 // @summary 删除角色
-// @Tags 主机
+// @Tags 角色
 // @Accept json
 // @Produce json
 // @Param param body delete.Params true "请求参数"
@@ -52,7 +52,7 @@ func (a *Api) RoleDelete(ctx *gin.Context) {
 
 // RoleSearch
 // @summary 角色列表
-// @Tags 主机
+// @Tags 角色
 // @Accept json
 // @Produce json
 // @Param param body search.Params true "请求参数"

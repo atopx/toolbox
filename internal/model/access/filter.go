@@ -8,7 +8,7 @@ import (
 type Filter struct {
 	Ids             []int                       `json:"ids"`
 	Keyword         string                      `json:"keyword"`
-	Method          []common_iface.AccessMethod `json:"method"`
+	Methods         []common_iface.AccessMethod `json:"methods"`
 	CreateTimeRange *common_iface.RangeI64      `json:"create_time_range"`
 	UpdateTimeRange *common_iface.RangeI64      `json:"update_time_range"`
 }
@@ -20,13 +20,16 @@ func (dao *AccessDao) Filter(filter *Filter, pager *common_iface.Pager) (compute
 	if pager == nil {
 		pager = &common_iface.Pager{Disabled: true}
 	}
-	tx := dao.Connection().Where("delete_time = 0")
+	tx := dao.Connection().Scopes(dao.NotDeleted)
 	if filter.Keyword != "" {
-		tx.Where("path like ? or handler like ?", utils.NewLikeValue(filter.Keyword), utils.NewLikeValue(filter.Keyword))
+		keyword := utils.NewLikeValue(filter.Keyword)
+		tx.Where("path like ? or handler like ?", keyword, keyword)
 	}
-
-	if len(filter.Method) > 0 {
-		tx.Where("method in ?", filter.Method)
+	if len(filter.Ids) > 0 {
+		tx.Where("id in ?", filter.Ids)
+	}
+	if len(filter.Methods) > 0 {
+		tx.Where("method in ?", filter.Methods)
 	}
 	tx.Scopes(dao.Range("create_time", filter.CreateTimeRange))
 	tx.Scopes(dao.Range("update_time", filter.UpdateTimeRange))
