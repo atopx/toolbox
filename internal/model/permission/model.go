@@ -8,8 +8,8 @@ type Permission struct {
 	model.Base
 	AccessId int
 	RoleId   int
-	Creator  int64
-	Updater  int64
+	Creator  int
+	Updater  int
 }
 
 func (m *Permission) GetId() any {

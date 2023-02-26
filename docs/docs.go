@@ -279,7 +279,7 @@ const docTemplate = `{
                 "tags": [
                     "角色权限"
                 ],
-                "summary": "资源列表",
+                "summary": "权限资源列表",
                 "parameters": [
                     {
                         "description": "请求参数",
@@ -414,7 +414,7 @@ const docTemplate = `{
                 "tags": [
                     "角色权限"
                 ],
-                "summary": "权限列表",
+                "summary": "角色权限列表",
                 "parameters": [
                     {
                         "description": "请求参数",
