@@ -5,29 +5,14 @@ import (
 	"superserver/internal/controller/permission/access"
 	"superserver/internal/controller/permission/create"
 	"superserver/internal/controller/permission/delete"
-	"superserver/internal/controller/permission/roles"
 )
-
-// Roles
-// @summary 角色列表
-// @Tags 角色权限
-// @Accept json
-// @Produce json
-// @Param param body list.Params true "请求参数"
-// @Response 200 object system.ChainMessage "调用成功"
-// @Response 400 object system.ChainMessage "请求错误"
-// @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/permission/roles [get]
-func (a *Api) Roles(ctx *gin.Context) {
-	a.Scheduler(roles.NewController(ctx))
-}
 
 // Access
 // @summary 角色列表
 // @Tags 角色权限
 // @Accept json
 // @Produce json
-// @Param param body list.Params true "请求参数"
+// @Param param body search.Params true "请求参数"
 // @Response 200 object system.ChainMessage "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
@@ -36,17 +21,17 @@ func (a *Api) Access(ctx *gin.Context) {
 	a.Scheduler(access.NewController(ctx))
 }
 
-// PermissionList
+// PermissionSearch
 // @summary 权限列表
 // @Tags 角色权限
 // @Accept json
 // @Produce json
-// @Param param body list.Params true "请求参数"
+// @Param param body search.Params true "请求参数"
 // @Response 200 object system.ChainMessage "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/permission/create [post]
-func (a *Api) PermissionList(ctx *gin.Context) {
+// @Router /api/permission/search [post]
+func (a *Api) PermissionSearch(ctx *gin.Context) {
 	a.Scheduler(create.NewController(ctx))
 }
 

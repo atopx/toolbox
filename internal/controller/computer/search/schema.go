@@ -23,7 +23,7 @@ type Params struct {
 
 type Reply struct {
 	Page *common_iface.Pager `json:"page"`
-	List []ComputerVo        `json:"list"`
+	List []ComputerVo        `json:"search"`
 }
 
 type ComputerVo struct {
@@ -36,7 +36,7 @@ type ComputerVo struct {
 	Address     string `json:"address"`      // 物理地址
 	PowerStatus string `json:"power_status"` // 电源状态
 	Creator     string `json:"creator"`      // 创建人
-	Updator     string `json:"updator"`      // 更新人
+	Updater     string `json:"updater"`      // 更新人
 	CreateTime  int64  `json:"create_time"`  // 创建时间
 	UpdateTime  int64  `json:"update_time"`  // 更新时间
 	ScanTime    int64  `json:"scan_time"`    // 最后一次扫描时间

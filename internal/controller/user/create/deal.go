@@ -5,6 +5,7 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"superserver/common/logger"
+	"superserver/internal/model/role"
 	"superserver/internal/model/user"
 	"superserver/proto/user_iface"
 
@@ -41,8 +42,8 @@ func (ctl *Controller) Deal() {
 	po := user.User{
 		Name:     params.Name,
 		Username: params.Username,
-		//RoleId:   rolePo.Id,
-		Status: user_iface.UserStatus_USER_NORMAL,
+		RoleId:   role.DefaultRole.Id,
+		Status:   user_iface.UserStatus_USER_NORMAL,
 	}
 	po.SetPassword(params.Password)
 

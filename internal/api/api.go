@@ -19,6 +19,7 @@ func New(db *gorm.DB, engine *gin.Engine) *Api {
 	api.router.GET("/ping", Ping)
 	api.RouteComputer()
 	api.RouteUser()
+	api.RouteRole()
 	return api
 }
 
@@ -27,6 +28,16 @@ func (a *Api) RouteUser() {
 	{
 		group.POST("/create", a.UserCreate)
 		group.POST("/login", a.UserLogin)
+	}
+}
+
+func (a *Api) RouteRole() {
+	group := a.router.Group("/role")
+	{
+		group.POST("/create", a.RoleCreate)
+		group.POST("/update", a.RoleUpdate)
+		group.POST("/search", a.RoleSearch)
+		group.DELETE("/delete", a.RoleDelete)
 	}
 }
 

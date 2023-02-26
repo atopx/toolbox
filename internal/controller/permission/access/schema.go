@@ -23,7 +23,7 @@ type Params struct {
 
 type Reply struct {
 	Page *common_iface.Pager `json:"page"`
-	List []AccessVo          `json:"list"`
+	List []AccessVo          `json:"search"`
 }
 
 type AccessVo struct {

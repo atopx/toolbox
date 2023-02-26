@@ -19,6 +19,10 @@ func (m *Role) GetId() any {
 	return m.Id
 }
 
+func New(id int) *Role {
+	return &Role{Base: model.Base{Id: id}}
+}
+
 // RoleMap 角色缓存
 var RoleMap sync.Map
 var (

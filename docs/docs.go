@@ -632,7 +632,7 @@ const docTemplate = `{
         "search.Reply": {
             "type": "object",
             "properties": {
-                "list": {
+                "search": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/search.ComputerVo"

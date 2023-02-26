@@ -67,7 +67,7 @@ func (srv *Server) InitData() {
 		tx.Rollback()
 		panic(fmt.Errorf("init default role failed: %s", err.Error()))
 	}
-
+	fmt.Println(role.SystemRole)
 	// init user
 	err = user.NewDao(srv.db).LoadSystemUser(role.SystemRole.Id)
 	if err != nil {
