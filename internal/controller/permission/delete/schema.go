@@ -14,8 +14,7 @@ func NewController(ctx *gin.Context) *Controller {
 }
 
 type Params struct {
-	AccessId int `json:"access_id"`
-	RoleId   int `json:"role_id"`
+	Id int `json:"id"`
 }
 
 type Reply struct{}

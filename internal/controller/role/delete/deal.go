@@ -24,7 +24,7 @@ func (ctl *Controller) Deal() {
 		return
 	}
 	if err != nil {
-		logger.Error(ctl.Context, "create user roleDao.Load failed", zap.Error(err))
+		logger.Error(ctl.Context, "delete role roleDao.Load failed", zap.Error(err))
 		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 		return
 	}
@@ -33,7 +33,7 @@ func (ctl *Controller) Deal() {
 		return
 	}
 	if err = roleDao.Delete(rolePo); err != nil {
-		logger.Error(ctl.Context, "create user roleDao.Delete failed", zap.Error(err))
+		logger.Error(ctl.Context, "delete role roleDao.Delete failed", zap.Error(err))
 		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 		return
 	}
