@@ -7,8 +7,8 @@ import (
 )
 
 // UserCreate
-// @summary 用户注册、创建用户
-// Tags 用户
+// @summary 用户注册
+// @Tags 用户
 // @Accept json
 // @Produce json
 // @Param param body create.Params true "请求参数"
@@ -22,7 +22,7 @@ func (a *Api) UserCreate(ctx *gin.Context) {
 
 // UserLogin
 // @summary 用户登录
-// Tags 用户
+// @Tags 用户
 // @Accept json
 // @Produce json
 // @Param param body login.Params true "请求参数"
