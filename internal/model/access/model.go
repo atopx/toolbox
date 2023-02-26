@@ -19,5 +19,5 @@ func (m *Access) GetId() any {
 	return m.Id
 }
 
-// 资源缓存
+// AccessMap 资源缓存
 var AccessMap sync.Map

@@ -32,7 +32,7 @@ func (ctl *Controller) Deal() {
 		ctl.NewErrorResponse(http.StatusBadRequest, "登录密码错误")
 		return
 	}
-	tokenStr, err := system.SignClaims(po.Id, int(po.Role))
+	tokenStr, err := system.SignClaims(po.Id, po.RoleId)
 	if err != nil {
 		logger.Error(ctl.Context, "user login system.SignClaims failed", zap.Error(err))
 		ctl.NewErrorResponse(http.StatusInternalServerError, "[12002]系统错误, 请联系管理员")

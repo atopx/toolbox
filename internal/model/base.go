@@ -31,11 +31,11 @@ func (b *Base) BeforeUpdate(tx *gorm.DB) error {
 
 type BaseDao struct {
 	Db        *gorm.DB
-	Tablename string
+	TableName string
 }
 
 func (dao *BaseDao) Connection() *gorm.DB {
-	return dao.Db.Table(dao.Tablename)
+	return dao.Db.Table(dao.TableName)
 }
 
 func (dao *BaseDao) Load(po Po) error {

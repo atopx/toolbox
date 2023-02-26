@@ -10,13 +10,13 @@ type PermissionDao struct {
 	model.BaseDao
 }
 
-func (*PermissionDao) Tablename() string {
+func (*PermissionDao) TableName() string {
 	return "su_permission"
 }
 
 func NewDao(db *gorm.DB) *PermissionDao {
 	dao := &PermissionDao{BaseDao: model.BaseDao{Db: db}}
-	dao.BaseDao.Tablename = dao.Tablename()
+	dao.BaseDao.TableName = dao.TableName()
 	return dao
 }
 

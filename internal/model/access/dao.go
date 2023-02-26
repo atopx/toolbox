@@ -11,13 +11,13 @@ type AccessDao struct {
 	model.BaseDao
 }
 
-func (*AccessDao) Tablename() string {
+func (*AccessDao) TableName() string {
 	return "su_access"
 }
 
 func NewDao(db *gorm.DB) *AccessDao {
 	dao := &AccessDao{BaseDao: model.BaseDao{Db: db}}
-	dao.BaseDao.Tablename = dao.Tablename()
+	dao.BaseDao.TableName = dao.TableName()
 	return dao
 }
 

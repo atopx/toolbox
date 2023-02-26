@@ -13,13 +13,13 @@ type ComputerDao struct {
 	model.BaseDao
 }
 
-func (*ComputerDao) Tablename() string {
+func (*ComputerDao) TableName() string {
 	return "su_computer"
 }
 
 func NewDao(db *gorm.DB) *ComputerDao {
 	dao := &ComputerDao{BaseDao: model.BaseDao{Db: db}}
-	dao.BaseDao.Tablename = dao.Tablename()
+	dao.BaseDao.TableName = dao.TableName()
 	return dao
 }
 

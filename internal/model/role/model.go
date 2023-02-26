@@ -2,22 +2,26 @@ package role
 
 import (
 	"superserver/internal/model"
-	"superserver/proto/common_iface"
+	"superserver/proto/user_iface"
 	"sync"
 )
 
-type Access struct {
+type Role struct {
 	model.Base
 
-	Path    string
-	Handler string
-	Method  common_iface.AccessMethod
-	Status  common_iface.AccessStatus
+	Name    string
+	Nature  user_iface.RoleNature
+	Creator int // 创建人
+	Updater int // 更新人
 }
 
-func (m *Access) GetId() any {
+func (m *Role) GetId() any {
 	return m.Id
 }
 
-// 资源缓存
-var AccessMap sync.Map
+// RoleMap 角色缓存
+var RoleMap sync.Map
+var (
+	SystemRole  *Role
+	DefaultRole *Role
+)

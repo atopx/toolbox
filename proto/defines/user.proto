@@ -8,15 +8,15 @@ enum UserStatus {
     USER_STATUS_BLACK = 2; // 黑名单
 }
 
-enum UserRole {
-    USER_ROLE_GUEST = 0; // 游客
-    USER_ROLE_USER = 1; // 普通用户
-    USER_ROLE_ADMIN = 2; // 管理员
-    USER_ROLE_SYSTEM = 3; // 系统内置
-}
 
 enum UserTokenStatus {
-    USER_TOEKN_NORMAL = 0; //  正常
+    USER_TOKEN_NORMAL = 0; //  正常
     USER_TOKEN_DISABLED = 1; // 已禁用
     USER_TOKEN_EXPIRED = 2; // 已过期
+}
+
+enum RoleNature {
+    ROLE_DEFAULT = 0; // 初始化角色
+    ROLE_SYSTEM = 1; // 系统角色
+    ROLE_CUSTOM = 2; // 自定义角色
 }

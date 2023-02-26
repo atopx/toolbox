@@ -2,13 +2,12 @@ package permission
 
 import (
 	"superserver/internal/model"
-	"superserver/proto/user_iface"
 )
 
 type Permission struct {
 	model.Base
 	AccessId int
-	RoleId   user_iface.UserRole
+	RoleId   int
 	Creator  int64
 	Updater  int64
 }

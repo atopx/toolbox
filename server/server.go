@@ -10,10 +10,10 @@ import (
 	"superserver/docs"
 	"superserver/internal/api"
 	"superserver/internal/model/access"
+	"superserver/internal/model/role"
 	"superserver/internal/model/user"
 	"superserver/pkg"
 	"superserver/proto/common_iface"
-	"superserver/proto/user_iface"
 	"syscall"
 	"time"
 
@@ -54,18 +54,25 @@ func (srv *Server) Route() {
 }
 
 func (srv *Server) InitData() {
-	// init system user
-	user.NewDao(srv.db)
-	user.SystemUser = &user.User{
-		Name:     "系统管理员",
-		Username: viper.GetString("admin.user"),
-		Role:     user_iface.UserRole_USER_ROLE_SYSTEM,
-		Status:   user_iface.UserStatus_USER_NORMAL,
-	}
-	user.SystemUser.SetPassword(viper.GetString("admin.pass"))
-	err := user.NewDao(srv.db).Upsert(user.SystemUser)
+	// init roles
+	tx := srv.db.Begin()
+	err := role.NewDao(tx).LoadSystemRole()
 	if err != nil {
-		panic(err)
+		tx.Rollback()
+		panic(fmt.Errorf("init system role failed: %s", err.Error()))
+	}
+
+	err = role.NewDao(tx).LoadDefaultRole()
+	if err != nil {
+		tx.Rollback()
+		panic(fmt.Errorf("init default role failed: %s", err.Error()))
+	}
+
+	// init user
+	err = user.NewDao(srv.db).LoadSystemUser(role.SystemRole.Id)
+	if err != nil {
+		tx.Rollback()
+		panic(fmt.Errorf("init system user failed: %s", err.Error()))
 	}
 
 	// init access
@@ -79,8 +86,11 @@ func (srv *Server) InitData() {
 	}
 	err = access.NewDao(srv.db).BatchUpsert(accessList)
 	if err != nil {
-		panic(err)
+		tx.Rollback()
+		panic(fmt.Errorf("init access failed: %s", err.Error()))
 	}
+
+	tx.Commit()
 }
 
 // Start 启动api服务
