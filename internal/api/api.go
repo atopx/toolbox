@@ -41,6 +41,16 @@ func (a *Api) RouteRole() {
 	}
 }
 
+func (a *Api) PermissionRole() {
+	group := a.router.Group("/permission")
+	{
+		group.POST("/access", a.PermissionAccess)
+		group.POST("/create", a.PermissionCreate)
+		group.POST("/search", a.PermissionSearch)
+		group.DELETE("/delete", a.PermissionDelete)
+	}
+}
+
 func (a *Api) RouteComputer() {
 	group := a.router.Group("/computer")
 	{

@@ -3,6 +3,7 @@ package access
 import (
 	"github.com/gin-gonic/gin"
 	"superserver/internal/controller"
+	"superserver/internal/model/access"
 	"superserver/proto/common_iface"
 )
 
@@ -15,10 +16,8 @@ func NewController(ctx *gin.Context) *Controller {
 }
 
 type Params struct {
-	Method          string                 `json:"method"`
-	Keyword         string                 `json:"keyword"`
-	CreateTimeRange *common_iface.RangeI64 `json:"create_time_range"`
-	UpdateTimeRange *common_iface.RangeI64 `json:"update_time_range"`
+	Page   *common_iface.Pager `json:"page"`
+	Filter access.Filter       `json:"filter"`
 }
 
 type Reply struct {
@@ -27,10 +26,10 @@ type Reply struct {
 }
 
 type AccessVo struct {
-	Id         int    `json:"id"`
-	Path       string `json:"path"`
-	Method     string `json:"method"`
-	Handler    string `json:"handler"`
-	CreateTime string `json:"create_time"`
-	UpdateTime string `json:"update_time"`
+	Id         int                       `json:"id"`
+	Path       string                    `json:"path"`
+	Method     common_iface.AccessMethod `json:"method"`
+	Handler    string                    `json:"handler"`
+	CreateTime int64                     `json:"create_time"`
+	UpdateTime int64                     `json:"update_time"`
 }

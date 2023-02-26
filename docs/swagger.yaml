@@ -1,4 +1,50 @@
 definitions:
+  access.Filter:
+    properties:
+      create_time_range:
+        $ref: '#/definitions/common_iface.RangeI64'
+      ids:
+        items:
+          type: integer
+        type: array
+      keyword:
+        type: string
+      method:
+        items:
+          $ref: '#/definitions/common_iface.AccessMethod'
+        type: array
+      update_time_range:
+        $ref: '#/definitions/common_iface.RangeI64'
+    type: object
+  access.Params:
+    properties:
+      filter:
+        $ref: '#/definitions/access.Filter'
+      page:
+        $ref: '#/definitions/common_iface.Pager'
+    type: object
+  common_iface.AccessMethod:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    type: integer
+    x-enum-varnames:
+    - AccessMethod_ACCESS_METHOD_GET
+    - AccessMethod_ACCESS_METHOD_HEAD
+    - AccessMethod_ACCESS_METHOD_POST
+    - AccessMethod_ACCESS_METHOD_PUT
+    - AccessMethod_ACCESS_METHOD_PATCH
+    - AccessMethod_ACCESS_METHOD_DELETE
+    - AccessMethod_ACCESS_METHOD_CONNECT
+    - AccessMethod_ACCESS_METHOD_OPTIONS
+    - AccessMethod_ACCESS_METHOD_TRACE
   common_iface.Pager:
     properties:
       count:
@@ -97,25 +143,25 @@ definitions:
     - 3389
     type: integer
     x-enum-varnames:
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_UNKNOWN
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_FTPDATA
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_FTPCONTROL
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_SSH
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_TELNET
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_SMTP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_DNS
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_DHCP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_HTTP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_POP3
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_NTP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_IMAP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_SNMP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_HTTPS
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_IPSEC
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_RADIUS
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_L2TP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_PPTP
-    - ComputerPortProtocol_COMPUTER_PORT_PROTCOL_RDP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_UNKNOWN
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_FTPDATA
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_FTPCTL
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_SSH
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_TELNET
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_SMTP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_DNS
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_DHCP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_HTTP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_POP3
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_NTP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_IMAP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_SNMP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_HTTPS
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_IPSEC
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_RADIUS
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_L2TP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_PPTP
+    - ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_RDP
   computer_iface.ComputerPowerStatus:
     enum:
     - 0
@@ -130,13 +176,6 @@ definitions:
     - ComputerPowerStatus_COMPUTER_POWER_UNKNOWN
     - ComputerPowerStatus_COMPUTER_POWER_OFF
     - ComputerPowerStatus_COMPUTER_POWER_ON
-  delete.Params:
-    properties:
-      id:
-        type: integer
-    type: object
-  delete.Reply:
-    type: object
   login.Params:
     properties:
       password:
@@ -150,6 +189,23 @@ definitions:
         type: integer
       operate:
         $ref: '#/definitions/computer_iface.ComputerOperate'
+    type: object
+  role.Filter:
+    properties:
+      create_time_range:
+        $ref: '#/definitions/common_iface.RangeI64'
+      ids:
+        items:
+          type: integer
+        type: array
+      keyword:
+        type: string
+      nature:
+        items:
+          $ref: '#/definitions/user_iface.RoleNature'
+        type: array
+      update_time_range:
+        $ref: '#/definitions/common_iface.RangeI64'
     type: object
   search.ComputerVo:
     properties:
@@ -183,7 +239,7 @@ definitions:
       update_time:
         description: 更新时间
         type: integer
-      updator:
+      updater:
         description: 更新人
         type: string
       username:
@@ -193,21 +249,22 @@ definitions:
         description: 广域网地址
         type: string
     type: object
-  search.Params:
+  search.RoleVo:
     properties:
-      filter:
-        $ref: '#/definitions/computer.Filter'
-      page:
-        $ref: '#/definitions/common_iface.Pager'
-    type: object
-  search.Reply:
-    properties:
-      list:
-        items:
-          $ref: '#/definitions/search.ComputerVo'
-        type: array
-      page:
-        $ref: '#/definitions/common_iface.Pager'
+      create_time:
+        type: integer
+      creator:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      nature:
+        $ref: '#/definitions/user_iface.RoleNature'
+      update_time:
+        type: integer
+      updater:
+        type: string
     type: object
   superserver_internal_controller_computer_create.Params:
     properties:
@@ -226,6 +283,93 @@ definitions:
       username:
         type: string
       wan_hostname:
+        type: string
+    type: object
+  superserver_internal_controller_computer_delete.Params:
+    properties:
+      id:
+        type: integer
+    type: object
+  superserver_internal_controller_computer_delete.Reply:
+    type: object
+  superserver_internal_controller_computer_search.Params:
+    properties:
+      filter:
+        $ref: '#/definitions/computer.Filter'
+      page:
+        $ref: '#/definitions/common_iface.Pager'
+    type: object
+  superserver_internal_controller_computer_search.Reply:
+    properties:
+      page:
+        $ref: '#/definitions/common_iface.Pager'
+      search:
+        items:
+          $ref: '#/definitions/search.ComputerVo'
+        type: array
+    type: object
+  superserver_internal_controller_computer_update.Params:
+    properties:
+      address:
+        type: string
+      id:
+        type: integer
+      lan_hostname:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+      wan_hostname:
+        type: string
+    type: object
+  superserver_internal_controller_permission_create.Params:
+    properties:
+      access_id:
+        type: integer
+      role_id:
+        type: integer
+    type: object
+  superserver_internal_controller_permission_delete.Params:
+    properties:
+      access_id:
+        type: integer
+      role_id:
+        type: integer
+    type: object
+  superserver_internal_controller_role_create.Params:
+    properties:
+      name:
+        type: string
+    type: object
+  superserver_internal_controller_role_delete.Params:
+    properties:
+      id:
+        type: integer
+    type: object
+  superserver_internal_controller_role_search.Params:
+    properties:
+      filter:
+        $ref: '#/definitions/role.Filter'
+      page:
+        $ref: '#/definitions/common_iface.Pager'
+    type: object
+  superserver_internal_controller_role_search.Reply:
+    properties:
+      page:
+        $ref: '#/definitions/common_iface.Pager'
+      search:
+        items:
+          $ref: '#/definitions/search.RoleVo'
+        type: array
+    type: object
+  superserver_internal_controller_role_udpate.Params:
+    properties:
+      id:
+        type: integer
+      name:
         type: string
     type: object
   superserver_internal_controller_user_create.Params:
@@ -247,23 +391,20 @@ definitions:
         description: 链路ID
         type: integer
     type: object
-  update.Params:
-    properties:
-      address:
-        type: string
-      id:
-        type: integer
-      lan_hostname:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-      wan_hostname:
-        type: string
-    type: object
+  user_iface.RoleNature:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      RoleNature_ROLE_CUSTOM: 自定义角色
+      RoleNature_ROLE_DEFAULT: 初始化角色
+      RoleNature_ROLE_SYSTEM: 系统角色
+    x-enum-varnames:
+    - RoleNature_ROLE_DEFAULT
+    - RoleNature_ROLE_SYSTEM
+    - RoleNature_ROLE_CUSTOM
 info:
   contact:
     email: 3940422@qq.com
@@ -300,6 +441,8 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 创建主机
+      tags:
+      - 主机
   /api/computer/delete:
     delete:
       consumes:
@@ -310,7 +453,7 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/delete.Params'
+          $ref: '#/definitions/superserver_internal_controller_computer_delete.Params'
       produces:
       - application/json
       responses:
@@ -321,7 +464,7 @@ paths:
             - $ref: '#/definitions/system.ChainMessage'
             - properties:
                 data:
-                  $ref: '#/definitions/delete.Reply'
+                  $ref: '#/definitions/superserver_internal_controller_computer_delete.Reply'
               type: object
         "400":
           description: 请求错误
@@ -332,6 +475,8 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 删除主机
+      tags:
+      - 主机
   /api/computer/operate:
     post:
       consumes:
@@ -359,6 +504,8 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 操作主机
+      tags:
+      - 主机
   /api/computer/search:
     post:
       consumes:
@@ -369,7 +516,7 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/search.Params'
+          $ref: '#/definitions/superserver_internal_controller_computer_search.Params'
       produces:
       - application/json
       responses:
@@ -380,7 +527,7 @@ paths:
             - $ref: '#/definitions/system.ChainMessage'
             - properties:
                 data:
-                  $ref: '#/definitions/search.Reply'
+                  $ref: '#/definitions/superserver_internal_controller_computer_search.Reply'
               type: object
         "400":
           description: 请求错误
@@ -391,6 +538,8 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 查询主机
+      tags:
+      - 主机
   /api/computer/update:
     post:
       consumes:
@@ -401,7 +550,7 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/update.Params'
+          $ref: '#/definitions/superserver_internal_controller_computer_update.Params'
       produces:
       - application/json
       responses:
@@ -418,6 +567,124 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 更新主机
+      tags:
+      - 主机
+  /api/permission/access:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/access.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            type: access
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 资源列表
+      tags:
+      - 角色权限
+  /api/permission/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_permission_create.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 添加角色权限
+      tags:
+      - 角色权限
+  /api/permission/delete:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_permission_delete.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 删除角色权限
+      tags:
+      - 角色权限
+  /api/permission/search:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_permission_create.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 权限列表
+      tags:
+      - 角色权限
   /api/ping:
     get:
       consumes:
@@ -430,6 +697,129 @@ paths:
           schema:
             type: string
       summary: ping
+      tags:
+      - 测试
+  /api/role/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_role_create.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 创建角色
+      tags:
+      - 主机
+  /api/role/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_role_delete.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 删除角色
+      tags:
+      - 主机
+  /api/role/search:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_role_search.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.ChainMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_role_search.Reply'
+              type: object
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 角色列表
+      tags:
+      - 主机
+  /api/role/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_role_udpate.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 更新角色
+      tags:
+      - 主机
   /api/user/create:
     post:
       consumes:
@@ -456,7 +846,9 @@ paths:
           description: 系统错误
           schema:
             $ref: '#/definitions/system.ChainMessage'
-      summary: 用户注册、创建用户
+      summary: 用户注册
+      tags:
+      - 用户
   /api/user/login:
     post:
       consumes:
@@ -484,4 +876,6 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 用户登录
+      tags:
+      - 用户
 swagger: "2.0"

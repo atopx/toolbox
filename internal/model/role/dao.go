@@ -38,7 +38,7 @@ func (dao *RoleDao) Filter(filter *Filter, pager *common_iface.Pager) (computers
 	}
 	tx := dao.Connection().Where("delete_time = 0")
 	if filter.Keyword != "" {
-		tx.Where("name like ?", utils.NewLikeValue(filter.Keyword), utils.NewLikeValue(filter.Keyword))
+		tx.Where("name like ?", utils.NewLikeValue(filter.Keyword))
 	}
 
 	if len(filter.Nature) > 0 {
