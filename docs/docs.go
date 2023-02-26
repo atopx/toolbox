@@ -19,6 +19,28 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/basic/ping": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic"
+                ],
+                "summary": "ping",
+                "responses": {
+                    "200": {
+                        "description": "pong",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/computer/create": {
             "post": {
                 "consumes": [
@@ -443,28 +465,6 @@ const docTemplate = `{
                         "description": "系统错误",
                         "schema": {
                             "$ref": "#/definitions/system.ChainMessage"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/ping": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "测试"
-                ],
-                "summary": "ping",
-                "responses": {
-                    "200": {
-                        "description": "pong",
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 }

@@ -452,6 +452,20 @@ info:
   title: superserver
   version: 0.1.0
 paths:
+  /api/basic/ping:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: ping
+      tags:
+      - Basic
   /api/computer/create:
     post:
       consumes:
@@ -723,20 +737,6 @@ paths:
       summary: 角色权限列表
       tags:
       - 角色权限
-  /api/ping:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: pong
-          schema:
-            type: string
-      summary: ping
-      tags:
-      - 测试
   /api/role/create:
     post:
       consumes:

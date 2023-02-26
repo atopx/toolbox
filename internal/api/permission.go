@@ -59,7 +59,7 @@ func (a *Api) PermissionCreate(ctx *gin.Context) {
 // @Response 200 object system.ChainMessage "调用成功"
 // @Response 400 object system.ChainMessage "请求错误"
 // @Response 500 object system.ChainMessage "系统错误"
-// @Router /api/permission/delete [post]
+// @Router /api/permission/delete [delete]
 func (a *Api) PermissionDelete(ctx *gin.Context) {
 	a.Scheduler(delete.NewController(ctx))
 }

@@ -16,10 +16,11 @@ type Api struct {
 func New(db *gorm.DB, engine *gin.Engine) *Api {
 	api := &Api{router: engine.Group("/api")}
 	api.handler = &system.Handler{Db: db}
-	api.router.GET("/ping", Ping)
+	api.router.GET("/basic/ping", Ping)
 	api.RouteComputer()
 	api.RouteUser()
 	api.RouteRole()
+	api.RoutePermission()
 	return api
 }
 
@@ -41,7 +42,7 @@ func (a *Api) RouteRole() {
 	}
 }
 
-func (a *Api) PermissionRole() {
+func (a *Api) RoutePermission() {
 	group := a.router.Group("/permission")
 	{
 		group.POST("/access", a.PermissionAccess)

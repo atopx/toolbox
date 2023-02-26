@@ -8,11 +8,11 @@ import (
 
 // Ping
 // @summary ping
-// @Tags 测试
+// @Tags Basic
 // @Accept json
 // @Produce json
 // @Response 200 string pong "pong"
-// @Router /api/ping [get]
+// @Router /api/basic/ping [get]
 func Ping(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "pong")
 }
