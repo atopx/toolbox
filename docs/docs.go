@@ -290,6 +290,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/novel/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色"
+                ],
+                "summary": "创建小说",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_novel_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/api/permission/access": {
             "post": {
                 "consumes": [
@@ -381,7 +426,7 @@ const docTemplate = `{
             }
         },
         "/api/permission/delete": {
-            "post": {
+            "delete": {
                 "consumes": [
                     "application/json"
                 ],
@@ -1228,6 +1273,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "wan_hostname": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_novel_create.Params": {
+            "type": "object",
+            "properties": {
+                "target": {
                     "type": "string"
                 }
             }

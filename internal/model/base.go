@@ -10,20 +10,20 @@ import (
 )
 
 type Base struct {
-	Id         int   // 自增ID
-	DeleteTime int64 // 更新时间
-	CreateTime int64 `gorm:"autoCreateTime"` // 创建时间
-	UpdateTime int64 `gorm:"autoUpdateTime"` // 删除时间
+	Id         int   `json:"id"`                                // 自增ID
+	DeleteTime int64 `json:"delete_time"`                       // 更新时间
+	CreateTime int64 `json:"create_time" gorm:"autoCreateTime"` // 创建时间
+	UpdateTime int64 `json:"update_time" gorm:"autoUpdateTime"` // 删除时间
 }
 
-func (b *Base) BeforeCreate(tx *gorm.DB) error {
+func (b *Base) BeforeCreate(*gorm.DB) error {
 	timestamp := time.Now().Local().Unix()
 	b.CreateTime = timestamp
 	b.UpdateTime = timestamp
 	return nil
 }
 
-func (b *Base) BeforeUpdate(tx *gorm.DB) error {
+func (b *Base) BeforeUpdate(*gorm.DB) error {
 	timestamp := time.Now().Local().Unix()
 	b.UpdateTime = timestamp
 	return nil

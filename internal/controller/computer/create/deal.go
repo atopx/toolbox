@@ -2,7 +2,9 @@ package create
 
 import (
 	"errors"
+	"go.uber.org/zap"
 	"net/http"
+	"superserver/common/logger"
 	"superserver/internal/model/computer"
 	"superserver/proto/computer_iface"
 
@@ -24,6 +26,7 @@ func (ctl *Controller) Deal() {
 	_, err := dao.FilterBy("name", params.Name)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err != nil {
+			logger.Error(ctl.Context, "create computer dao.FilterByName failed", zap.Error(err))
 			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 			return
 		}
@@ -33,6 +36,7 @@ func (ctl *Controller) Deal() {
 	_, err = dao.FilterBy("address", params.Address)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err != nil {
+			logger.Error(ctl.Context, "create computer dao.FilterByAddress failed", zap.Error(err))
 			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 			return
 		}
@@ -51,8 +55,8 @@ func (ctl *Controller) Deal() {
 		Updater:     ctl.GetOperator(),
 	}
 	cpt.SetAddress(params.Address)
-
-	if err := dao.Create(&cpt); err != nil {
+	if err = dao.Create(&cpt); err != nil {
+		logger.Error(ctl.Context, "create computer dao.Create failed", zap.Error(err))
 		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
 		return
 	}

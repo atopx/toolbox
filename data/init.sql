@@ -89,3 +89,47 @@ CREATE TABLE su_permission (
 ) ENGINE = INNODB COMMENT = '角色资源权限表';
 ALTER TABLE su_permission ADD UNIQUE role_access (access_id, role_id);
 
+CREATE TABLE su_novel (
+    id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    name varchar(32) NOT NULL default '' COMMENT '书名',
+    source varchar(128) NOT NULL default '' COMMENT '书源',
+    author varchar(64) NOT NULL default '' COMMENT '作者',
+    intro varchar(4096) NOT NULL default '' COMMENT '简介',
+    status TINYINT NOT NULL DEFAULT 0 COMMENT '状态',
+    lasted BIGINT NOT NULL COMMENT '(源)最近更新时间 时间戳：秒',
+    scan_num INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '扫描次数',
+    error_num INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '异常次数',
+    no_change_num INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '未发生变化次数',
+    creator INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '创建人',
+    updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
+    create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+    update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒'
+) ENGINE = INNODB COMMENT = '书表';
+ALTER TABLE su_novel ADD UNIQUE novel_source (source);
+
+
+CREATE TABLE su_novel_chapter (
+    id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    novel_id INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '书ID',
+    name varchar(32) NOT NULL default '' COMMENT '章节名称',
+    source varchar(128) NOT NULL default '' COMMENT '章节源',
+    status TINYINT NOT NULL DEFAULT 0 COMMENT '章节状态',
+    content text not null COMMENT '章节内容',
+    message varchar(256) NOT NULL default '' COMMENT '异常消息',
+    create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+    update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒'
+) ENGINE = INNODB COMMENT = '书-章节表';
+ALTER TABLE su_novel_chapter ADD UNIQUE chapter_source (source);
+
+
+
+CREATE TABLE su_novel_task (
+    id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    novel_id INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '书ID',
+    status TINYINT NOT NULL DEFAULT 0 COMMENT '章节状态',
+    create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
+    update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
+    delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒'
+) ENGINE = INNODB COMMENT = '书-任务表';

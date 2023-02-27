@@ -20,6 +20,7 @@ func New(db *gorm.DB, engine *gin.Engine) *Api {
 	api.RouteComputer()
 	api.RouteUser()
 	api.RouteRole()
+	api.RouteNovel()
 	api.RoutePermission()
 	return api
 }
@@ -39,6 +40,13 @@ func (a *Api) RouteRole() {
 		group.POST("/update", a.RoleUpdate)
 		group.POST("/search", a.RoleSearch)
 		group.DELETE("/delete", a.RoleDelete)
+	}
+}
+
+func (a *Api) RouteNovel() {
+	group := a.router.Group("/novel")
+	{
+		group.POST("/create", a.NovelCreate)
 	}
 }
 

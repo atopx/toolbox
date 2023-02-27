@@ -18,7 +18,7 @@ message Pager {
 message RangeI64 {
     int64 left = 1; // 区间左
     int64 right = 2; // 区间右
-    RangeScope scope =3; // 应用范围
+    RangeScope scope = 3; // 应用范围
 }
 
 enum AccessStatus {
@@ -28,13 +28,13 @@ enum AccessStatus {
 }
 
 enum AccessMethod {
-    ACCESS_METHOD_GET     = 0;
-	  ACCESS_METHOD_HEAD    = 1;
-	  ACCESS_METHOD_POST    = 2;
-	  ACCESS_METHOD_PUT     = 3;
-	  ACCESS_METHOD_PATCH   = 4;
-	  ACCESS_METHOD_DELETE  = 5;
-	  ACCESS_METHOD_CONNECT = 6;
-	  ACCESS_METHOD_OPTIONS = 7;
-	  ACCESS_METHOD_TRACE   = 8;
+    ACCESS_METHOD_GET = 0;
+    ACCESS_METHOD_HEAD = 1;
+    ACCESS_METHOD_POST = 2;
+    ACCESS_METHOD_PUT = 3;
+    ACCESS_METHOD_PATCH = 4;
+    ACCESS_METHOD_DELETE = 5;
+    ACCESS_METHOD_CONNECT = 6;
+    ACCESS_METHOD_OPTIONS = 7;
+    ACCESS_METHOD_TRACE = 8;
 }

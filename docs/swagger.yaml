@@ -341,6 +341,11 @@ definitions:
       wan_hostname:
         type: string
     type: object
+  superserver_internal_controller_novel_create.Params:
+    properties:
+      target:
+        type: string
+    type: object
   superserver_internal_controller_permission_create.Params:
     properties:
       access_id:
@@ -621,6 +626,35 @@ paths:
       summary: 更新主机
       tags:
       - 主机
+  /api/novel/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_novel_create.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 创建小说
+      tags:
+      - 角色
   /api/permission/access:
     post:
       consumes:
@@ -680,7 +714,7 @@ paths:
       tags:
       - 角色权限
   /api/permission/delete:
-    post:
+    delete:
       consumes:
       - application/json
       parameters:
