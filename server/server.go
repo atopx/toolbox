@@ -12,12 +12,14 @@ import (
 	"superserver/internal/model/access"
 	"superserver/internal/model/role"
 	"superserver/internal/model/user"
+	"superserver/internal/scheduler"
 	"superserver/pkg"
 	"superserver/proto/common_iface"
 	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	files "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
@@ -31,17 +33,19 @@ func New() *Server {
 		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
 	}
 	srv := &Server{engine: gin.New(), db: db, middle: middleware.New()}
+	srv.crontab = scheduler.New(db)
 	srv.listen = fmt.Sprintf("%s:%d", viper.GetString("server.host"), viper.GetInt("server.port"))
 	srv.engine.Use(srv.middle.CorsMiddleware(), srv.middle.RecoverMiddleware(), srv.middle.ContextMiddleware())
 	return srv
 }
 
 type Server struct {
-	engine *gin.Engine
-	db     *gorm.DB
-	app    *api.Api
-	middle *middleware.Middleware
-	listen string
+	engine  *gin.Engine
+	db      *gorm.DB
+	app     *api.Api
+	middle  *middleware.Middleware
+	listen  string
+	crontab *cron.Cron
 }
 
 func (srv *Server) Route() {
@@ -95,6 +99,8 @@ func (srv *Server) InitData() {
 
 // Start 启动api服务
 func (srv *Server) Start() error {
+	// 启动后台任务
+	srv.crontab.Start()
 	// 路由注册
 	srv.Route()
 	// 初始化数据
@@ -108,11 +114,11 @@ func (srv *Server) Start() error {
 		MaxHeaderBytes: 1 << 20,
 	}
 	logger.System("server listen: http://%s", srv.listen)
-	return start(server)
+	return srv.start(server)
 }
 
 // start 优雅启停
-func start(server *http.Server) (err error) {
+func (srv *Server) start(server *http.Server) (err error) {
 	errs := make(chan error, 1)
 	go func() {
 		if err = server.ListenAndServe(); err != nil {
@@ -129,6 +135,7 @@ func start(server *http.Server) (err error) {
 	case s := <-scheduler:
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
+			srv.crontab.Stop()
 			err = server.Close()
 		}
 	}
