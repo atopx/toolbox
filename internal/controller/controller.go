@@ -2,8 +2,9 @@ package controller
 
 import (
 	"net/http"
-	"toolbox/common/logger"
-	"toolbox/common/system"
+
+	"superserver/common/logger"
+	"superserver/common/system"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -13,12 +14,9 @@ import (
 // Controller 控制器
 type Controller struct {
 	Context *gin.Context
-	System  *system.ContextValue
 	db      *gorm.DB
-}
-
-func (ctl *Controller) SetDatabase(db *gorm.DB) {
-	ctl.db = db
+	chain   *system.ChainMessage
+	Params  any
 }
 
 func (ctl *Controller) GetDatabase() *gorm.DB {
@@ -26,30 +24,44 @@ func (ctl *Controller) GetDatabase() *gorm.DB {
 }
 
 // ContextLoader 上下文加载器
-func (ctl *Controller) ContextLoader(ctx *gin.Context) {
-	ctl.Context = ctx
-	ctl.System = system.LoadContextValue(ctx)
+func (ctl *Controller) ContextLoader() {
+	ctl.chain = system.GetChainMessage(ctl.Context)
 }
 
-// NewOkResponse 正常的response
-func (ctl *Controller) NewOkResponse(code int, data interface{}) {
-	ctl.Context.JSON(code, data)
+func (ctl *Controller) GetOperator() int {
+	return ctl.chain.UserId
 }
 
-// NewErrorResponse 异常的response
-func (ctl *Controller) NewErrorResponse(code int, message string) {
-	// tips: 系统级别的异常返回默认的message
-	reply := system.NewReplyError(ctl.System.TraceId, code, message)
-	ctl.Context.Set(system.REPLY_ERROR_KEY, reply)
-	ctl.Context.JSON(code, &reply)
+// HandleLoader 句柄加载器
+func (ctl *Controller) HandleLoader(handler *system.Handler) {
+	ctl.db = handler.Db
 }
 
-// NewRequestParam 结构化请求参数
-func (ctl *Controller) NewRequestParam(param interface{}) error {
-	err := ctl.Context.ShouldBind(param)
+// RequestParamsLoader 参数加载器
+func (ctl *Controller) RequestParamsLoader() error {
+	err := ctl.Context.ShouldBind(ctl.Params)
 	if err != nil {
 		logger.Error(ctl.Context, "bind param error", zap.Error(err))
 		ctl.Context.JSON(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 	}
 	return err
+}
+
+// NewOkResponse 正常的response
+func (ctl *Controller) NewOkResponse(code int, data any) {
+	ctl.chain.WriteNormal(data)
+	ctl.Context.JSON(code, ctl.chain)
+}
+
+// NewErrorResponse 异常的response
+func (ctl *Controller) NewErrorResponse(code int, message string) {
+	ctl.chain.WriteAbnomal(system.ChainBad, message)
+	ctl.Context.JSON(code, ctl.chain)
+}
+
+type Iface interface {
+	ContextLoader()
+	HandleLoader(*system.Handler)
+	RequestParamsLoader() error
+	Deal()
 }

@@ -1,5 +1,5 @@
 # ---> Go
-# If you prefer the allow list template instead of the deny list, see community template:
+# If you prefer the allow search template instead of the deny search, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 # Binaries for programs and plugins
@@ -201,11 +201,6 @@ cython_debug/
 # JetBrains
 .idea/
 
-# project
-/configs/prod.yaml
-/configs/dev.yaml
-/configs/develop.yaml
-/configs/release.yaml
-./toolbox
-**/__debug_bin
-.Ds_Store
+*.db
+
+config.yaml

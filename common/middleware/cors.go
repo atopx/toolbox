@@ -7,7 +7,7 @@ import (
 )
 
 // CorsMiddleware 处理跨域请求,支持options访问
-func CorsMiddleware() gin.HandlerFunc {
+func (m *Middleware) CorsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
 		origin := c.Request.Header.Get("Origin")

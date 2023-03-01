@@ -1,17 +1,17 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "工具箱api",
-        "title": "toolbox-api",
+        "description": "集成网盘、多媒体、Webdav、服务器监控等一体的超级服务器后台",
+        "title": "superserver",
         "contact": {
             "name": "atopx",
-            "url": "https://github.com/atopx/toolbox.git",
+            "url": "https://github.com/atopx/superserver.git",
             "email": "3940422@qq.com"
         },
-        "version": "1.0"
+        "version": "0.1.0"
     },
     "paths": {
-        "/api/v1/home/wol": {
+        "/api/basic/ping": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -19,379 +19,8 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "远程开机",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "mac地址",
-                        "name": "macAddr",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "$ref": "#/definitions/wol.Reply"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/json/compress": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "json压缩",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "json字符串",
-                        "name": "json_str",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/json/format": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "json格式化",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "json字符串",
-                        "name": "json_str",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "$ref": "#/definitions/format.Reply"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/json/trans": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "json去除转义",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "json字符串",
-                        "name": "json_str",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "$ref": "#/definitions/trans.Reply"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/pixel/spec": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "计算显示器实际规格",
-                "parameters": [
-                    {
-                        "type": "number",
-                        "description": "分辨率: 高",
-                        "name": "height_rate",
-                        "in": "query"
-                    },
-                    {
-                        "type": "number",
-                        "description": "显示器尺寸",
-                        "name": "size",
-                        "in": "query"
-                    },
-                    {
-                        "type": "number",
-                        "description": "分辨率: 宽",
-                        "name": "width_rate",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "$ref": "#/definitions/spec.Reply"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/resource/get": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "获取文件资源",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "filename",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/wechat": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "微信公众号token认证",
-                "parameters": [
-                    {
-                        "type": "number",
-                        "description": "分辨率: 高",
-                        "name": "height_rate",
-                        "in": "query"
-                    },
-                    {
-                        "type": "number",
-                        "description": "显示器尺寸",
-                        "name": "size",
-                        "in": "query"
-                    },
-                    {
-                        "type": "number",
-                        "description": "分辨率: 宽",
-                        "name": "width_rate",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "$ref": "#/definitions/spec.Reply"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "text/xml"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "微信公众号消息监听",
-                "parameters": [
-                    {
-                        "description": "请求参数",
-                        "name": "param",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/message_listen.Param"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "$ref": "#/definitions/wechat.Message"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/wechat/scheduler": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "命令调度器",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "command",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "调用成功",
-                        "schema": {
-                            "$ref": "#/definitions/miniapp.Reply"
-                        }
-                    },
-                    "400": {
-                        "description": "请求错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    },
-                    "500": {
-                        "description": "系统错误",
-                        "schema": {
-                            "$ref": "#/definitions/system.ReplyError"
-                        }
-                    }
-                }
-            }
-        },
-        "/ping": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
+                "tags": [
+                    "Basic"
                 ],
                 "summary": "ping",
                 "responses": {
@@ -403,146 +32,1404 @@
                     }
                 }
             }
+        },
+        "/api/computer/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "主机"
+                ],
+                "summary": "创建主机",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_computer_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/computer/delete": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "主机"
+                ],
+                "summary": "删除主机",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_computer_delete.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/system.ChainMessage"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/superserver_internal_controller_computer_delete.Reply"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/computer/operate": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "主机"
+                ],
+                "summary": "操作主机",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/operate.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/computer/search": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "主机"
+                ],
+                "summary": "查询主机",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_computer_search.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/system.ChainMessage"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/superserver_internal_controller_computer_search.Reply"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/computer/update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "主机"
+                ],
+                "summary": "更新主机",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_computer_update.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/novel/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色"
+                ],
+                "summary": "创建小说",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_novel_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/permission/access": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色权限"
+                ],
+                "summary": "权限资源列表",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/access.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "type": "access"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/permission/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色权限"
+                ],
+                "summary": "添加角色权限",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_permission_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/permission/delete": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色权限"
+                ],
+                "summary": "删除角色权限",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_permission_delete.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/permission/search": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色权限"
+                ],
+                "summary": "角色权限列表",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_permission_search.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/role/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色"
+                ],
+                "summary": "创建角色",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_role_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/role/delete": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色"
+                ],
+                "summary": "删除角色",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_role_delete.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/role/search": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色"
+                ],
+                "summary": "角色列表",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_role_search.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/system.ChainMessage"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/superserver_internal_controller_role_search.Reply"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/role/update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色"
+                ],
+                "summary": "更新角色",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_role_udpate.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_user_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/login.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "format.Reply": {
-            "type": "object",
-            "additionalProperties": true
-        },
-        "message_listen.Param": {
+        "access.Filter": {
             "type": "object",
             "properties": {
-                "Content": {
-                    "description": "文本消息内容",
+                "create_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                },
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "keyword": {
                     "type": "string"
                 },
-                "CreateTime": {
-                    "description": "消息创建时间 （整型）",
+                "methods": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/common_iface.AccessMethod"
+                    }
+                },
+                "update_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                }
+            }
+        },
+        "access.Params": {
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "$ref": "#/definitions/access.Filter"
+                },
+                "page": {
+                    "$ref": "#/definitions/common_iface.Pager"
+                }
+            }
+        },
+        "common_iface.AccessMethod": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "x-enum-varnames": [
+                "AccessMethod_ACCESS_METHOD_GET",
+                "AccessMethod_ACCESS_METHOD_HEAD",
+                "AccessMethod_ACCESS_METHOD_POST",
+                "AccessMethod_ACCESS_METHOD_PUT",
+                "AccessMethod_ACCESS_METHOD_PATCH",
+                "AccessMethod_ACCESS_METHOD_DELETE",
+                "AccessMethod_ACCESS_METHOD_CONNECT",
+                "AccessMethod_ACCESS_METHOD_OPTIONS",
+                "AccessMethod_ACCESS_METHOD_TRACE"
+            ]
+        },
+        "common_iface.Pager": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "总数量",
                     "type": "integer"
                 },
-                "FromUserName": {
-                    "description": "发送方帐号（一个OpenID）",
-                    "type": "string"
+                "disabled": {
+                    "description": "禁用分页",
+                    "type": "boolean"
                 },
-                "MsgId": {
-                    "description": "消息id，64位整型",
-                    "type": "string"
-                },
-                "MsgType": {
-                    "description": "消息类型，文本为text",
-                    "type": "string"
-                },
-                "ToUserName": {
-                    "description": "开发者微信号",
-                    "type": "string"
-                }
-            }
-        },
-        "miniapp.Reply": {
-            "type": "object",
-            "properties": {
-                "cost": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "pixel.Spec": {
-            "type": "object",
-            "properties": {
-                "length_cm": {
-                    "description": "长度(厘米)",
-                    "type": "number"
-                },
-                "length_inch": {
-                    "description": "长度(英尺)",
-                    "type": "number"
-                },
-                "rate": {
-                    "description": "分辨率",
-                    "type": "number"
-                }
-            }
-        },
-        "spec.Reply": {
-            "type": "object",
-            "properties": {
-                "height": {
-                    "description": "宽数据",
-                    "$ref": "#/definitions/pixel.Spec"
-                },
-                "ppi": {
-                    "description": "显示PPI",
-                    "type": "number"
+                "index": {
+                    "description": "页码",
+                    "type": "integer"
                 },
                 "size": {
-                    "description": "显示器尺寸",
-                    "type": "number"
-                },
-                "width": {
-                    "description": "高数据",
-                    "$ref": "#/definitions/pixel.Spec"
+                    "description": "数量",
+                    "type": "integer"
                 }
             }
         },
-        "system.ReplyError": {
+        "common_iface.RangeI64": {
             "type": "object",
             "properties": {
+                "left": {
+                    "description": "区间左",
+                    "type": "integer"
+                },
+                "right": {
+                    "description": "区间右",
+                    "type": "integer"
+                },
+                "scope": {
+                    "description": "应用范围",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/common_iface.RangeScope"
+                        }
+                    ]
+                }
+            }
+        },
+        "common_iface.RangeScope": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "RangeScope_RANGE_ALL": "含左右",
+                "RangeScope_RANGE_LEFT": "含左",
+                "RangeScope_RANGE_RIGHT": "含右"
+            },
+            "x-enum-varnames": [
+                "RangeScope_RANGE_ALL",
+                "RangeScope_RANGE_LEFT",
+                "RangeScope_RANGE_RIGHT"
+            ]
+        },
+        "computer.Filter": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "create_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                },
+                "hostname": {
+                    "type": "string"
+                },
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "keyword": {
+                    "type": "string"
+                },
+                "power_status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/computer_iface.ComputerPowerStatus"
+                    }
+                },
+                "scan_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                },
+                "update_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                }
+            }
+        },
+        "computer_iface.ComputerOperate": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "ComputerOperate_COMPUTER_OPERATE_DETECT": "探测",
+                "ComputerOperate_COMPUTER_OPERATE_OFF": "关机",
+                "ComputerOperate_COMPUTER_OPERATE_ON": "开机"
+            },
+            "x-enum-varnames": [
+                "ComputerOperate_COMPUTER_OPERATE_OFF",
+                "ComputerOperate_COMPUTER_OPERATE_ON",
+                "ComputerOperate_COMPUTER_OPERATE_DETECT"
+            ]
+        },
+        "computer_iface.ComputerPortProtocol": {
+            "type": "integer",
+            "enum": [
+                0,
+                20,
+                21,
+                22,
+                23,
+                25,
+                53,
+                67,
+                80,
+                110,
+                123,
+                143,
+                161,
+                443,
+                500,
+                1645,
+                1701,
+                1723,
+                3389
+            ],
+            "x-enum-varnames": [
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_UNKNOWN",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_FTPDATA",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_FTPCTL",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_SSH",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_TELNET",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_SMTP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_DNS",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_DHCP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_HTTP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_POP3",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_NTP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_IMAP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_SNMP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_HTTPS",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_IPSEC",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_RADIUS",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_L2TP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_PPTP",
+                "ComputerPortProtocol_COMPUTER_PORT_PROTOCOL_RDP"
+            ]
+        },
+        "computer_iface.ComputerPowerStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "ComputerPowerStatus_COMPUTER_POWER_OFF": "关机状态",
+                "ComputerPowerStatus_COMPUTER_POWER_ON": "开机状态",
+                "ComputerPowerStatus_COMPUTER_POWER_UNKNOWN": "未知状态"
+            },
+            "x-enum-varnames": [
+                "ComputerPowerStatus_COMPUTER_POWER_UNKNOWN",
+                "ComputerPowerStatus_COMPUTER_POWER_OFF",
+                "ComputerPowerStatus_COMPUTER_POWER_ON"
+            ]
+        },
+        "login.Params": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "operate.Params": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "operate": {
+                    "$ref": "#/definitions/computer_iface.ComputerOperate"
+                }
+            }
+        },
+        "permission.Filter": {
+            "type": "object",
+            "properties": {
+                "access_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "access_methods": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/common_iface.AccessMethod"
+                    }
+                },
+                "create_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                },
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "keyword": {
+                    "type": "string"
+                },
+                "role_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "role_natures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_iface.RoleNature"
+                    }
+                },
+                "update_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                }
+            }
+        },
+        "role.Filter": {
+            "type": "object",
+            "properties": {
+                "create_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                },
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "keyword": {
+                    "type": "string"
+                },
+                "natures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_iface.RoleNature"
+                    }
+                },
+                "update_time_range": {
+                    "$ref": "#/definitions/common_iface.RangeI64"
+                }
+            }
+        },
+        "search.ComputerVo": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "物理地址",
+                    "type": "string"
+                },
+                "create_time": {
+                    "description": "创建时间",
+                    "type": "integer"
+                },
+                "creator": {
+                    "description": "创建人",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "integer"
+                },
+                "lan_hostname": {
+                    "description": "局域网地址",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "用户密码",
+                    "type": "string"
+                },
+                "power_status": {
+                    "description": "电源状态",
+                    "type": "string"
+                },
+                "scan_time": {
+                    "description": "最后一次扫描时间",
+                    "type": "integer"
+                },
+                "update_time": {
+                    "description": "更新时间",
+                    "type": "integer"
+                },
+                "updater": {
+                    "description": "更新人",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string"
+                },
+                "wan_hostname": {
+                    "description": "广域网地址",
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_computer_create.Params": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "default_ports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/computer_iface.ComputerPortProtocol"
+                    }
+                },
+                "lan_hostname": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "wan_hostname": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_computer_delete.Params": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "superserver_internal_controller_computer_delete.Reply": {
+            "type": "object"
+        },
+        "superserver_internal_controller_computer_search.Params": {
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "$ref": "#/definitions/computer.Filter"
+                },
+                "page": {
+                    "$ref": "#/definitions/common_iface.Pager"
+                }
+            }
+        },
+        "superserver_internal_controller_computer_search.Reply": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "$ref": "#/definitions/common_iface.Pager"
+                },
+                "search": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/search.ComputerVo"
+                    }
+                }
+            }
+        },
+        "superserver_internal_controller_computer_update.Params": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lan_hostname": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "wan_hostname": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_novel_create.Params": {
+            "type": "object",
+            "properties": {
+                "target": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_permission_create.Params": {
+            "type": "object",
+            "properties": {
+                "access_id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "superserver_internal_controller_permission_delete.Params": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "superserver_internal_controller_permission_search.Params": {
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "$ref": "#/definitions/permission.Filter"
+                },
+                "page": {
+                    "$ref": "#/definitions/common_iface.Pager"
+                }
+            }
+        },
+        "superserver_internal_controller_role_create.Params": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_role_delete.Params": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "superserver_internal_controller_role_search.Params": {
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "$ref": "#/definitions/role.Filter"
+                },
+                "page": {
+                    "$ref": "#/definitions/common_iface.Pager"
+                }
+            }
+        },
+        "superserver_internal_controller_role_search.Reply": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "$ref": "#/definitions/common_iface.Pager"
+                },
+                "search": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/superserver_internal_controller_role_search.RoleVo"
+                    }
+                }
+            }
+        },
+        "superserver_internal_controller_role_search.RoleVo": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nature": {
+                    "$ref": "#/definitions/user_iface.RoleNature"
+                },
+                "update_time": {
+                    "type": "integer"
+                },
+                "updater": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_role_udpate.Params": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "superserver_internal_controller_user_create.Params": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "system.ChainMessage": {
+            "type": "object",
+            "properties": {
+                "data": {},
                 "message": {
                     "description": "异常消息",
                     "type": "string"
                 },
                 "trace_id": {
+                    "description": "链路ID",
                     "type": "integer"
                 }
             }
         },
-        "trans.Reply": {
-            "type": "object",
-            "additionalProperties": true
-        },
-        "wechat.Message": {
-            "type": "object",
-            "properties": {
-                "Content": {
-                    "description": "文本消息内容",
-                    "type": "string"
-                },
-                "CreateTime": {
-                    "description": "消息创建时间 （整型）",
-                    "type": "integer"
-                },
-                "FromUserName": {
-                    "description": "发送方帐号（一个OpenID）",
-                    "type": "string"
-                },
-                "MsgId": {
-                    "description": "消息id，64位整型",
-                    "type": "string"
-                },
-                "MsgType": {
-                    "description": "消息类型，文本为text",
-                    "type": "string"
-                },
-                "ToUserName": {
-                    "description": "开发者微信号",
-                    "type": "string"
-                }
-            }
-        },
-        "wol.Reply": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
+        "user_iface.RoleNature": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-comments": {
+                "RoleNature_ROLE_CUSTOM": "自定义角色",
+                "RoleNature_ROLE_DEFAULT": "初始化角色",
+                "RoleNature_ROLE_SYSTEM": "系统角色"
+            },
+            "x-enum-varnames": [
+                "RoleNature_ROLE_DEFAULT",
+                "RoleNature_ROLE_SYSTEM",
+                "RoleNature_ROLE_CUSTOM"
+            ]
         }
     }
 }

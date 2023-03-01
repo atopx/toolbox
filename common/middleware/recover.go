@@ -1,20 +1,22 @@
 package middleware
 
 import (
+	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"strings"
-	"toolbox/common/logger"
-	"toolbox/common/system"
+
+	"superserver/common/logger"
+	"superserver/common/system"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
 // RecoverMiddleware 崩溃恢复中间件
-func RecoverMiddleware() gin.HandlerFunc {
+func (m *Middleware) RecoverMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -38,14 +40,16 @@ func RecoverMiddleware() gin.HandlerFunc {
 					ctx.Abort()
 					return
 				}
-				track := make([]byte, 1<<16)
-				system.GetRuntimeStack(&track)
+				stack := zap.Stack("stack")
 				logger.Error(ctx, "recovery from panic",
 					zap.Any("error", err),
 					zap.ByteString("body", body),
-					zap.ByteString("track", track),
+					stack,
 				)
-				ctx.AbortWithStatus(http.StatusInternalServerError)
+				log.Println(stack.String)
+				chain := system.GetChainMessage(ctx)
+				chain.WriteAbnomal(system.ChainError, http.StatusText(http.StatusInternalServerError))
+				ctx.AbortWithStatusJSON(http.StatusInternalServerError, chain)
 			}
 		}()
 		ctx.Next()

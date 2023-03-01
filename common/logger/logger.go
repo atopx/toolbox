@@ -2,8 +2,10 @@ package logger
 
 import (
 	"context"
+	"fmt"
 	"os"
-	"toolbox/common/system"
+
+	"superserver/common/system"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -33,6 +35,18 @@ func Setup(level string) (err error) {
 	return err
 }
 
+func GetLogger() *zap.Logger {
+	return logger
+}
+
+func AddCallerSkip(n int) *zap.Logger {
+	return logger.WithOptions(zap.AddCallerSkip(n))
+}
+
+func System(message string, v ...any) {
+	logger.Info(fmt.Sprintf(message, v...))
+}
+
 func Debug(ctx context.Context, message string, fields ...zapcore.Field) {
 	output(ctx, zap.DebugLevel, message, fields...)
 }
@@ -59,12 +73,11 @@ func Panic(ctx context.Context, message string, fields ...zapcore.Field) {
 
 func output(ctx context.Context, level zapcore.Level, message string, fields ...zapcore.Field) {
 	if entity := logger.Check(level, message); entity != nil {
-		if ctx != nil {
-			switch value := ctx.Value(system.CONTEXT_KEY).(type) {
-			case *system.ContextValue:
-				fields = append(fields, zap.Object(system.CONTEXT_KEY, value))
-			}
+		var traceId int64
+		if chain := system.GetChainMessageWithContext(ctx); chain != nil {
+			traceId = chain.TraceId
 		}
+		fields = append(fields, zap.Int64("trace_id", traceId))
 		entity.Write(fields...)
 	}
 }

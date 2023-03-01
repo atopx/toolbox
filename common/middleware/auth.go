@@ -1,11 +1,61 @@
 package middleware
 
-import "github.com/gin-gonic/gin"
+import (
+	"go.uber.org/zap"
+	"net/http"
+	"strings"
+	"superserver/common/logger"
+	"superserver/common/system"
+	"superserver/internal/model/access"
+	"superserver/internal/model/permission"
+	"superserver/internal/model/role"
+	"superserver/proto/common_iface"
+	"superserver/proto/ecode_iface"
+	"time"
 
-// AuthMiddleware 权限认证中间件
-func AuthMiddleware() gin.HandlerFunc {
+	"github.com/gin-gonic/gin"
+)
+
+func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// TODO 待实现
+		token := ctx.Request.Header.Get("Authorization")
+		chain := system.GetChainMessage(ctx)
+		if token == "" || !strings.HasPrefix(token, "Bearer ") {
+			chain.Message = "账户未登录"
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			return
+		}
+		claims, err := system.UnSignClaims(token)
+		if err != nil {
+			logger.Error(ctx, "auth system.UnSignClaims failed", zap.Error(err))
+			chain.Message = ecode_iface.ECode_AUTH_INVALID.String()
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			return
+		}
+		if claims.ExpiresAt.Before(time.Now().Local()) {
+			chain.Message = ecode_iface.ECode_AUTH_EXPIRED.String()
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			return
+		}
+
+		// 查询access是否是游客权限
+		value, ok := access.AccessMap.Load(ctx.Request.RequestURI)
+		if !ok {
+			chain.Message = "404"
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			return
+		}
+		accessPo := value.(*access.Access)
+
+		// 系统管理员直接放行或匿名接口
+		if claims.RoleId != role.SystemRole.Id && accessPo.Status != common_iface.AccessStatus_ACCESS_ANONYMOUS {
+			if !permission.NewDao(m.db).Inspector(claims.RoleId, accessPo.Id) {
+				chain.Message = "无权限"
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+				return
+			}
+		}
+		chain.UserId = claims.UserId
 		ctx.Next()
 	}
 }

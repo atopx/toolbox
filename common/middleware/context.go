@@ -1,18 +1,38 @@
 package middleware
 
 import (
-	"toolbox/common/system"
+	"net/http"
+	"time"
+
+	"superserver/common/logger"
+	"superserver/common/system"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-// ContextMiddleware 上下文中间件
-func ContextMiddleware() gin.HandlerFunc {
+// ContextMiddleware 日志中间件
+func (m *Middleware) ContextMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		value := system.NewContextValue(ctx.ClientIP())
-		value.SetUserId(0) // TODO 从token获取userId
-		ctx.Set(system.CONTEXT_KEY, value)
+		// set context
+		chain := system.NewChainMessage()
+		chain.IntoContext(ctx)
+		defer chain.Recycle()
+		// request
+		logger.Info(ctx, "request", zap.String("path", ctx.Request.URL.Path), zap.String("client", ctx.ClientIP()))
+
+		// 执行接口逻辑
+		beginTime := time.Now()
 		ctx.Next()
-		system.ContextDone(value)
+		cost := zap.String("cost", time.Since(beginTime).String())
+		switch chain.GetLevel() {
+		case system.ChainBad:
+			logger.Warn(ctx, "response", cost, zap.String("warn", chain.Message))
+		case system.ChainError:
+			logger.Error(ctx, "response", cost, zap.String("error", chain.Message))
+		default:
+			logger.Info(ctx, "response", cost)
+		}
+		chain.Message = http.StatusText(ctx.Writer.Status())
 	}
 }
