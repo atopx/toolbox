@@ -12,6 +12,5 @@
 
 ## todo
 * [x] super-server: go + gin
-* [ ] super-web: 
-* [ ] super-desktop: rust + tauri + vue3 
+* [ ] super-web/desktop: rust + tauri + vue3 
 * [ ] super-mobile: flutter
