@@ -1,9 +1,7 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use reqwest;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -11,12 +9,18 @@ fn greet(name: &str) -> String {
 
 
 #[tauri::command]
-fn novel_fetch(link: &str) -> String {
+fn novel_fetch(link: &str) -> Result<String, String> {
     let client = reqwest::blocking::Client::new();
     let resp = client.get(link)
-    .header("user-agent", "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)")
-    .send().unwrap();
-    return resp.text().unwrap();
+        .header("user-agent", "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)")
+        .send();
+
+    return match resp {
+        Ok(data) => {
+            Ok(data.text().unwrap())
+        }
+        Err(e) => { Err(e.to_string()) }
+    };
 }
 
 fn main() {
