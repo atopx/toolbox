@@ -3,6 +3,7 @@ import {ref} from "vue";
 import {invoke} from "@tauri-apps/api/tauri";
 import {Aim} from '@element-plus/icons-vue';
 import {load} from 'cheerio';
+import {val} from "cheerio/lib/api/attributes";
 
 
 const message = ref({
@@ -10,12 +11,27 @@ const message = ref({
 	author: "",
 	intro: "",
 	lasted: "",
-	source: "",
+	source: "https://www.1biqug.net/29/58123/",
 	chapters: new Array<{ index: number, title: string, source: string }>(),
 });
 
 const loading = ref(true)
 const display = ref()
+
+const colors = [
+	{color: '#f56c6c', percentage: 20},
+	{color: '#e6a23c', percentage: 50},
+	{color: '#5cb87a', percentage: 80},
+	{color: '#6f7ad3', percentage: 99},
+	{color: '#1989fa', percentage: 100},
+]
+
+const downloader = ref({
+	status: false,
+	percentage: 0,
+	message: '准备中...',
+});
+
 
 async function clean() {
 	message.value.name = ""
@@ -76,6 +92,28 @@ async function fetch() {
 	});
 }
 
+
+async function start_down() {
+	downloader.value.status = true
+	// TODO 开始下载
+
+	let total = message.value.chapters.length
+	message.value.chapters.forEach(function (value) {
+		if (!downloader.value.status) {
+			return false;
+		}
+		console.log(value)
+		downloader.value.message = "down " + value.title
+		invoke('event_sleep', {t: 200})
+		downloader.value.percentage = Math.round(value.index * 100 / total)
+	})
+}
+
+
+async function cancel_down() {
+	downloader.value.status = false
+}
+
 </script>
 
 <template>
@@ -99,15 +137,39 @@ async function fetch() {
 		</template>
 	</el-dialog>
 
+	<el-dialog
+		v-model="downloader.status"
+		title="下载器"
+		width="30%"
+		align-center
+	>
+
+		<el-progress type="dashboard" :percentage="downloader.percentage" stroke-width="8" width="320" :color="colors">
+			<template #default="{ percentage }">
+				<span class="percentage-value">{{ downloader.percentage }}%</span>
+				<span class="percentage-label">{{ downloader.message }}</span>
+			</template>
+		</el-progress>
+
+		<template #footer>
+      <span class="dialog-footer">
+        <el-button @click="cancel_down()">取消</el-button>
+      </span>
+		</template>
+	</el-dialog>
+
+
 	<div ref="display" id="info" v-loading="loading">
 		<el-card shadow="hover" id="head">
 			<el-row>
 				<el-col :span="22">
-					<span style="font-size: 20px; color: bisque">《{{ message.name }}》</span>
-					<span style="font-size: 8px; margin-left:5px">{{ message.author }} - {{ message.lasted }}</span>
+					<span class="novel-name">《{{ message.name }}》</span>
+					<span class="novel-info">{{ message.author }} - {{ message.lasted }}</span>
 				</el-col>
 				<el-col :span="1">
-					<el-button type="primary" style="width: 80px; height: 30px">Download</el-button>
+					<el-button class="down-btn" type="primary" @click="start_down()">
+						Download
+					</el-button>
 				</el-col>
 			</el-row>
 
@@ -135,6 +197,21 @@ async function fetch() {
 	color: azure;
 }
 
+.novel-name {
+	font-size: 20px;
+	color: bisque
+}
+
+.novel-info {
+	font-size: 8px;
+	margin-left: 5px
+}
+
+.down-btn {
+	width: 80px;
+	height: 30px;
+}
+
 .el-alert {
 	margin: 20px 0 0;
 	padding-left: 8px;
@@ -148,6 +225,27 @@ async function fetch() {
 
 #table {
 	width: 100%;
+}
+
+.percentage-value {
+	display: block;
+	margin-top: 10px;
+	font-size: 50px;
+}
+
+.percentage-label {
+	display: block;
+	margin-top: 10px;
+	font-size: 12px;
+}
+
+.demo-progress .el-progress--line {
+	margin-bottom: 15px;
+	width: 350px;
+}
+
+.demo-progress .el-progress--circle {
+	margin-right: 15px;
 }
 
 </style>

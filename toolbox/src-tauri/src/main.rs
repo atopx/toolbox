@@ -1,5 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::thread::sleep;
+use std::{thread, time};
 use reqwest;
 
 #[tauri::command]
@@ -23,11 +25,18 @@ fn novel_fetch(link: &str) -> Result<String, String> {
     };
 }
 
+#[tauri::command]
+fn event_sleep(t: u64) {
+    let ten_millis = time::Duration::from_millis(t);
+    sleep(ten_millis);
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             greet,
             novel_fetch,
+            event_sleep,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
