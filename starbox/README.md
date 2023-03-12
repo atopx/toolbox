@@ -3,4 +3,4 @@
 
 ## example
 
-![example](./public/example.png)
+![example](./public/example.jpeg)
