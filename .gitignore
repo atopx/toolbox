@@ -204,3 +204,4 @@ cython_debug/
 *.db
 
 config.yaml
+.DS_Store
