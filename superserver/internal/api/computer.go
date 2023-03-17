@@ -4,6 +4,7 @@ import (
 	"superserver/internal/controller/computer/create"
 	"superserver/internal/controller/computer/delete"
 	"superserver/internal/controller/computer/operate"
+	"superserver/internal/controller/computer/scheduler"
 	"superserver/internal/controller/computer/search"
 	"superserver/internal/controller/computer/update"
 
@@ -78,4 +79,18 @@ func (a *Api) ComputerSearch(ctx *gin.Context) {
 // @Router /api/computer/operate [post]
 func (a *Api) ComputerOperate(ctx *gin.Context) {
 	a.Scheduler(operate.NewController(ctx))
+}
+
+// ComputerScheduler
+// @summary 主机控制台
+// @Tags 主机
+// @Accept json
+// @Produce json
+// @Param param body delete.Params true "请求参数"
+// @Response 200 object system.ChainMessage{data=delete.Reply} "调用成功"
+// @Response 400 object system.ChainMessage "请求错误"
+// @Response 500 object system.ChainMessage "系统错误"
+// @Router /api/computer/scheduler [post]
+func (a *Api) ComputerScheduler(ctx *gin.Context) {
+	a.Scheduler(scheduler.NewController(ctx))
 }

@@ -68,6 +68,7 @@ func (a *Api) RouteComputer() {
 		group.POST("/update", a.ComputerUpdate)
 		group.POST("/operate", a.ComputerOperate)
 		group.DELETE("/delete", a.ComputerDelete)
+		group.POST("/scheduler", a.ComputerScheduler)
 	}
 }
 

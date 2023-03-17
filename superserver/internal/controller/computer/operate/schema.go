@@ -20,4 +20,6 @@ type Params struct {
 	Operate *computer_iface.ComputerOperate `json:"operate"`
 }
 
-type Reply struct{}
+type Reply struct {
+	Status string
+}
