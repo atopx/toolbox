@@ -39,7 +39,7 @@ func (dao *BaseDao) Connection() *gorm.DB {
 }
 
 func (dao *BaseDao) Load(po Po) error {
-	return dao.Connection().Where("id = ?", po.GetId()).First(po).Error
+	return dao.Connection().First(po).Error
 }
 
 func (dao *BaseDao) Create(po Po) error {

@@ -2,8 +2,10 @@ package operate
 
 import (
 	"errors"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"net/http"
+	"superserver/common/logger"
 	"superserver/common/utils"
 	"superserver/internal/model/computer"
 	"superserver/proto/computer_iface"
@@ -45,6 +47,7 @@ func (ctl *Controller) Deal() {
 		}
 	}
 	if err != nil {
+		logger.Error(ctl.Context, "主机操作失败", zap.Error(err))
 		ctl.NewErrorResponse(http.StatusBadRequest, "操作失败, 请检查配置")
 		return
 	}
