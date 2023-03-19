@@ -205,3 +205,5 @@ cython_debug/
 
 config.yaml
 .DS_Store
+node_modules/
+
