@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"go.uber.org/zap"
 	"net/http"
 	"strings"
 	"superserver/common/logger"
@@ -12,6 +11,8 @@ import (
 	"superserver/proto/common_iface"
 	"superserver/proto/ecode_iface"
 	"time"
+
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +47,6 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		accessPo := value.(*access.Access)
-
 		// 系统管理员直接放行或匿名接口
 		if claims.RoleId != role.SystemRole.Id && accessPo.Status != common_iface.AccessStatus_ACCESS_ANONYMOUS {
 			if !permission.NewDao(m.db).Inspector(claims.RoleId, accessPo.Id) {

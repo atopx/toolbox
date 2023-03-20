@@ -35,7 +35,11 @@ func New() *Server {
 	srv := &Server{engine: gin.New(), db: db, middle: middleware.New()}
 	srv.crontab = scheduler.New(db)
 	srv.listen = fmt.Sprintf("%s:%d", viper.GetString("server.host"), viper.GetInt("server.port"))
-	srv.engine.Use(srv.middle.CorsMiddleware(), srv.middle.RecoverMiddleware(), srv.middle.ContextMiddleware())
+	srv.engine.Use(
+		srv.middle.CorsMiddleware(),
+		srv.middle.RecoverMiddleware(),
+		srv.middle.ContextMiddleware(),
+	)
 	return srv
 }
 
