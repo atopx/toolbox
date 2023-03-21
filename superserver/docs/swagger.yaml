@@ -180,6 +180,11 @@ definitions:
     - ComputerPowerStatus_COMPUTER_POWER_UNKNOWN
     - ComputerPowerStatus_COMPUTER_POWER_OFF
     - ComputerPowerStatus_COMPUTER_POWER_ON
+  export.Params:
+    properties:
+      id:
+        type: string
+    type: object
   login.Params:
     properties:
       password:
@@ -563,6 +568,40 @@ paths:
       summary: 操作主机
       tags:
       - 主机
+  /api/computer/scheduler:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_computer_delete.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.ChainMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_computer_delete.Reply'
+              type: object
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 主机控制台
+      tags:
+      - 主机
   /api/computer/search:
     post:
       consumes:
@@ -654,7 +693,36 @@ paths:
             $ref: '#/definitions/system.ChainMessage'
       summary: 创建小说
       tags:
-      - 角色
+      - 小说
+  /api/novel/export:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/export.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 创建小说
+      tags:
+      - 小说
   /api/permission/access:
     post:
       consumes:

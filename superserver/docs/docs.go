@@ -188,6 +188,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/computer/scheduler": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "主机"
+                ],
+                "summary": "主机控制台",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/superserver_internal_controller_computer_delete.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/system.ChainMessage"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/superserver_internal_controller_computer_delete.Reply"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/api/computer/search": {
             "post": {
                 "consumes": [
@@ -299,7 +356,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色"
+                    "小说"
                 ],
                 "summary": "创建小说",
                 "parameters": [
@@ -310,6 +367,51 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/superserver_internal_controller_novel_create.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/novel/export": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "小说"
+                ],
+                "summary": "创建小说",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/export.Params"
                         }
                     }
                 ],
@@ -1036,6 +1138,14 @@ const docTemplate = `{
                 "ComputerPowerStatus_COMPUTER_POWER_OFF",
                 "ComputerPowerStatus_COMPUTER_POWER_ON"
             ]
+        },
+        "export.Params": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
         },
         "login.Params": {
             "type": "object",
