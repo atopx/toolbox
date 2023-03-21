@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 
 import { ref, onMounted } from 'vue';
-import { Computer, ComputerItem } from '~/apis/computers';
+import { Computer } from '~/apis/computers';
 import { Page } from '~/common/types';
-import { ArrowDown, Cpu } from '@element-plus/icons-vue'
-import { fa } from 'element-plus/es/locale';
+import { ArrowDown } from '@element-plus/icons-vue'
 
 const payload = ref({
     page: <Page>{
