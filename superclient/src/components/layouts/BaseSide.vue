@@ -74,13 +74,3 @@ import {
 } from '@element-plus/icons-vue'
 
 </script>
-
-
-<style scoped>
-
-.sidemenu{
-    height: 100%;
-}
-
-
-</style>

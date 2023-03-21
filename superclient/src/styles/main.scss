@@ -4,3 +4,22 @@
     height: 100%;
 }
 
+
+.app-container {
+    height: 100%;
+
+    .headmeau {
+        height: 50px;
+        position: fixed;
+        z-index: 1;
+        width: 100%;
+    }
+
+    .body-container {
+        padding-top: 50px;
+    }
+    
+    .el-main {
+        padding: 0px;
+    }
+}

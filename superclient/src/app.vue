@@ -1,8 +1,14 @@
 
 <template>
-  <el-container style="height: 100%;">
+  <el-container class="app-container">
     <BaseHeader />
-    <BaseSide />
-    <RouterView />
+    
+    <el-container class="body-container">
+      <BaseSide />
+      <el-main>
+        <RouterView />
+      </el-main>
+    </el-container>
+  
   </el-container>
 </template>
