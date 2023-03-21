@@ -1,11 +1,13 @@
 package search
 
 import (
-	"go.uber.org/zap"
 	"net/http"
 	"superserver/common/logger"
+	"superserver/common/utils"
 	"superserver/internal/model/computer"
 	"superserver/internal/model/user"
+
+	"go.uber.org/zap"
 )
 
 func (ctl *Controller) Deal() {
@@ -56,8 +58,8 @@ func (ctl *Controller) NewComputerVo(po *computer.Computer) ComputerVo {
 		WanHostname: po.WanHostname,
 		Address:     po.GetAddress(),
 		PowerStatus: po.PowerStatus.String(),
-		CreateTime:  po.CreateTime,
-		UpdateTime:  po.UpdateTime,
-		ScanTime:    po.ScanTime,
+		CreateTime:  utils.TimestampDecoder(po.CreateTime, utils.DEFAULT_DATE_LAYOUT),
+		UpdateTime:  utils.TimestampDecoder(po.UpdateTime, utils.DEFAULT_DATE_LAYOUT),
+		ScanTime:    utils.TimestampDecoder(po.ScanTime, utils.DEFAULT_DATE_LAYOUT),
 	}
 }

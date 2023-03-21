@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { FormInstance, FormRules } from 'element-plus';
-import http from '../common/common';
+import http from '../common/requestt';
 
 const loginFormRef = ref<FormInstance>();
 
