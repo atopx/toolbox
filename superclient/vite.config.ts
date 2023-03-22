@@ -1,67 +1,75 @@
-import path from 'path'
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import dayjs from "dayjs";
+import { resolve } from "path";
+import pkg from "./package.json";
+import { warpperEnv } from "./build";
+import { getPluginsList } from "./build/plugins";
+import { include, exclude } from "./build/optimize";
+import { UserConfigExport, ConfigEnv, loadEnv } from "vite";
 
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+/** 当前执行node命令时文件夹的地址（工作目录） */
+const root: string = process.cwd();
 
-import Unocss from 'unocss/vite'
-import {
-  presetAttributify,
-  presetIcons,
-  presetUno,
-  transformerDirectives,
-  transformerVariantGroup,
-} from 'unocss'
+/** 路径查找 */
+const pathResolve = (dir: string): string => {
+  return resolve(__dirname, ".", dir);
+};
 
-const pathSrc = path.resolve(__dirname, 'src')
+/** 设置别名 */
+const alias: Record<string, string> = {
+  "@": pathResolve("src"),
+  "@build": pathResolve("build")
+};
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:18000',
-        changeOrigin: true,
-      }
-    }
-  },
-  resolve: {
-    alias: {
-      '~/': `${pathSrc}/`,
+const { dependencies, devDependencies, name, version } = pkg;
+const __APP_INFO__ = {
+  pkg: { dependencies, devDependencies, name, version },
+  lastBuildTime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")
+};
+
+export default ({ command, mode }: ConfigEnv): UserConfigExport => {
+  const { VITE_CDN, VITE_PORT, VITE_COMPRESSION, VITE_PUBLIC_PATH } =
+    warpperEnv(loadEnv(mode, root));
+  return {
+    base: VITE_PUBLIC_PATH,
+    root,
+    resolve: {
+      alias
     },
-  },
-
-  plugins: [
-    vue(),
-    Components({
-      // allow auto load markdown components under `./src/components/`
-      extensions: ['vue', 'md'],
-      // allow auto import and register components used in markdown
-      include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
-      dts: 'src/components.d.ts',
-    }),
-
-    // https://github.com/antfu/unocss
-    // see unocss.config.ts for config
-    Unocss({
-      presets: [
-        presetUno(),
-        presetAttributify(),
-        presetIcons({
-          scale: 1.2,
-          warn: true,
-        }),
-      ],
-      transformers: [
-        transformerDirectives(),
-        transformerVariantGroup(),
-      ]
-    }),
-  ],
-})
+    // 服务端渲染
+    server: {
+      // 是否开启 https
+      https: false,
+      // 端口号
+      port: VITE_PORT,
+      host: "0.0.0.0",
+      // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
+      proxy: {}
+    },
+    plugins: getPluginsList(command, VITE_CDN, VITE_COMPRESSION),
+    // https://cn.vitejs.dev/config/dep-optimization-options.html#dep-optimization-options
+    optimizeDeps: {
+      include,
+      exclude
+    },
+    build: {
+      sourcemap: false,
+      // 消除打包大小超过500kb警告
+      chunkSizeWarningLimit: 4000,
+      rollupOptions: {
+        input: {
+          index: pathResolve("index.html")
+        },
+        // 静态资源分类打包
+        output: {
+          chunkFileNames: "static/js/[name]-[hash].js",
+          entryFileNames: "static/js/[name]-[hash].js",
+          assetFileNames: "static/[ext]/[name]-[hash].[ext]"
+        }
+      }
+    },
+    define: {
+      __INTLIFY_PROD_DEVTOOLS__: false,
+      __APP_INFO__: JSON.stringify(__APP_INFO__)
+    }
+  };
+};

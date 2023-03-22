@@ -1,14 +1,22 @@
-
 <template>
-  <el-container class="app-container">
-    <BaseHeader />
-    
-    <el-container class="body-container">
-      <BaseSide />
-      <el-main>
-        <RouterView />
-      </el-main>
-    </el-container>
-  
-  </el-container>
+  <el-config-provider :locale="currentLocale">
+    <router-view />
+  </el-config-provider>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import { ElConfigProvider } from "element-plus";
+import zhCn from "element-plus/lib/locale/lang/zh-cn";
+export default defineComponent({
+  name: "app",
+  components: {
+    [ElConfigProvider.name]: ElConfigProvider
+  },
+  computed: {
+    currentLocale() {
+      return zhCn;
+    }
+  }
+});
+</script>
