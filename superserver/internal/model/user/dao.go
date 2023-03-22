@@ -1,28 +1,28 @@
 package user
 
 import (
-	"errors"
+	"superserver/common/interface/user_iface"
+	"superserver/internal/model"
+
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
-	"superserver/internal/model"
-	"superserver/proto/user_iface"
 )
 
-type UserDao struct {
+type Dao struct {
 	model.BaseDao
 }
 
-func (*UserDao) TableName() string {
+func (*Dao) TableName() string {
 	return "su_user"
 }
 
-func NewDao(db *gorm.DB) *UserDao {
-	dao := &UserDao{BaseDao: model.BaseDao{Db: db}}
+func NewDao(db *gorm.DB) *Dao {
+	dao := &Dao{BaseDao: model.BaseDao{Db: db}}
 	dao.BaseDao.TableName = dao.TableName()
 	return dao
 }
 
-func (dao *UserDao) GetUserMapByIds(ids []int) (map[int]*User, error) {
+func (dao *Dao) GetUserMapByIds(ids []int) (map[int]*User, error) {
 	result := make(map[int]*User)
 	if len(ids) == 0 {
 		return result, nil
@@ -38,7 +38,7 @@ func (dao *UserDao) GetUserMapByIds(ids []int) (map[int]*User, error) {
 	return result, nil
 }
 
-func (dao *UserDao) GetUserByUsername(username string, excludeDeleted bool) (*User, error) {
+func (dao *Dao) GetUserByUsername(username string, excludeDeleted bool) (*User, error) {
 	tx := dao.Connection().Where("username = ?", username)
 	if excludeDeleted {
 		tx.Scopes(dao.NotDeleted)
@@ -48,17 +48,12 @@ func (dao *UserDao) GetUserByUsername(username string, excludeDeleted bool) (*Us
 	return &user, err
 }
 
-func (dao *UserDao) LoadSystemUser(roleId int) error {
-	SystemUser = new(User)
-	err := dao.Connection().Where("role_id=?", roleId).First(SystemUser).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		err = nil
-		SystemUser.Name = "系统管理员"
-		SystemUser.RoleId = roleId
-		SystemUser.Status = user_iface.UserStatus_USER_NORMAL
-		SystemUser.Username = viper.GetString("admin.user")
-		SystemUser.SetPassword(viper.GetString("admin.pass"))
-		err = dao.Create(SystemUser)
+func (dao *Dao) LoadSystemUser() error {
+	SystemUser = &User{
+		Name:     "系统管理员",
+		Username: viper.GetString("admin.user"),
+		Status:   user_iface.UserStatus_USER_NORMAL,
 	}
-	return err
+	SystemUser.SetPassword(viper.GetString("admin.pass"))
+	return dao.Connection().Where("username = ?", SystemUser.Username).FirstOrCreate(SystemUser).Error
 }

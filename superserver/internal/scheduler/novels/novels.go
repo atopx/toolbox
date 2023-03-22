@@ -2,8 +2,8 @@ package novels
 
 import (
 	"strings"
+	"superserver/common/interface/novel_iface"
 	"superserver/internal/scheduler/base"
-	"superserver/proto/novel_iface"
 	"time"
 
 	"github.com/gocolly/colly/v2"

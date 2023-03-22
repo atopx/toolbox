@@ -5,10 +5,10 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"net/http"
+	"superserver/common/interface/computer_iface"
 	"superserver/common/logger"
 	"superserver/common/utils"
 	"superserver/internal/model/computer"
-	"superserver/proto/computer_iface"
 )
 
 func (ctl *Controller) Deal() {

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "proto/user_iface";
+option go_package = "common/interface/user_iface";
 
 enum UserStatus {
     USER_NORMAL = 0; // 正常

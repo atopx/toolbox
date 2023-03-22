@@ -1,9 +1,9 @@
 package computer
 
 import (
+	"superserver/common/interface/common_iface"
+	"superserver/common/interface/computer_iface"
 	"superserver/common/utils"
-	"superserver/proto/common_iface"
-	"superserver/proto/computer_iface"
 )
 
 type Filter struct {
@@ -17,7 +17,7 @@ type Filter struct {
 	ScanTimeRange   *common_iface.RangeI64               `json:"scan_time_range"`
 }
 
-func (dao *ComputerDao) Filter(filter *Filter, pager *common_iface.Pager) (computers []Computer, err error) {
+func (dao *Dao) Filter(filter *Filter, pager *common_iface.Pager) (computers []Computer, err error) {
 	if filter == nil {
 		filter = new(Filter)
 	}

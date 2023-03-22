@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "proto/ecode_iface";
+option go_package = "common/interface/ecode_iface";
 
 enum ECode {
     NOERROR = 0; // 默认无错误
@@ -9,6 +9,6 @@ enum ECode {
     AUTH_INVALID = 40102; // 无效Token
     AUTH_EXPIRED = 40103; // 账户已过期
     AUTH_LIMIT = 40104; // 限制登录
-
+    AUTH_NOT_ACCESS_TOKEN = 40105; // 不是access-token
     ACCESS_FORBIDDEN = 40300; // 禁止访问
 }

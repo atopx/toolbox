@@ -1,9 +1,8 @@
 package role
 
 import (
+	"superserver/common/interface/user_iface"
 	"superserver/internal/model"
-	"superserver/proto/user_iface"
-	"sync"
 )
 
 type Role struct {
@@ -15,16 +14,10 @@ type Role struct {
 	Updater int // 更新人
 }
 
-func (m *Role) GetId() any {
-	return m.Id
-}
-
 func New(id int) *Role {
 	return &Role{Base: model.Base{Id: id}}
 }
 
-// RoleMap 角色缓存
-var RoleMap sync.Map
 var (
 	SystemRole  *Role
 	DefaultRole *Role

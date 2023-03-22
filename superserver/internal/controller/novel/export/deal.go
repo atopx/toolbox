@@ -9,8 +9,8 @@ func (ctl *Controller) Deal() {
 	params := ctl.Params.(*Params)
 	db := ctl.GetDatabase()
 
-	var chapters []novel.NovelChapter
-	db.Model(&novel.NovelChapter{}).Where("novel_id=?", params.Id).
+	var chapters []novel.Chapter
+	db.Model(&novel.Chapter{}).Where("novel_id=?", params.Id).
 		Select("name, content").
 		Order("source").Find(&chapters)
 

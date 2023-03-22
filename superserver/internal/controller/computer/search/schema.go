@@ -1,9 +1,9 @@
 package search
 
 import (
+	"superserver/common/interface/common_iface"
 	"superserver/internal/controller"
 	"superserver/internal/model/computer"
-	"superserver/proto/common_iface"
 
 	"github.com/gin-gonic/gin"
 )

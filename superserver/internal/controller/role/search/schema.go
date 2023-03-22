@@ -2,10 +2,10 @@ package search
 
 import (
 	"github.com/gin-gonic/gin"
+	"superserver/common/interface/common_iface"
+	"superserver/common/interface/user_iface"
 	"superserver/internal/controller"
 	"superserver/internal/model/role"
-	"superserver/proto/common_iface"
-	"superserver/proto/user_iface"
 )
 
 type Controller struct {

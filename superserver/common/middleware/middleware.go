@@ -9,3 +9,7 @@ type Middleware struct {
 func New() *Middleware {
 	return &Middleware{}
 }
+
+func (m *Middleware) SetDatabase(db *gorm.DB) {
+	m.db = db
+}

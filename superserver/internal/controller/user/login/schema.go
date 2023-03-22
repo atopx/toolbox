@@ -1,8 +1,9 @@
 package login
 
 import (
-	"github.com/gin-gonic/gin"
 	"superserver/internal/controller"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
@@ -19,6 +20,16 @@ type Params struct {
 }
 
 type Reply struct {
-	UserId int    `json:"user_id"`
-	Token  string `json:"token"`
+	UserId       int    `json:"user_id"`
+	Name         string `json:"name"`
+	Username     string `json:"username"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	Expires      int64  `json:"expires"`
+	Roles        []Role `json:"roles"`
+}
+
+type Role struct {
+	Id   int `json:"id"`
+	Name int `json:"name"`
 }

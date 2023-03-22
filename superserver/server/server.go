@@ -12,9 +12,9 @@ import (
 	"superserver/internal/model/access"
 	"superserver/internal/model/role"
 	"superserver/internal/model/user"
+	"superserver/internal/model/user_role"
 	"superserver/internal/scheduler"
 	"superserver/pkg"
-	"superserver/proto/common_iface"
 	"syscall"
 	"time"
 
@@ -33,12 +33,14 @@ func New() *Server {
 		panic(fmt.Sprintf("connect db failed: %s", err.Error()))
 	}
 	srv := &Server{engine: gin.New(), db: db, middle: middleware.New()}
+	srv.middle.SetDatabase(db)
 	srv.crontab = scheduler.New(db)
 	srv.listen = fmt.Sprintf("%s:%d", viper.GetString("server.host"), viper.GetInt("server.port"))
 	srv.engine.Use(
 		srv.middle.CorsMiddleware(),
 		srv.middle.RecoverMiddleware(),
 		srv.middle.ContextMiddleware(),
+		srv.middle.AuthMiddleware(),
 	)
 	return srv
 }
@@ -75,29 +77,32 @@ func (srv *Server) InitData() {
 		tx.Rollback()
 		panic(fmt.Errorf("init default role failed: %s", err.Error()))
 	}
-	fmt.Println(role.SystemRole)
-	// init user
-	err = user.NewDao(srv.db).LoadSystemUser(role.SystemRole.Id)
+
+	// init admin user
+	err = user.NewDao(srv.db).LoadSystemUser()
 	if err != nil {
 		tx.Rollback()
 		panic(fmt.Errorf("init system user failed: %s", err.Error()))
 	}
 
+	// bind user and role
+	userRole := user_role.UserRoleRef{RoleId: role.SystemRole.Id, UserId: user.SystemUser.Id}
+	user_role.NewDao(srv.db).Connection().FirstOrCreate(&userRole)
+
 	// init access
 	var accessList []access.Access
 	for _, routeInfo := range srv.engine.Routes() {
-		accessList = append(accessList, access.Access{
+		record := access.Access{
 			Path:    routeInfo.Path,
-			Method:  common_iface.AccessMethod(common_iface.AccessMethod_value[routeInfo.Method]),
+			Method:  routeInfo.Method,
 			Handler: routeInfo.Handler,
-		})
+		}
+		accessList = append(accessList, record)
 	}
-	err = access.NewDao(srv.db).BatchUpsert(accessList)
-	if err != nil {
+	if err = access.NewDao(srv.db).BatchUpsert(accessList); err != nil {
 		tx.Rollback()
 		panic(fmt.Errorf("init access failed: %s", err.Error()))
 	}
-
 	tx.Commit()
 }
 
@@ -131,12 +136,12 @@ func (srv *Server) start(server *http.Server) (err error) {
 			}
 		}
 	}()
-	scheduler := make(chan os.Signal, 1)
-	signal.Notify(scheduler, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	manager := make(chan os.Signal, 1)
+	signal.Notify(manager, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	select {
 	case err = <-errs:
 		break
-	case s := <-scheduler:
+	case s := <-manager:
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			srv.crontab.Stop()

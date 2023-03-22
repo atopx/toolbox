@@ -58,8 +58,8 @@ func (ctl *Controller) NewComputerVo(po *computer.Computer) ComputerVo {
 		WanHostname: po.WanHostname,
 		Address:     po.GetAddress(),
 		PowerStatus: po.PowerStatus.String(),
-		CreateTime:  utils.TimestampDecoder(po.CreateTime, utils.DEFAULT_DATE_LAYOUT),
-		UpdateTime:  utils.TimestampDecoder(po.UpdateTime, utils.DEFAULT_DATE_LAYOUT),
-		ScanTime:    utils.TimestampDecoder(po.ScanTime, utils.DEFAULT_DATE_LAYOUT),
+		CreateTime:  utils.TimestampDecoder(po.CreateTime, utils.DefaultDateLayout),
+		UpdateTime:  utils.TimestampDecoder(po.UpdateTime, utils.DefaultDateLayout),
+		ScanTime:    utils.TimestampDecoder(po.ScanTime, utils.DefaultDateLayout),
 	}
 }

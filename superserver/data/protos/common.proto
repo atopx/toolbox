@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "proto/common_iface";
+option go_package = "common/interface/common_iface";
 
 enum RangeScope {
     RANGE_ALL = 0; // 含左右

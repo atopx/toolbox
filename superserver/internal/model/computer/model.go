@@ -1,9 +1,9 @@
 package computer
 
 import (
+	"superserver/common/interface/computer_iface"
 	"superserver/common/utils"
 	"superserver/internal/model"
-	"superserver/proto/computer_iface"
 )
 
 type Computer struct {
@@ -19,10 +19,6 @@ type Computer struct {
 	Creator     int                                // 创建人
 	Updater     int                                // 更新人
 	ScanTime    int64                              // 最后一次扫描时间
-}
-
-func (m *Computer) GetId() any {
-	return m.Id
 }
 
 func NewComputer(id int) *Computer {

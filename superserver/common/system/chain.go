@@ -44,6 +44,7 @@ func GetChainMessageWithContext(ctx context.Context) *ChainMessage {
 }
 
 type ChainMessage struct {
+	Success bool   `json:"success"`  // 请求成功
 	TraceId int64  `json:"trace_id"` // 链路ID
 	Message string `json:"message"`  // 异常消息
 	Data    any    `json:"data,omitempty"`
@@ -54,6 +55,7 @@ type ChainMessage struct {
 }
 
 func (m *ChainMessage) WriteNormal(data any) {
+	m.Success = true
 	m.Data = data
 }
 

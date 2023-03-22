@@ -1,15 +1,17 @@
 package middleware
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"net/http"
 	"strings"
+	"superserver/common/interface/common_iface"
+	"superserver/common/interface/ecode_iface"
 	"superserver/common/logger"
 	"superserver/common/system"
 	"superserver/internal/model/access"
 	"superserver/internal/model/permission"
-	"superserver/internal/model/role"
-	"superserver/proto/common_iface"
-	"superserver/proto/ecode_iface"
+	"superserver/internal/model/user"
 	"time"
 
 	"go.uber.org/zap"
@@ -21,41 +23,66 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.Request.Header.Get("Authorization")
 		chain := system.GetChainMessage(ctx)
-		if token == "" || !strings.HasPrefix(token, "Bearer ") {
-			chain.Message = "账户未登录"
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
-			return
-		}
-		claims, err := system.UnSignClaims(token)
-		if err != nil {
-			logger.Error(ctx, "auth system.UnSignClaims failed", zap.Error(err))
-			chain.Message = ecode_iface.ECode_AUTH_INVALID.String()
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
-			return
-		}
-		if claims.ExpiresAt.Before(time.Now().Local()) {
-			chain.Message = ecode_iface.ECode_AUTH_EXPIRED.String()
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
-			return
-		}
 
 		// 查询access是否是游客权限
-		value, ok := access.AccessMap.Load(ctx.Request.RequestURI)
-		if !ok {
+		accessPo, err := access.NewDao(m.db).Get(ctx.Request.Method, ctx.Request.RequestURI)
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			chain.Message = "404"
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
 			return
 		}
-		accessPo := value.(*access.Access)
-		// 系统管理员直接放行或匿名接口
-		if claims.RoleId != role.SystemRole.Id && accessPo.Status != common_iface.AccessStatus_ACCESS_ANONYMOUS {
-			if !permission.NewDao(m.db).Inspector(claims.RoleId, accessPo.Id) {
-				chain.Message = "无权限"
+		if err != nil {
+			logger.Error(ctx, "auth accessPo.Get failed", zap.Error(err))
+			chain.Message = "[14101]系统错误, 请联系管理员"
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, chain)
+			return
+		}
+
+		if accessPo.Status != common_iface.AccessStatus_ACCESS_ANONYMOUS {
+
+			// 不是游客权限, 进行认证
+			if token == "" || !strings.HasPrefix(token, "Bearer ") {
+				chain.Message = "账户未登录"
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
 				return
 			}
+
+			// token解析
+			claims, err := system.UnSignClaims(token)
+			if err != nil {
+				logger.Error(ctx, "auth system.UnSignClaims failed", zap.Error(err))
+				chain.Message = ecode_iface.ECode_AUTH_INVALID.String()
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+				return
+			}
+
+			// 过期时间验证
+			if claims.ExpiresAt.Before(time.Now().Local()) {
+				chain.Message = ecode_iface.ECode_AUTH_EXPIRED.String()
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+				return
+			}
+
+			// 非系统管理员进行权限验证
+			if claims.UserId != user.SystemUser.Id {
+				if !permission.NewDao(m.db).Inspector(claims.UserId, accessPo.Id) {
+					chain.Message = "无权限"
+					ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+					return
+				}
+			}
+
+			// 如果是刷新token，携带的必须是RefreshToken
+			if accessPo.Path == "/api/user/refresh" && !claims.IsRefresh {
+				chain.Message = ecode_iface.ECode_AUTH_NOT_ACCESS_TOKEN.String()
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+				return
+			}
+
+			chain.UserId = claims.UserId
 		}
-		chain.UserId = claims.UserId
+
 		ctx.Next()
 	}
 }

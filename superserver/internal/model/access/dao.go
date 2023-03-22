@@ -7,39 +7,49 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type AccessDao struct {
+type Dao struct {
 	model.BaseDao
 }
 
-func (*AccessDao) TableName() string {
+func (*Dao) TableName() string {
 	return "su_access"
 }
 
-func NewDao(db *gorm.DB) *AccessDao {
-	dao := &AccessDao{BaseDao: model.BaseDao{Db: db}}
+func NewDao(db *gorm.DB) *Dao {
+	dao := &Dao{BaseDao: model.BaseDao{Db: db}}
 	dao.BaseDao.TableName = dao.TableName()
 	return dao
 }
 
-func (dao *AccessDao) BatchUpsert(accessList []Access) error {
+func (dao *Dao) Get(method, path string) (*Access, error) {
+	access := new(Access)
+	err := dao.Connection().Where("method = ? and path = ?", method, path).First(access).Error
+	return access, err
+}
+
+func (dao *Dao) BatchUpsert(accessList []Access) error {
 	return dao.Connection().Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "path"}},
 		DoUpdates: clause.AssignmentColumns([]string{"method", "handler", "update_time", "delete_time"}),
 	}).Create(&accessList).Error
 }
 
-func (dao *AccessDao) GetAccessMapByIds(ids []int) (map[int]*Access, error) {
+func (dao *Dao) GetAccessMapByIds(ids []int) (map[int]*Access, error) {
 	result := make(map[int]*Access)
-	if len(ids) == 0 {
-		return result, nil
-	}
-	var accessList []*Access
-	err := dao.Connection().Where("id in ?", ids).Find(&accessList).Error
+	list, err := dao.GetAccessListByIds(ids)
 	if err != nil {
 		return result, err
 	}
-	for _, access := range accessList {
+	for _, access := range list {
 		result[access.Id] = access
 	}
 	return result, nil
+}
+
+func (dao *Dao) GetAccessListByIds(ids []int) (list []*Access, err error) {
+	if len(ids) == 0 {
+		return list, nil
+	}
+	err = dao.Connection().Where("id in ?", ids).Find(&list).Error
+	return list, err
 }

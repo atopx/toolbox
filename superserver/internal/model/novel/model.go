@@ -1,8 +1,8 @@
 package novel
 
 import (
+	"superserver/common/interface/novel_iface"
 	"superserver/internal/model"
-	"superserver/proto/novel_iface"
 )
 
 type Novel struct {
@@ -25,7 +25,7 @@ func (*Novel) TableName() string {
 	return "su_novel"
 }
 
-type NovelChapter struct {
+type Chapter struct {
 	model.Base
 	NovelId int                    `json:"novel_id"`                  // 小说ID
 	Name    string                 `json:"name"`                      // 章节标题
@@ -35,11 +35,11 @@ type NovelChapter struct {
 	Message string                 `json:"message"`                   // 消息
 }
 
-func (*NovelChapter) TableName() string {
+func (*Chapter) TableName() string {
 	return "su_novel_chapter"
 }
 
-type NovelTask struct {
+type Task struct {
 	model.Base
 	NovelId int                    // 小说ID
 	Status  novel_iface.ScanStatus // 状态

@@ -32,7 +32,7 @@ func main() {
 		viper.Set("server.loglevel", "info")
 		viper.Set("admin.user", "superuser")
 		viper.Set("admin.pass", "superuser")
-		log.Println("useing default server config:")
+		log.Println("using default server config:")
 		for key, value := range viper.GetStringMap("server") {
 			log.Printf(" - %s: %v\n", key, value)
 		}

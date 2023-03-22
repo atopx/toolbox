@@ -1,8 +1,8 @@
 package create
 
 import (
+	"superserver/common/interface/computer_iface"
 	"superserver/internal/controller"
-	"superserver/proto/computer_iface"
 
 	"github.com/gin-gonic/gin"
 )

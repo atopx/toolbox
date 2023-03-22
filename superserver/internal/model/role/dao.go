@@ -1,33 +1,32 @@
 package role
 
 import (
-	"errors"
+	"superserver/common/interface/user_iface"
 	"superserver/internal/model"
-	"superserver/proto/user_iface"
 
 	"gorm.io/gorm"
 )
 
-type RoleDao struct {
+type Dao struct {
 	model.BaseDao
 }
 
-func (*RoleDao) TableName() string {
+func (*Dao) TableName() string {
 	return "su_role"
 }
 
-func NewDao(db *gorm.DB) *RoleDao {
-	dao := &RoleDao{BaseDao: model.BaseDao{Db: db}}
+func NewDao(db *gorm.DB) *Dao {
+	dao := &Dao{BaseDao: model.BaseDao{Db: db}}
 	dao.BaseDao.TableName = dao.TableName()
 	return dao
 }
 
-func (dao *RoleDao) FindByName(name string) (role Role, err error) {
+func (dao *Dao) FindByName(name string) (role Role, err error) {
 	err = dao.Connection().Where("name = ?", name).First(&role).Error
 	return role, err
 }
 
-func (dao *RoleDao) GetRoleMapByIds(ids []int) (map[int]*Role, error) {
+func (dao *Dao) GetRoleMapByIds(ids []int) (map[int]*Role, error) {
 	result := make(map[int]*Role)
 	if len(ids) == 0 {
 		return result, nil
@@ -43,24 +42,18 @@ func (dao *RoleDao) GetRoleMapByIds(ids []int) (map[int]*Role, error) {
 	return result, nil
 }
 
-func (dao *RoleDao) LoadSystemRole() (err error) {
-	SystemRole, err = dao.loadByNature("系统管理员", user_iface.RoleNature_ROLE_SYSTEM)
+func (dao *Dao) LoadSystemRole() (err error) {
+	SystemRole, err = dao.loadByNature("超级管理员", user_iface.RoleNature_ROLE_SYSTEM)
 	return err
 }
 
-func (dao *RoleDao) LoadDefaultRole() (err error) {
+func (dao *Dao) LoadDefaultRole() (err error) {
 	DefaultRole, err = dao.loadByNature("默认角色", user_iface.RoleNature_ROLE_DEFAULT)
 	return err
 }
 
-func (dao *RoleDao) loadByNature(name string, nature user_iface.RoleNature) (*Role, error) {
-	role := new(Role)
-	err := dao.Connection().Where("nature=?", nature).First(role).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		err = nil
-		role.Name = name
-		role.Nature = nature
-		err = dao.Create(role)
-	}
+func (dao *Dao) loadByNature(name string, nature user_iface.RoleNature) (*Role, error) {
+	role := &Role{Name: name, Nature: nature}
+	err := dao.Connection().Where("nature=?", nature).FirstOrCreate(role).Error
 	return role, err
 }

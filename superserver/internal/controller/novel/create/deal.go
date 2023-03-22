@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"superserver/common/interface/novel_iface"
 	"superserver/common/logger"
 	"superserver/internal/model/novel"
-	"superserver/proto/novel_iface"
 	"time"
 )
 
@@ -41,7 +41,7 @@ func (ctl *Controller) Deal() {
 
 	tx := db.Begin()
 	reply := &Reply{}
-	var chapters []*novel.NovelChapter
+	var chapters []*novel.Chapter
 	chapterDup := make(map[string]struct{})
 
 	defer func() {
@@ -103,7 +103,7 @@ func (ctl *Controller) Deal() {
 			source := element.Request.AbsoluteURL(element.Attr("href"))
 			if _, ok := chapterDup[source]; !ok && source != "" {
 				chapterDup[source] = struct{}{}
-				chapters = append(chapters, &novel.NovelChapter{
+				chapters = append(chapters, &novel.Chapter{
 					Name:   element.Text,
 					Source: source,
 					Status: novel_iface.ScanStatus_SCAN_PENDING,

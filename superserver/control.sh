@@ -8,7 +8,7 @@ function build() {
 }
 
 function proto() {
-	protoc --go_out=. proto/*/*.proto
+	protoc --go_out=. data/protos/*.proto
 }
 
 function swagger() {

@@ -19,8 +19,8 @@ type Params struct {
 }
 
 type Reply struct {
-	Novel    NovelVo               `json:"novel"`
-	Chapters []*novel.NovelChapter `json:"chapters"`
+	Novel    NovelVo          `json:"novel"`
+	Chapters []*novel.Chapter `json:"chapters"`
 }
 
 type NovelVo struct {

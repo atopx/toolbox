@@ -2,8 +2,8 @@ package model
 
 import (
 	"fmt"
+	"superserver/common/interface/common_iface"
 	"superserver/common/utils"
-	"superserver/proto/common_iface"
 	"time"
 
 	"gorm.io/gorm"
@@ -14,6 +14,10 @@ type Base struct {
 	DeleteTime int64 `json:"delete_time"`                       // 更新时间
 	CreateTime int64 `json:"create_time" gorm:"autoCreateTime"` // 创建时间
 	UpdateTime int64 `json:"update_time" gorm:"autoUpdateTime"` // 删除时间
+}
+
+func (b *Base) GetId() int {
+	return b.Id
 }
 
 func (b *Base) BeforeCreate(*gorm.DB) error {
@@ -47,11 +51,11 @@ func (dao *BaseDao) Create(po Po) error {
 }
 
 func (dao *BaseDao) Update(po Po) error {
-	return dao.Connection().Where("id = ?", po.GetId()).Updates(po).Error
+	return dao.Connection().Updates(po).Error
 }
 
 func (dao *BaseDao) Save(po Po) error {
-	return dao.Connection().Where("id = ?", po.GetId()).Save(po).Error
+	return dao.Connection().Save(po).Error
 }
 
 func (dao *BaseDao) Delete(po Po) error {
@@ -59,7 +63,7 @@ func (dao *BaseDao) Delete(po Po) error {
 }
 
 func (dao *BaseDao) RealDelete(po Po) error {
-	return dao.Connection().Where("id = ?", po.GetId()).Delete(po).Error
+	return dao.Connection().Delete(po).Error
 }
 
 func (dao *BaseDao) NotDeleted(tx *gorm.DB) *gorm.DB {
@@ -87,7 +91,7 @@ func (dao *BaseDao) Paginate(pager *common_iface.Pager) func(tx *gorm.DB) *gorm.
 }
 
 type Po interface {
-	GetId() any
+	GetId() int
 }
 
 type Enum struct {

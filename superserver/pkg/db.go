@@ -18,7 +18,6 @@ func NewDbClient(cfg map[string]interface{}, logger glog.Interface) (*gorm.DB, e
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		cfg["user"], cfg["pass"], cfg["host"], cfg["port"], cfg["name"],
 	)
-	fmt.Println(dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		SkipDefaultTransaction: false,
 		NowFunc:                func() time.Time { return time.Now().Local() },

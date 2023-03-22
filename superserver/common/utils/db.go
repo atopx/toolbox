@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"superserver/proto/common_iface"
+	"superserver/common/interface/common_iface"
 )
 
 func NewLikeValue(value string) string {

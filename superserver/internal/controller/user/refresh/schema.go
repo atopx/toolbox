@@ -1,7 +1,6 @@
-package operate
+package refresh
 
 import (
-	"superserver/common/interface/computer_iface"
 	"superserver/internal/controller"
 
 	"github.com/gin-gonic/gin"
@@ -16,10 +15,11 @@ func NewController(ctx *gin.Context) *Controller {
 }
 
 type Params struct {
-	Id      int                             `json:"id"`
-	Operate *computer_iface.ComputerOperate `json:"operate"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type Reply struct {
-	Status string
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	Expires      int64  `json:"expires"`
 }

@@ -3,9 +3,9 @@ package create
 import (
 	"go.uber.org/zap"
 	"net/http"
+	"superserver/common/interface/user_iface"
 	"superserver/common/logger"
 	"superserver/internal/model/role"
-	"superserver/proto/user_iface"
 )
 
 func (ctl *Controller) Deal() {

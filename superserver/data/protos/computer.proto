@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "proto/computer_iface";
+option go_package = "common/interface/computer_iface";
 
 
 enum ComputerPowerStatus {

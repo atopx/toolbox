@@ -3,8 +3,8 @@ package user
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"superserver/common/interface/user_iface"
 	"superserver/internal/model"
-	"superserver/proto/user_iface"
 )
 
 type User struct {
@@ -12,15 +12,10 @@ type User struct {
 	Name     string                // 姓名
 	Username string                // 用户名
 	Password string                // 用户密码
-	RoleId   int                   // 用户角色
 	Status   user_iface.UserStatus // 用户状态
 }
 
 var SystemUser *User
-
-func (m *User) GetId() any {
-	return m.Id
-}
 
 func (m *User) SetPassword(password string) {
 	m.Password = m.Crypto(password)

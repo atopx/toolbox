@@ -2,12 +2,14 @@ package login
 
 import (
 	"errors"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
 	"net/http"
 	"superserver/common/logger"
 	"superserver/common/system"
 	"superserver/internal/model/user"
+	"superserver/internal/model/user_token"
+
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 func (ctl *Controller) Deal() {
@@ -32,12 +34,21 @@ func (ctl *Controller) Deal() {
 		ctl.NewErrorResponse(http.StatusBadRequest, "登录密码错误")
 		return
 	}
-	tokenStr, err := system.SignClaims(po.Id, po.RoleId)
-	if err != nil {
+	token := system.SignClaims(po.Id)
+	token.UserId = po.Id
+	tokenDao := user_token.NewDao(ctl.GetDatabase())
+	if err = tokenDao.Create(&token); err != nil {
 		logger.Error(ctl.Context, "user login system.SignClaims failed", zap.Error(err))
 		ctl.NewErrorResponse(http.StatusInternalServerError, "[12002]系统错误, 请联系管理员")
 		return
 	}
 
-	ctl.NewOkResponse(http.StatusOK, &Reply{UserId: po.Id, Token: tokenStr})
+	ctl.NewOkResponse(http.StatusOK, &Reply{
+		UserId:       po.Id,
+		Name:         po.Name,
+		Username:     po.Username,
+		AccessToken:  token.AccessToken,
+		RefreshToken: token.RefreshToken,
+		Expires:      token.ExpireTime,
+	})
 }

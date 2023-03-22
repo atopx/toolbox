@@ -2,10 +2,10 @@ package search
 
 import (
 	"github.com/gin-gonic/gin"
+	"superserver/common/interface/common_iface"
+	"superserver/common/interface/user_iface"
 	"superserver/internal/controller"
 	"superserver/internal/model/permission"
-	"superserver/proto/common_iface"
-	"superserver/proto/user_iface"
 )
 
 type Controller struct {
@@ -43,8 +43,8 @@ type RoleVo struct {
 }
 
 type AccessVo struct {
-	Id      int                       `json:"id"`
-	Path    string                    `json:"path"`
-	Method  common_iface.AccessMethod `json:"method"`
-	Handler string                    `json:"handler"`
+	Id      int    `json:"id"`
+	Path    string `json:"path"`
+	Method  string `json:"method"`
+	Handler string `json:"handler"`
 }

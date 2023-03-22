@@ -1,7 +1,6 @@
-package computer
+package user_token
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"superserver/internal/model"
 )
@@ -11,7 +10,7 @@ type Dao struct {
 }
 
 func (*Dao) TableName() string {
-	return "su_computer"
+	return "su_user_token"
 }
 
 func NewDao(db *gorm.DB) *Dao {
@@ -20,7 +19,8 @@ func NewDao(db *gorm.DB) *Dao {
 	return dao
 }
 
-func (dao *Dao) FilterBy(key string, value any) (po *Computer, err error) {
-	err = dao.Connection().Where(fmt.Sprintf("%s = ?", key), value).First(&po).Error
-	return po, err
+func (d *Dao) First(where func(*gorm.DB) *gorm.DB) (*UserToken, error) {
+	token := new(UserToken)
+	err := d.Connection().Scopes(where).First(&token).Error
+	return token, err
 }

@@ -1,8 +1,8 @@
 package port
 
 import (
+	"superserver/common/interface/computer_iface"
 	"superserver/internal/model"
-	"superserver/proto/computer_iface"
 )
 
 type ComputerPort struct {
@@ -15,8 +15,4 @@ type ComputerPort struct {
 	Desc       string                               // 备注
 	Creator    int                                  // 创建人
 	Updator    int                                  // 更新人
-}
-
-func (m *ComputerPort) GetId() any {
-	return m.Id
 }

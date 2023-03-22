@@ -2,9 +2,9 @@ package access
 
 import (
 	"github.com/gin-gonic/gin"
+	"superserver/common/interface/common_iface"
 	"superserver/internal/controller"
 	"superserver/internal/model/access"
-	"superserver/proto/common_iface"
 )
 
 type Controller struct {
@@ -22,14 +22,14 @@ type Params struct {
 
 type Reply struct {
 	Page *common_iface.Pager `json:"page"`
-	List []AccessVo          `json:"search"`
+	List []Vo                `json:"search"`
 }
 
-type AccessVo struct {
-	Id         int                       `json:"id"`
-	Path       string                    `json:"path"`
-	Method     common_iface.AccessMethod `json:"method"`
-	Handler    string                    `json:"handler"`
-	CreateTime int64                     `json:"create_time"`
-	UpdateTime int64                     `json:"update_time"`
+type Vo struct {
+	Id         int    `json:"id"`
+	Path       string `json:"path"`
+	Method     string `json:"method"`
+	Handler    string `json:"handler"`
+	CreateTime int64  `json:"create_time"`
+	UpdateTime int64  `json:"update_time"`
 }

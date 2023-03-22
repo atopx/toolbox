@@ -18,7 +18,7 @@ func (ctl *Controller) Deal() {
 	}
 	reply := Reply{
 		Page: params.Page,
-		List: []AccessVo{},
+		List: []Vo{},
 	}
 	for _, po := range data {
 		vo := ctl.NewAccessVo(&po)
@@ -28,8 +28,8 @@ func (ctl *Controller) Deal() {
 	ctl.NewOkResponse(http.StatusOK, &reply)
 }
 
-func (ctl *Controller) NewAccessVo(po *access.Access) AccessVo {
-	return AccessVo{
+func (ctl *Controller) NewAccessVo(po *access.Access) Vo {
+	return Vo{
 		Id:         po.Id,
 		Path:       po.Path,
 		Method:     po.Method,

@@ -1,9 +1,9 @@
 package role
 
 import (
+	"superserver/common/interface/common_iface"
+	"superserver/common/interface/user_iface"
 	"superserver/common/utils"
-	"superserver/proto/common_iface"
-	"superserver/proto/user_iface"
 )
 
 type Filter struct {
@@ -14,7 +14,7 @@ type Filter struct {
 	UpdateTimeRange *common_iface.RangeI64  `json:"update_time_range"`
 }
 
-func (dao *RoleDao) Filter(filter *Filter, pager *common_iface.Pager) (computers []Role, err error) {
+func (dao *Dao) Filter(filter *Filter, pager *common_iface.Pager) (computers []Role, err error) {
 	if filter == nil {
 		filter = new(Filter)
 	}

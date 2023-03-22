@@ -12,10 +12,6 @@ type Permission struct {
 	Updater  int
 }
 
-func (m *Permission) GetId() any {
-	return m.Id
-}
-
 func New(id int) *Permission {
 	return &Permission{Base: model.Base{Id: id}}
 }

@@ -8,7 +8,7 @@ import (
 	"math/big"
 	"net"
 	"strings"
-	"superserver/proto/computer_iface"
+	"superserver/common/interface/computer_iface"
 	"time"
 )
 
@@ -47,7 +47,6 @@ func ComputerCheck(host string, port int) computer_iface.ComputerPowerStatus {
 }
 
 func ComputerOn(mac string) error {
-	//fmt.Println(mac)
 	machex, _ := hex.DecodeString(mac)
 	conn, err := net.DialUDP("udp", &net.UDPAddr{}, &net.UDPAddr{IP: net.IPv4bcast})
 	if err != nil {

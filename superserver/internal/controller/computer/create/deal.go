@@ -4,9 +4,9 @@ import (
 	"errors"
 	"go.uber.org/zap"
 	"net/http"
+	"superserver/common/interface/computer_iface"
 	"superserver/common/logger"
 	"superserver/internal/model/computer"
-	"superserver/proto/computer_iface"
 
 	"gorm.io/gorm"
 )

@@ -1,8 +1,8 @@
 package access
 
 import (
+	"superserver/common/interface/common_iface"
 	"superserver/common/utils"
-	"superserver/proto/common_iface"
 )
 
 type Filter struct {
@@ -13,7 +13,7 @@ type Filter struct {
 	UpdateTimeRange *common_iface.RangeI64      `json:"update_time_range"`
 }
 
-func (dao *AccessDao) Filter(filter *Filter, pager *common_iface.Pager) (computers []Access, err error) {
+func (dao *Dao) Filter(filter *Filter, pager *common_iface.Pager) (computers []Access, err error) {
 	if filter == nil {
 		filter = new(Filter)
 	}

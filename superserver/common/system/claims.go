@@ -2,27 +2,31 @@ package system
 
 import (
 	"errors"
-	"fmt"
 	"github.com/spf13/viper"
 	"strings"
+	"superserver/internal/model/user_token"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-const OAuthBearer = "Bearer"
+var secretKey []byte
+
+func init() {
+	secretKey = []byte(viper.GetString("admin.secret"))
+}
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserId, RoleId int
+	UserId    int
+	IsRefresh bool
 }
 
 func UnSignClaims(tokenStr string) (*Claims, error) {
 	tokenStr = tokenStr[strings.Index(tokenStr, " ")+1:]
 	var claims Claims
-	fmt.Println(tokenStr)
 	token, err := jwt.ParseWithClaims(tokenStr, &claims, func(t *jwt.Token) (interface{}, error) {
-		return loadSecretKey(), nil
+		return secretKey, nil
 	})
 	if err != nil {
 		return nil, err
@@ -33,25 +37,30 @@ func UnSignClaims(tokenStr string) (*Claims, error) {
 	return &claims, nil
 }
 
-func SignClaims(userId, roleId int) (string, error) {
-	currentTime := time.Now().Local()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
+func SignClaims(userId int) (token user_token.UserToken) {
+	current := time.Now().Local()
+	expires := current.Add(24 * time.Hour)
+	token.IssuedTime = current.Unix()
+	token.ExpireTime = expires.Unix()
+	token.AccessToken, _ = sign(&Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: &jwt.NumericDate{Time: currentTime.Add(3000 * time.Hour)},
-			IssuedAt:  &jwt.NumericDate{Time: currentTime},
+			IssuedAt:  &jwt.NumericDate{Time: current},
+			ExpiresAt: &jwt.NumericDate{Time: expires},
 		},
-		UserId: userId,
-		RoleId: roleId,
+		UserId:    userId,
+		IsRefresh: false,
 	})
-	tokenStr, err := token.SignedString(loadSecretKey())
-	if err != nil {
-		return tokenStr, err
-	}
-	viper.GetString("admin.secret")
-	// use the username as secret key
-	return fmt.Sprintf("%s %s", OAuthBearer, tokenStr), nil
+	token.RefreshToken, _ = sign(&Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			IssuedAt:  &jwt.NumericDate{Time: current},
+			ExpiresAt: &jwt.NumericDate{Time: current.Add(7 * 24 * time.Hour)},
+		},
+		UserId:    userId,
+		IsRefresh: true,
+	})
+	return token
 }
 
-func loadSecretKey() []byte {
-	return []byte(viper.GetString("admin.secret"))
+func sign(claims *Claims) (string, error) {
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(secretKey)
 }

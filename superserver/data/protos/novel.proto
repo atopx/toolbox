@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "proto/novel_iface";
+option go_package = "common/interface/novel_iface";
 
 
 enum NovelStatus {

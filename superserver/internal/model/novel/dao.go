@@ -2,6 +2,6 @@ package novel
 
 import "superserver/internal/model"
 
-type NovelDao struct {
+type Dao struct {
 	model.BaseDao
 }
