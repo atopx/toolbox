@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"superserver/common/interface/ecode_iface"
 	"time"
 
 	"superserver/common/logger"
@@ -25,13 +26,13 @@ func (m *Middleware) ContextMiddleware() gin.HandlerFunc {
 		beginTime := time.Now()
 		ctx.Next()
 		cost := zap.String("cost", time.Since(beginTime).String())
-		switch chain.GetLevel() {
-		case system.ChainBad:
-			logger.Warn(ctx, "response", cost, zap.String("warn", chain.Message))
-		case system.ChainError:
-			logger.Error(ctx, "response", cost, zap.String("error", chain.Message))
-		default:
+
+		if chain.Level < ecode_iface.ECode_BAD_REQUEST {
 			logger.Info(ctx, "response", cost)
+		} else if chain.Level < ecode_iface.ECode_SYSTEM_ERROR {
+			logger.Warn(ctx, "response", cost, zap.String("warn", chain.Message))
+		} else {
+			logger.Error(ctx, "response", cost, zap.String("error", chain.Message))
 		}
 		chain.Message = http.StatusText(ctx.Writer.Status())
 	}

@@ -7,6 +7,7 @@ import (
 	"net/http/httputil"
 	"os"
 	"strings"
+	"superserver/common/interface/ecode_iface"
 
 	"superserver/common/logger"
 	"superserver/common/system"
@@ -48,7 +49,7 @@ func (m *Middleware) RecoverMiddleware() gin.HandlerFunc {
 				)
 				log.Println(stack.String)
 				chain := system.GetChainMessage(ctx)
-				chain.WriteAbnomal(system.ChainError, http.StatusText(http.StatusInternalServerError))
+				chain.WriteAbnormal(ecode_iface.ECode_SYSTEM_ERROR, http.StatusText(http.StatusInternalServerError))
 				ctx.AbortWithStatusJSON(http.StatusInternalServerError, chain)
 			}
 		}()

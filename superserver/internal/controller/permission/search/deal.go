@@ -2,7 +2,7 @@ package search
 
 import (
 	"go.uber.org/zap"
-	"net/http"
+	"superserver/common/interface/ecode_iface"
 	"superserver/common/logger"
 	"superserver/internal/model/access"
 	"superserver/internal/model/permission"
@@ -16,7 +16,7 @@ func (ctl *Controller) Deal() {
 	data, err := dao.Filter(&params.Filter, params.Page)
 	if err != nil {
 		logger.Error(ctl.Context, "search permission dao.Filter failed", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误,请联系管理员")
 		return
 	}
 	var userIds, roleIds, accessIds []int
@@ -28,19 +28,19 @@ func (ctl *Controller) Deal() {
 	userMap, err := user.NewDao(ctl.GetDatabase()).GetUserMapByIds(userIds)
 	if err != nil {
 		logger.Error(ctl.Context, "search permission GetUserMapByIds failed", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误,请联系管理员")
 		return
 	}
 	accessMap, err := access.NewDao(ctl.GetDatabase()).GetAccessMapByIds(accessIds)
 	if err != nil {
 		logger.Error(ctl.Context, "search permission GetAccessMapByIds failed", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误,请联系管理员")
 		return
 	}
 	roleMap, err := role.NewDao(ctl.GetDatabase()).GetRoleMapByIds(roleIds)
 	if err != nil {
 		logger.Error(ctl.Context, "search permission GetRoleMapByIds failed", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误,请联系管理员")
 		return
 	}
 
@@ -74,7 +74,7 @@ func (ctl *Controller) Deal() {
 		reply.List = append(reply.List, vo)
 	}
 
-	ctl.NewOkResponse(http.StatusOK, &reply)
+	ctl.NewOkResponse(&reply)
 }
 
 func (ctl *Controller) NewPermissionVo(po *permission.Permission) PermissionVo {

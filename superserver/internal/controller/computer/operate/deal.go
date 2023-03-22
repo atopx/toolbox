@@ -4,8 +4,8 @@ import (
 	"errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"net/http"
 	"superserver/common/interface/computer_iface"
+	"superserver/common/interface/ecode_iface"
 	"superserver/common/logger"
 	"superserver/common/utils"
 	"superserver/internal/model/computer"
@@ -14,7 +14,7 @@ import (
 func (ctl *Controller) Deal() {
 	params := ctl.Params.(*Params)
 	if params.Operate == nil || params.Id <= 0 {
-		ctl.NewErrorResponse(http.StatusBadRequest, "无效的操作")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "无效的操作")
 		return
 	}
 	var reply Reply
@@ -26,7 +26,7 @@ func (ctl *Controller) Deal() {
 	po := computer.NewComputer(params.Id)
 	err := dao.Load(po)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		ctl.NewErrorResponse(http.StatusBadRequest, "无效的主机ID")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "无效的主机ID")
 		return
 	}
 
@@ -48,8 +48,8 @@ func (ctl *Controller) Deal() {
 	}
 	if err != nil {
 		logger.Error(ctl.Context, "主机操作失败", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusBadRequest, "操作失败, 请检查配置")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "操作失败, 请检查配置")
 		return
 	}
-	ctl.NewOkResponse(http.StatusOK, reply)
+	ctl.NewOkResponse(reply)
 }

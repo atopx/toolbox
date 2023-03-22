@@ -6,9 +6,9 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"net/http"
 	"net/url"
 	"strings"
+	"superserver/common/interface/ecode_iface"
 	"superserver/common/interface/novel_iface"
 	"superserver/common/logger"
 	"superserver/internal/model/novel"
@@ -19,19 +19,20 @@ func (ctl *Controller) Deal() {
 	params := ctl.Params.(*Params)
 	target, err := url.Parse(params.Target)
 	if err != nil {
-		ctl.NewErrorResponse(http.StatusBadRequest, "无效的URL地址")
+		ctl.NewErrorResponse(ecode_iface.ECode_INVALID_PARAMS, "无效的URL地址")
 		return
 	}
 	db := ctl.GetDatabase()
 	var novelPo novel.Novel
 	err = db.Model(&novelPo).Where("source = ?", target.String()).First(&novelPo).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		if err != nil {
-			logger.Error(ctl.Context, "create novel first by source failed", zap.Error(err))
-			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
-			return
-		}
-		ctl.NewErrorResponse(http.StatusBadRequest, "书源已存在")
+		ctl.NewErrorResponse(ecode_iface.ECode_REQUEST_CONFLICT, "书源已存在")
+		return
+	}
+
+	if err != nil {
+		logger.Error(ctl.Context, "create novel first by source failed", zap.Error(err))
+		ctl.NewErrorResponse(ecode_iface.ECode_DB_ERROR, "系统错误, 请联系管理员")
 		return
 	}
 
@@ -47,7 +48,7 @@ func (ctl *Controller) Deal() {
 	defer func() {
 		if err != nil {
 			tx.Rollback()
-			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
+			ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误, 请联系管理员")
 		} else {
 			reply.Chapters = chapters
 			reply.Novel = NovelVo{
@@ -59,7 +60,7 @@ func (ctl *Controller) Deal() {
 				Lasted: novelPo.Lasted,
 				Status: novelPo.Status.String(),
 			}
-			ctl.NewOkResponse(http.StatusOK, reply)
+			ctl.NewOkResponse(reply)
 		}
 	}()
 

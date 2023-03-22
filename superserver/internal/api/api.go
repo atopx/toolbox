@@ -31,6 +31,7 @@ func (a *Api) RouteUser() {
 		group.POST("/create", a.UserCreate)
 		group.POST("/login", a.UserLogin)
 		group.POST("/refresh", a.UserRefresh)
+		group.GET("/info", a.UserInfo)
 	}
 }
 

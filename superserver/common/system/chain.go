@@ -2,18 +2,11 @@ package system
 
 import (
 	"context"
+	"superserver/common/interface/ecode_iface"
 	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
-)
-
-type ChainLevel int8
-
-const (
-	ChainNormal ChainLevel = iota
-	ChainBad
-	ChainError
 )
 
 const chainContextKey = "chain_message"
@@ -50,8 +43,9 @@ type ChainMessage struct {
 	Data    any    `json:"data,omitempty"`
 
 	// not export fields
-	level  ChainLevel `json:"-"`
-	UserId int        `json:"-"`
+	Level    ecode_iface.ECode `json:"-"`
+	UserId   int               `json:"-"`
+	AuthTime int64             `json:"-"`
 }
 
 func (m *ChainMessage) WriteNormal(data any) {
@@ -59,8 +53,8 @@ func (m *ChainMessage) WriteNormal(data any) {
 	m.Data = data
 }
 
-func (m *ChainMessage) WriteAbnomal(level ChainLevel, message string) {
-	m.level = level
+func (m *ChainMessage) WriteAbnormal(level ecode_iface.ECode, message string) {
+	m.Level = level
 	m.Message = message
 }
 
@@ -68,8 +62,8 @@ func (m *ChainMessage) IntoContext(ctx *gin.Context) {
 	ctx.Set(chainContextKey, m)
 }
 
-func (m *ChainMessage) GetLevel() ChainLevel {
-	return m.level
+func (m *ChainMessage) GetLevel() ecode_iface.ECode {
+	return m.Level
 }
 
 func (m *ChainMessage) Recycle() {
@@ -77,5 +71,5 @@ func (m *ChainMessage) Recycle() {
 	m.UserId = 0
 	m.Data = nil
 	m.Message = ""
-	m.level = ChainNormal
+	m.Level = ecode_iface.ECode_SUCCESS
 }

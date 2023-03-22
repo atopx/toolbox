@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"superserver/common/interface/ecode_iface"
 
 	"superserver/common/logger"
 	"superserver/common/system"
@@ -21,6 +22,10 @@ type Controller struct {
 
 func (ctl *Controller) GetDatabase() *gorm.DB {
 	return ctl.db
+}
+
+func (ctl *Controller) GetAuthTime() int64 {
+	return ctl.chain.AuthTime
 }
 
 // ContextLoader 上下文加载器
@@ -48,14 +53,20 @@ func (ctl *Controller) RequestParamsLoader() error {
 }
 
 // NewOkResponse 正常的response
-func (ctl *Controller) NewOkResponse(code int, data any) {
+func (ctl *Controller) NewOkResponse(data any) {
 	ctl.chain.WriteNormal(data)
-	ctl.Context.JSON(code, ctl.chain)
+	ctl.Context.JSON(http.StatusOK, ctl.chain)
 }
 
 // NewErrorResponse 异常的response
-func (ctl *Controller) NewErrorResponse(code int, message string) {
-	ctl.chain.WriteAbnomal(system.ChainBad, message)
+func (ctl *Controller) NewErrorResponse(ecode ecode_iface.ECode, message string) {
+	ctl.chain.WriteAbnormal(ecode_iface.ECode_BAD_REQUEST, message)
+	var code int
+	if ecode >= ecode_iface.ECode_SYSTEM_ERROR {
+		code = http.StatusInternalServerError
+	} else {
+		code = http.StatusBadRequest
+	}
 	ctl.Context.JSON(code, ctl.chain)
 }
 

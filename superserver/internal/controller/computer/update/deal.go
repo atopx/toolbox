@@ -2,7 +2,7 @@ package update
 
 import (
 	"errors"
-	"net/http"
+	"superserver/common/interface/ecode_iface"
 	"superserver/internal/model/computer"
 
 	"gorm.io/gorm"
@@ -16,7 +16,7 @@ func (ctl *Controller) Deal() {
 	po := computer.NewComputer(params.Id)
 	err := dao.Load(po)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		ctl.NewErrorResponse(http.StatusBadRequest, "无效的主机ID")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "无效的主机ID")
 		return
 	}
 	po.Name = params.Name
@@ -26,8 +26,8 @@ func (ctl *Controller) Deal() {
 	po.WanHostname = params.Name
 	po.Address = params.Address
 	if err := dao.Update(po); err != nil {
-		ctl.NewErrorResponse(http.StatusInternalServerError, "更新主机异常，请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "更新主机异常，请联系管理员")
 		return
 	}
-	ctl.NewOkResponse(http.StatusOK, &Reply{})
+	ctl.NewOkResponse(&Reply{})
 }

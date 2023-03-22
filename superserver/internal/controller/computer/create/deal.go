@@ -3,8 +3,8 @@ package create
 import (
 	"errors"
 	"go.uber.org/zap"
-	"net/http"
 	"superserver/common/interface/computer_iface"
+	"superserver/common/interface/ecode_iface"
 	"superserver/common/logger"
 	"superserver/internal/model/computer"
 
@@ -14,11 +14,11 @@ import (
 func (ctl *Controller) Deal() {
 	params := ctl.Params.(*Params)
 	if params.Name == "" {
-		ctl.NewErrorResponse(http.StatusBadRequest, "名称不能为空")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "名称不能为空")
 		return
 	}
 	if params.Address == "" {
-		ctl.NewErrorResponse(http.StatusBadRequest, "MAC地址不能为空")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "MAC地址不能为空")
 		return
 	}
 
@@ -27,20 +27,20 @@ func (ctl *Controller) Deal() {
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err != nil {
 			logger.Error(ctl.Context, "create computer dao.FilterByName failed", zap.Error(err))
-			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
+			ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误, 请联系管理员")
 			return
 		}
-		ctl.NewErrorResponse(http.StatusBadRequest, "名称已存在")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "名称已存在")
 		return
 	}
 	_, err = dao.FilterBy("address", params.Address)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err != nil {
 			logger.Error(ctl.Context, "create computer dao.FilterByAddress failed", zap.Error(err))
-			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
+			ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误, 请联系管理员")
 			return
 		}
-		ctl.NewErrorResponse(http.StatusBadRequest, "MAC地址已存在")
+		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "MAC地址已存在")
 		return
 	}
 
@@ -57,9 +57,9 @@ func (ctl *Controller) Deal() {
 	cpt.SetAddress(params.Address)
 	if err = dao.Create(&cpt); err != nil {
 		logger.Error(ctl.Context, "create computer dao.Create failed", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误, 请联系管理员")
 		return
 	}
 
-	ctl.NewOkResponse(http.StatusOK, &Reply{})
+	ctl.NewOkResponse(&Reply{})
 }

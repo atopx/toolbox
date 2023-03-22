@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"superserver/internal/controller/user/create"
+	"superserver/internal/controller/user/info"
 	"superserver/internal/controller/user/login"
 	"superserver/internal/controller/user/refresh"
 )
@@ -47,4 +48,18 @@ func (a *Api) UserLogin(ctx *gin.Context) {
 // @Router /api/user/refresh [post]
 func (a *Api) UserRefresh(ctx *gin.Context) {
 	a.Scheduler(refresh.NewController(ctx))
+}
+
+// UserInfo
+// @summary 用户详情
+// @Tags 用户
+// @Accept json
+// @Produce json
+// @Param param body info.Params true "请求参数"
+// @Response 200 object system.ChainMessage "调用成功"
+// @Response 400 object system.ChainMessage "请求错误"
+// @Response 500 object system.ChainMessage "系统错误"
+// @Router /api/user/info [post]
+func (a *Api) UserInfo(ctx *gin.Context) {
+	a.Scheduler(info.NewController(ctx))
 }

@@ -1,7 +1,7 @@
 package search
 
 import (
-	"net/http"
+	"superserver/common/interface/ecode_iface"
 	"superserver/common/logger"
 	"superserver/common/utils"
 	"superserver/internal/model/computer"
@@ -16,7 +16,7 @@ func (ctl *Controller) Deal() {
 	data, err := dao.Filter(&params.Filter, params.Page)
 	if err != nil {
 		logger.Error(ctl.Context, "search computer dao.Filter failed", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误,请联系管理员")
 		return
 	}
 
@@ -27,7 +27,7 @@ func (ctl *Controller) Deal() {
 	userMap, err := user.NewDao(ctl.GetDatabase()).GetUserMapByIds(userIds)
 	if err != nil {
 		logger.Error(ctl.Context, "search computer GetUserMapByIds failed", zap.Error(err))
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误,请联系管理员")
+		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "系统错误,请联系管理员")
 		return
 	}
 	reply := &Reply{
@@ -45,7 +45,7 @@ func (ctl *Controller) Deal() {
 		}
 		reply.List = append(reply.List, vo)
 	}
-	ctl.NewOkResponse(http.StatusOK, reply)
+	ctl.NewOkResponse(reply)
 }
 
 func (ctl *Controller) NewComputerVo(po *computer.Computer) ComputerVo {

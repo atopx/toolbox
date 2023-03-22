@@ -3,10 +3,12 @@ package create
 import (
 	"errors"
 	"go.uber.org/zap"
-	"net/http"
+	"superserver/common/interface/ecode_iface"
 	"superserver/common/interface/user_iface"
 	"superserver/common/logger"
+	"superserver/internal/model/role"
 	"superserver/internal/model/user"
+	"superserver/internal/model/user_role"
 
 	"gorm.io/gorm"
 )
@@ -14,27 +16,28 @@ import (
 func (ctl *Controller) Deal() {
 	params := ctl.Params.(*Params)
 	if params.Name == "" {
-		ctl.NewErrorResponse(http.StatusBadRequest, "名称不能为空")
+		ctl.NewErrorResponse(ecode_iface.ECode_INVALID_PARAMS, "名称不能为空")
 		return
 	}
 	if params.Username == "" {
-		ctl.NewErrorResponse(http.StatusBadRequest, "用户名不能为空")
+		ctl.NewErrorResponse(ecode_iface.ECode_INVALID_PARAMS, "用户名不能为空")
 		return
 	}
 	if params.Password == "" {
-		ctl.NewErrorResponse(http.StatusBadRequest, "密码不能为空")
+		ctl.NewErrorResponse(ecode_iface.ECode_INVALID_PARAMS, "密码不能为空")
 		return
 	}
 	dao := user.NewDao(ctl.GetDatabase())
 
 	_, err := dao.GetUserByUsername(params.Username, true)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		if err != nil {
-			logger.Error(ctl.Context, "create user dao.GetUserByUsername failed", zap.Error(err))
-			ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
-			return
-		}
-		ctl.NewErrorResponse(http.StatusBadRequest, "用户名已存在")
+		ctl.NewErrorResponse(ecode_iface.ECode_REQUEST_CONFLICT, "用户名已存在")
+		return
+	}
+
+	if err != nil {
+		logger.Error(ctl.Context, "create user dao.GetUserByUsername failed", zap.Error(err))
+		ctl.NewErrorResponse(ecode_iface.ECode_DB_ERROR, "系统错误, 请联系管理员")
 		return
 	}
 
@@ -45,9 +48,16 @@ func (ctl *Controller) Deal() {
 	}
 	po.SetPassword(params.Password)
 
-	if err := dao.Create(&po); err != nil {
-		ctl.NewErrorResponse(http.StatusInternalServerError, "系统错误, 请联系管理员")
+	if err = dao.Create(&po); err != nil {
+		ctl.NewErrorResponse(ecode_iface.ECode_DB_ERROR, "系统错误, 请联系管理员")
 		return
 	}
-	ctl.NewOkResponse(http.StatusOK, &Reply{})
+
+	// 绑定默认角色
+	if err = user_role.NewDao(ctl.GetDatabase()).Create(&user_role.UserRoleRef{UserId: po.Id, RoleId: role.DefaultRole.Id}); err != nil {
+		ctl.NewErrorResponse(ecode_iface.ECode_DB_ERROR, "系统错误, 请联系管理员")
+		return
+	}
+
+	ctl.NewOkResponse(&Reply{})
 }
