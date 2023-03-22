@@ -34,7 +34,6 @@
     "typeRoots": ["./node_modules/@types/", "./types"]
   },
   "include": [
-    "mock/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

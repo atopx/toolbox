@@ -3,7 +3,7 @@ import { unref } from "vue";
 import { useRouter } from "vue-router";
 
 defineOptions({
-  name: "Redirect"
+    name: "Redirect"
 });
 
 const { currentRoute, replace } = useRouter();
@@ -14,11 +14,11 @@ const { path } = params;
 const _path = Array.isArray(path) ? path.join("/") : path;
 
 replace({
-  path: "/" + _path,
-  query
+    path: "/" + _path,
+    query
 });
 </script>
 
 <template>
-  <div />
+    <div />
 </template>

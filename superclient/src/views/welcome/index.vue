@@ -1,9 +1,9 @@
 <script setup lang="ts">
 defineOptions({
-  name: "Welcome"
+    name: "Welcome"
 });
 </script>
 
 <template>
-  <h1>Super</h1>
+    <h1>Super</h1>
 </template>
