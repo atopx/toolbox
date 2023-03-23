@@ -1,209 +1,83 @@
-<script setup lang="ts">
-import "animate.css";
-// 引入 src/components/ReIcon/src/offlineIcon.ts 文件中所有使用addIcon添加过的本地图标
-import "@/components/ReIcon/src/offlineIcon";
-import { setType } from "./types";
-import { emitter } from "@/utils/mitt";
-import { useLayout } from "./hooks/useLayout";
-import { useAppStoreHook } from "@/store/modules/app";
-import { useSettingStoreHook } from "@/store/modules/settings";
-import { deviceDetection, useDark, useGlobal } from "@pureadmin/utils";
-import { h, reactive, computed, onMounted, defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue"
+import { useAppStore, DeviceType } from "@/store/modules/app"
+import { useSettingsStore } from "@/store/modules/settings"
+import { AppMain, NavigationBar, Settings, Sidebar, TagsView, RightPanel } from "./components"
+import useResize from "./hooks/useResize"
 
-import navbar from "./components/navbar.vue";
-import tag from "./components/tag/index.vue";
-import appMain from "./components/appMain.vue";
-import setting from "./components/setting/index.vue";
-import Vertical from "./components/sidebar/vertical.vue";
-import Horizontal from "./components/sidebar/horizontal.vue";
-import backTop from "@/assets/svg/back_top.svg?component";
+const appStore = useAppStore()
+const settingsStore = useSettingsStore()
 
-const { isDark } = useDark();
-const { layout } = useLayout();
-const isMobile = deviceDetection();
-const pureSetting = useSettingStoreHook();
-const { $storage } = useGlobal<GlobalPropertiesApi>();
+/** Layout 布局响应式 */
+useResize()
 
-const set: setType = reactive({
-    sidebar: computed(() => {
-        return useAppStoreHook().sidebar;
-    }),
+const classObj = computed(() => {
+    return {
+        hideSidebar: !appStore.sidebar.opened,
+        openSidebar: appStore.sidebar.opened,
+        withoutAnimation: appStore.sidebar.withoutAnimation,
+        mobile: appStore.device === DeviceType.Mobile,
+        showGreyMode: showGreyMode.value,
+        showColorWeakness: showColorWeakness.value
+    }
+})
 
-    device: computed(() => {
-        return useAppStoreHook().device;
-    }),
-
-    fixedHeader: computed(() => {
-        return pureSetting.fixedHeader;
-    }),
-
-    classes: computed(() => {
-        return {
-            hideSidebar: !set.sidebar.opened,
-            openSidebar: set.sidebar.opened,
-            withoutAnimation: set.sidebar.withoutAnimation,
-            mobile: set.device === "mobile"
-        };
-    }),
-
-    hideTabs: computed(() => {
-        return $storage?.configure.hideTabs;
-    })
-});
-
-function setTheme(layoutModel: string) {
-    window.document.body.setAttribute("layout", layoutModel);
-    $storage.layout = {
-        layout: `${layoutModel}`,
-        theme: $storage.layout?.theme,
-        darkMode: $storage.layout?.darkMode,
-        sidebarStatus: $storage.layout?.sidebarStatus,
-        epThemeColor: $storage.layout?.epThemeColor
-    };
+const showSettings = computed(() => {
+    return settingsStore.showSettings
+})
+const showTagsView = computed(() => {
+    return settingsStore.showTagsView
+})
+const fixedHeader = computed(() => {
+    return settingsStore.fixedHeader
+})
+const showGreyMode = computed(() => {
+    return settingsStore.showGreyMode
+})
+const showColorWeakness = computed(() => {
+    return settingsStore.showColorWeakness
+})
+const handleClickOutside = () => {
+    appStore.closeSidebar(false)
 }
-
-function toggle(device: string, bool: boolean) {
-    useAppStoreHook().toggleDevice(device);
-    useAppStoreHook().toggleSideBar(bool, "resize");
-}
-
-// 判断是否可自动关闭菜单栏
-let isAutoCloseSidebar = true;
-
-// 监听容器
-emitter.on("resize", ({ detail }) => {
-    if (isMobile) return;
-    const { width } = detail;
-    width <= 760 ? setTheme("vertical") : setTheme(useAppStoreHook().layout);
-    /** width app-wrapper类容器宽度
-     * 0 < width <= 760 隐藏侧边栏
-     * 760 < width <= 990 折叠侧边栏
-     * width > 990 展开侧边栏
-     */
-    if (width > 0 && width <= 760) {
-        toggle("mobile", false);
-        isAutoCloseSidebar = true;
-    } else if (width > 760 && width <= 990) {
-        if (isAutoCloseSidebar) {
-            toggle("desktop", false);
-            isAutoCloseSidebar = false;
-        }
-    } else if (width > 990) {
-        if (!set.sidebar.isClickCollapse) {
-            toggle("desktop", true);
-            isAutoCloseSidebar = true;
-        }
-    }
-});
-
-onMounted(() => {
-    if (isMobile) {
-        toggle("mobile", false);
-    }
-});
-
-const layoutHeader = defineComponent({
-    render() {
-        return h(
-            "div",
-            {
-                class: { "fixed-header": set.fixedHeader },
-                style: [
-                    set.hideTabs && layout.value.includes("horizontal")
-                        ? isDark.value
-                            ? "box-shadow: 0 1px 4px #0d0d0d"
-                            : "box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08)"
-                        : ""
-                ]
-            },
-            {
-                default: () => [
-                    !pureSetting.hiddenSideBar &&
-                    (layout.value.includes("vertical") ||
-                        layout.value.includes("mix"))
-                        ? h(navbar)
-                        : null,
-                    !pureSetting.hiddenSideBar &&
-                    layout.value.includes("horizontal")
-                        ? h(Horizontal)
-                        : null,
-                    h(tag)
-                ]
-            }
-        );
-    }
-});
 </script>
 
 <template>
-    <div :class="['app-wrapper', set.classes]" v-resize>
-        <div
-            v-show="
-                set.device === 'mobile' &&
-                set.sidebar.opened &&
-                layout.includes('vertical')
-            "
-            class="app-mask"
-            @click="useAppStoreHook().toggleSideBar()"
-        />
-        <Vertical
-            v-show="
-                !pureSetting.hiddenSideBar &&
-                (layout.includes('vertical') || layout.includes('mix'))
-            "
-        />
-        <div
-            :class="[
-                'main-container',
-                pureSetting.hiddenSideBar ? 'main-hidden' : ''
-            ]"
-        >
-            <div v-if="set.fixedHeader">
-                <layout-header />
-                <!-- 主体内容 -->
-                <app-main :fixed-header="set.fixedHeader" />
+    <div :class="classObj" class="app-wrapper">
+        <div v-if="classObj.mobile && classObj.openSidebar" class="drawer-bg" @click="handleClickOutside" />
+        <Sidebar class="sidebar-container" />
+        <div :class="{ hasTagsView: showTagsView }" class="main-container">
+            <div :class="{ 'fixed-header': fixedHeader }">
+                <NavigationBar />
+                <TagsView v-if="showTagsView" />
             </div>
-            <el-scrollbar v-else>
-                <el-backtop
-                    title="回到顶部"
-                    target=".main-container .el-scrollbar__wrap"
-                >
-                    <backTop />
-                </el-backtop>
-                <layout-header />
-                <!-- 主体内容 -->
-                <app-main :fixed-header="set.fixedHeader" />
-            </el-scrollbar>
+            <AppMain />
+            <RightPanel v-if="showSettings">
+                <Settings />
+            </RightPanel>
         </div>
-        <!-- 系统设置 -->
-        <setting />
     </div>
 </template>
 
 <style lang="scss" scoped>
-@mixin clearfix {
-    &::after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-}
+@import "@/styles/mixins.scss";
 
 .app-wrapper {
     @include clearfix;
-
     position: relative;
-    height: 100%;
     width: 100%;
-
-    &.mobile.openSidebar {
-        position: fixed;
-        top: 0;
-    }
 }
 
-.app-mask {
-    background: #000;
+.showGreyMode {
+    filter: grayscale(1);
+}
+
+.showColorWeakness {
+    filter: invert(0.8);
+}
+
+.drawer-bg {
+    background-color: #000;
     opacity: 0.3;
     width: 100%;
     top: 0;
@@ -212,7 +86,77 @@ const layoutHeader = defineComponent({
     z-index: 999;
 }
 
-.re-screen {
-    margin-top: 12px;
+.main-container {
+    min-height: 100%;
+    transition: margin-left 0.28s;
+    margin-left: var(--v3-sidebar-width);
+    position: relative;
+}
+
+.sidebar-container {
+    transition: width 0.28s;
+    width: var(--v3-sidebar-width) !important;
+    height: 100%;
+    position: fixed;
+    font-size: 0px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.fixed-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9;
+    width: calc(100% - var(--v3-sidebar-width));
+    transition: width 0.28s;
+}
+
+.hideSidebar {
+    .main-container {
+        margin-left: var(--v3-sidebar-hide-width);
+    }
+    .sidebar-container {
+        width: var(--v3-sidebar-hide-width) !important;
+    }
+    .fixed-header {
+        width: calc(100% - var(--v3-sidebar-hide-width));
+    }
+}
+
+// for mobile response 适配移动端
+.mobile {
+    .main-container {
+        margin-left: 0px;
+    }
+    .sidebar-container {
+        transition: transform 0.28s;
+        width: var(--v3-sidebar-width) !important;
+    }
+    &.openSidebar {
+        position: fixed;
+        top: 0;
+    }
+    &.hideSidebar {
+        .sidebar-container {
+            pointer-events: none;
+            transition-duration: 0.3s;
+            transform: translate3d(calc(0px - var(--v3-sidebar-width)), 0, 0);
+        }
+    }
+
+    .fixed-header {
+        width: 100%;
+    }
+}
+
+.withoutAnimation {
+    .main-container,
+    .sidebar-container {
+        transition: none;
+    }
 }
 </style>

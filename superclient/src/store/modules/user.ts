@@ -1,67 +1,90 @@
-import { defineStore } from "pinia";
-import { store } from "@/store";
-import { userType } from "./types";
-import { routerArrays } from "@/layout/types";
-import { router, resetRouter } from "@/router";
-import { storageSession } from "@pureadmin/utils";
-import { getLogin, refreshTokenApi } from "@/api/user";
-import { UserResult, RefreshTokenResult } from "@/api/user";
-import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
-import { type DataInfo, setToken, removeToken, sessionKey } from "@/utils/auth";
+import { ref } from "vue"
+import store from "@/store"
+import { defineStore } from "pinia"
+import { useTagsViewStore } from "./tags-view"
+import { getToken, removeToken, setToken } from "@/utils/cache/cookies"
+import { resetRouter } from "@/router"
+import { loginApi, getUserInfoApi, refreshTokenApi } from "@/api/login"
+import { ILoginRequestData, IRefreshRequestData, Token } from "@/api/login/types/login"
 
-export const useUserStore = defineStore({
-    id: "super-user",
-    state: (): userType => ({
-        // 用户名
-        username: storageSession().getItem<DataInfo>(sessionKey)?.username ?? ""
-    }),
-    actions: {
-        /** 存储用户名 */
-        SET_USERNAME(username: string) {
-            this.username = username;
-        },
-        /** 登入 */
-        async loginByUsername(data) {
-            return new Promise<UserResult>((resolve, reject) => {
-                getLogin(data)
-                    .then(data => {
-                        if (data) {
-                            setToken(data.data);
-                            resolve(data);
-                        }
-                    })
-                    .catch(error => {
-                        reject(error);
-                    });
-            });
-        },
-        /** 前端登出（不调用接口） */
-        logOut() {
-            this.username = "";
-            this.roles = [];
-            removeToken();
-            useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
-            resetRouter();
-            router.push("/login");
-        },
-        /** 刷新`token` */
-        async handRefreshToken(data) {
-            return new Promise<RefreshTokenResult>((resolve, reject) => {
-                refreshTokenApi(data)
-                    .then(data => {
-                        if (data) {
-                            setToken(data.data);
-                            resolve(data);
-                        }
-                    })
-                    .catch(error => {
-                        reject(error);
-                    });
-            });
+export const useUserStore = defineStore("user", () => {
+    const token = ref<Token>(getToken())
+    const username = ref<string>("")
+
+    const tagsViewStore = useTagsViewStore()
+
+    /** 登录 */
+    const login = (loginData: ILoginRequestData) => {
+        return new Promise((resolve, reject) => {
+            loginApi(loginData)
+                .then((res) => {
+                    const login_token = {
+                        access_token: res.data.access_token,
+                        refresh_token: res.data.refresh_token,
+                        expires: res.data.expires
+                    }
+                    setToken(login_token)
+                    token.value = login_token
+                    resolve(true)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    }
+    const refreshToken = (refreshData: IRefreshRequestData) => {
+        return new Promise((resolve, reject) => {
+            refreshTokenApi(refreshData)
+                .then((res) => {
+                    setToken(res.data)
+                    token.value = res.data
+                    resolve(true)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    }
+
+    /** 获取用户详情 */
+    const getInfo = () => {
+        return new Promise((resolve, reject) => {
+            getUserInfoApi()
+                .then((res) => {
+                    const data = res.data
+                    username.value = data.name
+                    resolve(res)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    }
+    /** 登出 */
+    const logout = () => {
+        resetToken()
+        resetRouter()
+        _resetTagsView()
+    }
+    /** 重置 Token */
+    const resetToken = () => {
+        removeToken()
+        token.value = {
+            access_token: "",
+            refresh_token: "",
+            expires: 0
         }
     }
-});
+    /** 重置 visited views 和 cached views */
+    const _resetTagsView = () => {
+        tagsViewStore.delAllVisitedViews()
+        tagsViewStore.delAllCachedViews()
+    }
 
+    return { token, username, login, getInfo, logout, resetToken, refreshToken }
+})
+
+/** 在 setup 外使用 */
 export function useUserStoreHook() {
-    return useUserStore(store);
+    return useUserStore(store)
 }

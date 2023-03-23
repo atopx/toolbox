@@ -1,65 +1,41 @@
-import { store } from "@/store";
-import { appType } from "./types";
-import { defineStore } from "pinia";
-import { getConfig } from "@/config";
-import { deviceDetection, storageLocal } from "@pureadmin/utils";
+import { reactive, ref } from "vue"
+import { defineStore } from "pinia"
+import { getSidebarStatus, setSidebarStatus } from "@/utils/cache/localStorage"
 
-export const useAppStore = defineStore({
-    id: "pure-app",
-    state: (): appType => ({
-        sidebar: {
-            opened:
-                storageLocal().getItem<StorageConfigs>("responsive-layout")
-                    ?.sidebarStatus ?? getConfig().SidebarStatus,
-            withoutAnimation: false,
-            isClickCollapse: false
-        },
-        // 这里的layout用于监听容器拖拉后恢复对应的导航模式
-        layout:
-            storageLocal().getItem<StorageConfigs>("responsive-layout")
-                ?.layout ?? getConfig().Layout,
-        device: deviceDetection() ? "mobile" : "desktop"
-    }),
-    getters: {
-        getSidebarStatus() {
-            return this.sidebar.opened;
-        },
-        getDevice() {
-            return this.device;
-        }
-    },
-    actions: {
-        TOGGLE_SIDEBAR(opened?: boolean, resize?: string) {
-            const layout =
-                storageLocal().getItem<StorageConfigs>("responsive-layout");
-            if (opened && resize) {
-                this.sidebar.withoutAnimation = true;
-                this.sidebar.opened = true;
-                layout.sidebarStatus = true;
-            } else if (!opened && resize) {
-                this.sidebar.withoutAnimation = true;
-                this.sidebar.opened = false;
-                layout.sidebarStatus = false;
-            } else if (!opened && !resize) {
-                this.sidebar.withoutAnimation = false;
-                this.sidebar.opened = !this.sidebar.opened;
-                this.sidebar.isClickCollapse = !this.sidebar.opened;
-                layout.sidebarStatus = this.sidebar.opened;
-            }
-            storageLocal().setItem("responsive-layout", layout);
-        },
-        async toggleSideBar(opened?: boolean, resize?: string) {
-            await this.TOGGLE_SIDEBAR(opened, resize);
-        },
-        toggleDevice(device: string) {
-            this.device = device;
-        },
-        setLayout(layout) {
-            this.layout = layout;
+export enum DeviceType {
+    Mobile,
+    Desktop
+}
+
+interface ISidebar {
+    opened: boolean
+    withoutAnimation: boolean
+}
+
+export const useAppStore = defineStore("app", () => {
+    const sidebar: ISidebar = reactive({
+        opened: getSidebarStatus() !== "closed",
+        withoutAnimation: false
+    })
+    const device = ref<DeviceType>(DeviceType.Desktop)
+
+    const toggleSidebar = (withoutAnimation: boolean) => {
+        sidebar.opened = !sidebar.opened
+        sidebar.withoutAnimation = withoutAnimation
+        if (sidebar.opened) {
+            setSidebarStatus("opened")
+        } else {
+            setSidebarStatus("closed")
         }
     }
-});
+    const closeSidebar = (withoutAnimation: boolean) => {
+        sidebar.opened = false
+        sidebar.withoutAnimation = withoutAnimation
+        setSidebarStatus("closed")
+    }
+    const toggleDevice = (value: DeviceType) => {
+        device.value = value
+    }
 
-export function useAppStoreHook() {
-    return useAppStore(store);
-}
+    return { device, sidebar, toggleSidebar, closeSidebar, toggleDevice }
+})

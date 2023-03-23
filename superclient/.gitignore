@@ -1,21 +1,35 @@
-node_modules
+# Git 会忽略的文件
+
 .DS_Store
+node_modules
 dist
 dist-ssr
-*.local
 .eslintcache
-report.html
 
-yarn.lock
+# Local env files
+*.local
+
+# Logs
+logs
+*.log
 npm-debug.log*
-.pnpm-error.log*
-.pnpm-debug.log
-tests/**/coverage/
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/*.code-snippets
 .idea
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-tsconfig.tsbuildinfo
+*.sw?
+
+# Use the PNPM
+package-lock.json
+yarn.lock

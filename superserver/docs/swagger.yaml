@@ -185,6 +185,11 @@ definitions:
       id:
         type: string
     type: object
+  info.Params:
+    properties:
+      id:
+        type: integer
+    type: object
   login.Params:
     properties:
       password:
@@ -228,6 +233,11 @@ definitions:
       update_time_range:
         $ref: '#/definitions/common_iface.RangeI64'
     type: object
+  refresh.Params:
+    properties:
+      refresh_token:
+        type: string
+    type: object
   role.Filter:
     properties:
       create_time_range:
@@ -252,7 +262,7 @@ definitions:
         type: string
       create_time:
         description: 创建时间
-        type: integer
+        type: string
       creator:
         description: 创建人
         type: string
@@ -273,10 +283,10 @@ definitions:
         type: string
       scan_time:
         description: 最后一次扫描时间
-        type: integer
+        type: string
       update_time:
         description: 更新时间
-        type: integer
+        type: string
       updater:
         description: 更新人
         type: string
@@ -435,6 +445,9 @@ definitions:
       message:
         description: 异常消息
         type: string
+      success:
+        description: 请求成功
+        type: boolean
       trace_id:
         description: 链路ID
         type: integer
@@ -989,6 +1002,35 @@ paths:
       summary: 用户注册
       tags:
       - 用户
+  /api/user/info:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/info.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 用户详情
+      tags:
+      - 用户
   /api/user/login:
     post:
       consumes:
@@ -1016,6 +1058,35 @@ paths:
           schema:
             $ref: '#/definitions/system.ChainMessage'
       summary: 用户登录
+      tags:
+      - 用户
+  /api/user/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/refresh.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+        "500":
+          description: 系统错误
+          schema:
+            $ref: '#/definitions/system.ChainMessage'
+      summary: 用户刷新AccessToken
       tags:
       - 用户
 swagger: "2.0"

@@ -1,180 +1,287 @@
-// import "@/utils/sso";
-import { getConfig } from "@/config";
-import NProgress from "@/utils/progress";
-import { sessionKey, type DataInfo } from "@/utils/auth";
-import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
-import { usePermissionStoreHook } from "@/store/modules/permission";
-import {
-    Router,
-    createRouter,
-    RouteRecordRaw,
-    RouteComponent
-} from "vue-router";
-import {
-    ascending,
-    initRouter,
-    isOneOfArray,
-    getHistoryMode,
-    findRouteByPath,
-    handleAliveRoute,
-    formatTwoStageRoutes,
-    formatFlatteningRoutes
-} from "./utils";
-import { buildHierarchyTree } from "@/utils/tree";
-import { isUrl, openLink, storageSession } from "@pureadmin/utils";
+import { type RouteRecordRaw, createRouter, createWebHashHistory, createWebHistory } from "vue-router"
 
-import remainingRouter from "./modules/remaining";
+const Layout = () => import("@/layout/index.vue")
 
-/** 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
- * 如何匹配所有文件请看：https://github.com/mrmlnc/fast-glob#basic-syntax
- * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
- */
-const modules: Record<string, any> = import.meta.glob(
-    ["./modules/**/*.ts", "!./modules/**/remaining.ts"],
+/** 常驻路由 */
+export const constantRoutes: RouteRecordRaw[] = [
     {
-        eager: true
-    }
-);
-
-/** 原始静态路由（未做任何处理） */
-const routes = [];
-
-Object.keys(modules).forEach(key => {
-    routes.push(modules[key].default);
-});
-
-/** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
-export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
-    formatFlatteningRoutes(buildHierarchyTree(ascending(routes)))
-);
-
-/** 用于渲染菜单，保持原始层级 */
-export const constantMenus: Array<RouteComponent> = ascending(routes).concat(
-    ...remainingRouter
-);
-
-/** 不参与菜单的路由 */
-export const remainingPaths = Object.keys(remainingRouter).map(v => {
-    return remainingRouter[v].path;
-});
-
-/** 创建路由实例 */
-export const router: Router = createRouter({
-    history: getHistoryMode(import.meta.env.VITE_ROUTER_HISTORY),
-    routes: constantRoutes.concat(...(remainingRouter as any)),
-    strict: true,
-    scrollBehavior(to, from, savedPosition) {
-        return new Promise(resolve => {
-            if (savedPosition) {
-                return savedPosition;
-            } else {
-                if (from.meta.saveSrollTop) {
-                    const top: number =
-                        document.documentElement.scrollTop ||
-                        document.body.scrollTop;
-                    resolve({ left: 0, top });
+        path: "/redirect",
+        component: Layout,
+        meta: {
+            hidden: true
+        },
+        children: [
+            {
+                path: "/redirect/:path(.*)",
+                component: () => import("@/views/redirect/index.vue")
+            }
+        ]
+    },
+    {
+        path: "/403",
+        component: () => import("@/views/error-page/403.vue"),
+        meta: {
+            hidden: true
+        }
+    },
+    {
+        path: "/404",
+        component: () => import("@/views/error-page/404.vue"),
+        meta: {
+            hidden: true
+        },
+        alias: "/:pathMatch(.*)*"
+    },
+    {
+        path: "/login",
+        component: () => import("@/views/login/index.vue"),
+        meta: {
+            hidden: true
+        }
+    },
+    {
+        path: "/",
+        component: Layout,
+        redirect: "/dashboard",
+        children: [
+            {
+                path: "dashboard",
+                component: () => import("@/views/dashboard/index.vue"),
+                name: "Dashboard",
+                meta: {
+                    title: "首页",
+                    svgIcon: "dashboard",
+                    affix: true
                 }
             }
-        });
+        ]
+    },
+    {
+        path: "/unocss",
+        component: Layout,
+        redirect: "/unocss/index",
+        children: [
+            {
+                path: "index",
+                component: () => import("@/views/unocss/index.vue"),
+                name: "UnoCSS",
+                meta: {
+                    title: "unocss",
+                    svgIcon: "unocss"
+                }
+            }
+        ]
+    },
+    {
+        path: "/link",
+        component: Layout,
+        children: [
+            {
+                path: "https://juejin.cn/post/7089377403717287972",
+                component: () => {},
+                name: "Link",
+                meta: {
+                    title: "外链",
+                    svgIcon: "link"
+                }
+            }
+        ]
+    },
+    {
+        path: "/table",
+        component: Layout,
+        redirect: "/table/element-plus",
+        name: "Table",
+        meta: {
+            title: "表格",
+            elIcon: "Grid"
+        },
+        children: [
+            {
+                path: "element-plus",
+                component: () => import("@/views/table/element-plus/index.vue"),
+                name: "ElementPlus",
+                meta: {
+                    title: "Element Plus",
+                    keepAlive: true
+                }
+            },
+            {
+                path: "vxe-table",
+                component: () => import("@/views/table/vxe-table/index.vue"),
+                name: "VxeTable",
+                meta: {
+                    title: "Vxe Table",
+                    keepAlive: true
+                }
+            }
+        ]
+    },
+    {
+        path: "/menu",
+        component: Layout,
+        redirect: "/menu/menu1",
+        name: "Menu",
+        meta: {
+            title: "多级菜单",
+            svgIcon: "menu"
+        },
+        children: [
+            {
+                path: "menu1",
+                component: () => import("@/views/menu/menu1/index.vue"),
+                redirect: "/menu/menu1/menu1-1",
+                name: "Menu1",
+                meta: {
+                    title: "menu1"
+                },
+                children: [
+                    {
+                        path: "menu1-1",
+                        component: () => import("@/views/menu/menu1/menu1-1/index.vue"),
+                        name: "Menu1-1",
+                        meta: {
+                            title: "menu1-1"
+                        }
+                    },
+                    {
+                        path: "menu1-2",
+                        component: () => import("@/views/menu/menu1/menu1-2/index.vue"),
+                        redirect: "/menu/menu1/menu1-2/menu1-2-1",
+                        name: "Menu1-2",
+                        meta: {
+                            title: "menu1-2"
+                        },
+                        children: [
+                            {
+                                path: "menu1-2-1",
+                                component: () => import("@/views/menu/menu1/menu1-2/menu1-2-1/index.vue"),
+                                name: "Menu1-2-1",
+                                meta: {
+                                    title: "menu1-2-1"
+                                }
+                            },
+                            {
+                                path: "menu1-2-2",
+                                component: () => import("@/views/menu/menu1/menu1-2/menu1-2-2/index.vue"),
+                                name: "Menu1-2-2",
+                                meta: {
+                                    title: "menu1-2-2"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        path: "menu1-3",
+                        component: () => import("@/views/menu/menu1/menu1-3/index.vue"),
+                        name: "Menu1-3",
+                        meta: {
+                            title: "menu1-3"
+                        }
+                    }
+                ]
+            },
+            {
+                path: "menu2",
+                component: () => import("@/views/menu/menu2/index.vue"),
+                name: "Menu2",
+                meta: {
+                    title: "menu2"
+                }
+            }
+        ]
+    },
+    {
+        path: "/hook-demo",
+        component: Layout,
+        redirect: "/hook-demo/use-fetch-select",
+        name: "HookDemo",
+        meta: {
+            title: "hook 示例",
+            elIcon: "Menu",
+            alwaysShow: true
+        },
+        children: [
+            {
+                path: "use-fetch-select",
+                component: () => import("@/views/hook-demo/use-fetch-select.vue"),
+                name: "UseFetchSelect",
+                meta: {
+                    title: "useFetchSelect"
+                }
+            },
+            {
+                path: "use-fullscreen-loading",
+                component: () => import("@/views/hook-demo/use-fullscreen-loading.vue"),
+                name: "UseFullscreenLoading",
+                meta: {
+                    title: "useFullscreenLoading"
+                }
+            }
+        ]
+    },
+    {
+        path: "/permission",
+        component: Layout,
+        redirect: "/permission/page",
+        name: "Permission",
+        meta: {
+            title: "权限管理",
+            svgIcon: "lock",
+            alwaysShow: true // 将始终显示根菜单
+        },
+        children: [
+            {
+                path: "page",
+                component: () => import("@/views/permission/page.vue"),
+                name: "PagePermission",
+                meta: {
+                    title: "页面权限"
+                }
+            },
+            {
+                path: "directive",
+                component: () => import("@/views/permission/directive.vue"),
+                name: "DirectivePermission",
+                meta: {
+                    title: "指令权限" // 如果未设置角色，则表示：该页面不需要权限，但会继承根路由的角色
+                }
+            }
+        ]
+    },
+    {
+        path: "/:pathMatch(.*)*", // Must put the 'ErrorPage' route at the end, 必须将 'ErrorPage' 路由放在最后
+        redirect: "/404",
+        name: "ErrorPage",
+        meta: {
+            hidden: true
+        }
     }
-});
+]
+export const asyncRoutes: RouteRecordRaw[] = []
+
+const router = createRouter({
+    history:
+        import.meta.env.VITE_ROUTER_HISTORY === "hash"
+            ? createWebHashHistory(import.meta.env.VITE_PUBLIC_PATH)
+            : createWebHistory(import.meta.env.VITE_PUBLIC_PATH),
+    routes: constantRoutes
+})
 
 /** 重置路由 */
 export function resetRouter() {
-    router.getRoutes().forEach(route => {
-        const { name, meta } = route;
-        if (name && router.hasRoute(name) && meta?.backstage) {
-            router.removeRoute(name);
-            router.options.routes = formatTwoStageRoutes(
-                formatFlatteningRoutes(buildHierarchyTree(ascending(routes)))
-            );
-        }
-    });
-    usePermissionStoreHook().clearAllCachePage();
+    // 注意：所有动态路由路由必须带有 Name 属性，否则可能会不能完全重置干净
+    try {
+        router.getRoutes().forEach((route) => {
+            const { name, meta } = route
+            if (name && meta.roles?.length) {
+                router.hasRoute(name) && router.removeRoute(name)
+            }
+        })
+    } catch (error) {
+        // 强制刷新浏览器也行，只是交互体验不是很好
+        window.location.reload()
+    }
 }
 
-/** 路由白名单 */
-const whiteList = ["/login"];
-
-router.beforeEach((to: toRouteType, _from, next) => {
-    if (to.meta?.keepAlive) {
-        const newMatched = to.matched;
-        handleAliveRoute(newMatched, "add");
-        // 页面整体刷新和点击标签页刷新
-        if (_from.name === undefined || _from.name === "Redirect") {
-            handleAliveRoute(newMatched);
-        }
-    }
-    const userInfo = storageSession().getItem<DataInfo<number>>(sessionKey);
-    NProgress.start();
-    const externalLink = isUrl(to?.name as string);
-    if (!externalLink) {
-        to.matched.some(item => {
-            if (!item.meta.title) return "";
-            const Title = getConfig().Title;
-            if (Title) document.title = `${item.meta.title} | ${Title}`;
-            else document.title = item.meta.title as string;
-        });
-    }
-    /** 如果已经登录并存在登录信息后不能跳转到路由白名单，而是继续保持在当前页面 */
-    function toCorrectRoute() {
-        whiteList.includes(to.fullPath) ? next(_from.fullPath) : next();
-    }
-    if (userInfo) {
-        // 无权限跳转403页面
-        if (to.meta?.roles && !isOneOfArray(to.meta?.roles, userInfo?.roles)) {
-            next({ path: "/error/403" });
-        }
-        if (_from?.name) {
-            // name为超链接
-            if (externalLink) {
-                openLink(to?.name as string);
-                NProgress.done();
-            } else {
-                toCorrectRoute();
-            }
-        } else {
-            // 刷新
-            if (
-                usePermissionStoreHook().wholeMenus.length === 0 &&
-                to.path !== "/login"
-            ) {
-                initRouter().then((router: Router) => {
-                    if (!useMultiTagsStoreHook().getMultiTagsCache) {
-                        const { path } = to;
-                        const route = findRouteByPath(
-                            path,
-                            router.options.routes[0].children
-                        );
-                        // query、params模式路由传参数的标签页不在此处处理
-                        if (route && route.meta?.title) {
-                            useMultiTagsStoreHook().handleTags("push", {
-                                path: route.path,
-                                name: route.name,
-                                meta: route.meta
-                            });
-                        }
-                    }
-                    router.push(to.fullPath);
-                });
-            }
-            toCorrectRoute();
-        }
-    } else {
-        if (to.path !== "/login") {
-            if (whiteList.indexOf(to.path) !== -1) {
-                next();
-            } else {
-                next({ path: "/login" });
-            }
-        } else {
-            next();
-        }
-    }
-});
-
-router.afterEach(() => {
-    NProgress.done();
-});
-
-export default router;
+export default router

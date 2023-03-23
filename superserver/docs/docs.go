@@ -854,6 +854,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/user/info": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户详情",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/info.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/login": {
             "post": {
                 "consumes": [
@@ -874,6 +919,51 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/login.Params"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "调用成功",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "系统错误",
+                        "schema": {
+                            "$ref": "#/definitions/system.ChainMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/refresh": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户刷新AccessToken",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/refresh.Params"
                         }
                     }
                 ],
@@ -1147,6 +1237,14 @@ const docTemplate = `{
                 }
             }
         },
+        "info.Params": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "login.Params": {
             "type": "object",
             "properties": {
@@ -1213,6 +1311,14 @@ const docTemplate = `{
                 }
             }
         },
+        "refresh.Params": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
         "role.Filter": {
             "type": "object",
             "properties": {
@@ -1248,7 +1354,7 @@ const docTemplate = `{
                 },
                 "create_time": {
                     "description": "创建时间",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "creator": {
                     "description": "创建人",
@@ -1276,11 +1382,11 @@ const docTemplate = `{
                 },
                 "scan_time": {
                     "description": "最后一次扫描时间",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "update_time": {
                     "description": "更新时间",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "updater": {
                     "description": "更新人",
@@ -1524,6 +1630,10 @@ const docTemplate = `{
                 "message": {
                     "description": "异常消息",
                     "type": "string"
+                },
+                "success": {
+                    "description": "请求成功",
+                    "type": "boolean"
                 },
                 "trace_id": {
                     "description": "链路ID",

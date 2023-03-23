@@ -1,39 +1,27 @@
-import { defineStore } from "pinia";
-import { store } from "@/store";
-import { setType } from "./types";
-import { getConfig } from "@/config";
+import { ref } from "vue"
+import { defineStore } from "pinia"
+import layoutSettings from "@/config/layout"
 
-export const useSettingStore = defineStore({
-    id: "pure-setting",
-    state: (): setType => ({
-        title: getConfig().Title,
-        fixedHeader: getConfig().FixedHeader,
-        hiddenSideBar: getConfig().HiddenSideBar
-    }),
-    getters: {
-        getTitle() {
-            return this.title;
-        },
-        getFixedHeader() {
-            return this.fixedHeader;
-        },
-        getHiddenSideBar() {
-            return this.HiddenSideBar;
-        }
-    },
-    actions: {
-        CHANGE_SETTING({ key, value }) {
-            // eslint-disable-next-line no-prototype-builtins
-            if (this.hasOwnProperty(key)) {
-                this[key] = value;
-            }
-        },
-        changeSetting(data) {
-            this.CHANGE_SETTING(data);
-        }
+export const useSettingsStore = defineStore("settings", () => {
+    const fixedHeader = ref<boolean>(layoutSettings.fixedHeader)
+    const showSettings = ref<boolean>(layoutSettings.showSettings)
+    const showTagsView = ref<boolean>(layoutSettings.showTagsView)
+    const showSidebarLogo = ref<boolean>(layoutSettings.showSidebarLogo)
+    const showNotify = ref<boolean>(layoutSettings.showNotify)
+    const showThemeSwitch = ref<boolean>(layoutSettings.showThemeSwitch)
+    const showScreenfull = ref<boolean>(layoutSettings.showScreenfull)
+    const showGreyMode = ref<boolean>(layoutSettings.showGreyMode)
+    const showColorWeakness = ref<boolean>(layoutSettings.showColorWeakness)
+
+    return {
+        fixedHeader,
+        showSettings,
+        showTagsView,
+        showSidebarLogo,
+        showNotify,
+        showThemeSwitch,
+        showScreenfull,
+        showGreyMode,
+        showColorWeakness
     }
-});
-
-export function useSettingStoreHook() {
-    return useSettingStore(store);
-}
+})

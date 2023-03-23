@@ -1,170 +1,145 @@
-<script setup lang="ts">
-import Motion from "./utils/motion";
-import { useRouter } from "vue-router";
-import { message } from "@/utils/message";
-import { loginRules } from "./utils/rule";
-import { useNav } from "@/layout/hooks/useNav";
-import type { FormInstance } from "element-plus";
-import { useLayout } from "@/layout/hooks/useLayout";
-import { useUserStoreHook } from "@/store/modules/user";
-import { bg, avatar, illustration } from "./utils/static";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
-import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
-import { initRouter } from "@/router/utils";
+<script lang="ts" setup>
+import { reactive, ref } from "vue"
+import { useRouter } from "vue-router"
+import { useUserStore } from "@/store/modules/user"
+import { User, Lock } from "@element-plus/icons-vue"
+import ThemeSwitch from "@/components/ThemeSwitch/index.vue"
+import { type FormInstance, FormRules } from "element-plus"
+import { type ILoginRequestData } from "@/api/login/types/login"
 
-import dayIcon from "@/assets/svg/day.svg?component";
-import darkIcon from "@/assets/svg/dark.svg?component";
-import Lock from "@iconify-icons/ri/lock-fill";
-import User from "@iconify-icons/ri/user-3-fill";
+const router = useRouter()
+const loginFormRef = ref<FormInstance | null>(null)
 
-defineOptions({
-    name: "Login"
-});
-const router = useRouter();
-const loading = ref(false);
-const ruleFormRef = ref<FormInstance>();
-
-const { initStorage } = useLayout();
-initStorage();
-
-const { dataTheme, dataThemeChange } = useDataThemeChange();
-dataThemeChange();
-const { title } = useNav();
-
-const ruleForm = reactive({
-    username: "admin",
-    password: "admin123"
-});
-
-const onLogin = async (formEl: FormInstance | undefined) => {
-    loading.value = true;
-    if (!formEl) return;
-    await formEl.validate((valid, fields) => {
+/** 登录按钮 Loading */
+const loading = ref(false)
+/** 登录表单数据 */
+const loginForm: ILoginRequestData = reactive({
+    username: "atopx",
+    password: "mengfei"
+})
+/** 登录表单校验规则 */
+const loginFormRules: FormRules = {
+    username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+    password: [
+        { required: true, message: "请输入密码", trigger: "blur" },
+        { min: 7, max: 16, message: "长度在 7 到 16 个字符", trigger: "blur" }
+    ],
+    code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
+}
+/** 登录逻辑 */
+const handleLogin = () => {
+    loginFormRef.value?.validate((valid: boolean) => {
         if (valid) {
-            useUserStoreHook()
-                .loginByUsername({
-                    username: ruleForm.username,
-                    password: "admin123"
+            loading.value = true
+            useUserStore()
+                .login({
+                    username: loginForm.username,
+                    password: loginForm.password
                 })
-                .then(res => {
-                    if (res.success) {
-                        // 获取后端路由
-                        initRouter().then(() => {
-                            router.push("/");
-                            message("登录成功", { type: "success" });
-                        });
-                    }
-                });
+                .then(() => {
+                    router.push({ path: "/" })
+                })
+                .catch(() => {
+                    loginForm.password = ""
+                })
+                .finally(() => {
+                    loading.value = false
+                })
         } else {
-            loading.value = false;
-            return fields;
+            return false
         }
-    });
-};
-
-/** 使用公共函数，避免`removeEventListener`失效 */
-function onkeypress({ code }: KeyboardEvent) {
-    if (code === "Enter") {
-        onLogin(ruleFormRef.value);
-    }
+    })
 }
 
-onMounted(() => {
-    window.document.addEventListener("keypress", onkeypress);
-});
-
-onBeforeUnmount(() => {
-    window.document.removeEventListener("keypress", onkeypress);
-});
+/** 初始化验证码 */
 </script>
 
 <template>
-    <div class="select-none">
-        <img :src="bg" class="wave" />
-        <div class="flex-c absolute right-5 top-3">
-            <!-- 主题 -->
-            <el-switch
-                v-model="dataTheme"
-                inline-prompt
-                :active-icon="dayIcon"
-                :inactive-icon="darkIcon"
-                @change="dataThemeChange"
-            />
-        </div>
-        <div class="login-container">
-            <div class="img">
-                <component :is="toRaw(illustration)" />
+    <div class="login-container">
+        <ThemeSwitch class="theme-switch" />
+        <div class="login-card">
+            <div class="title">
+                <img src="@/assets/layout/logo-text-2.png" />
             </div>
-            <div class="login-box">
-                <div class="login-form">
-                    <avatar class="avatar" />
-                    <Motion>
-                        <h2 class="outline-none">{{ title }}</h2>
-                    </Motion>
-
-                    <el-form
-                        ref="ruleFormRef"
-                        :model="ruleForm"
-                        :rules="loginRules"
-                        size="large"
-                    >
-                        <Motion :delay="100">
-                            <el-form-item
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请输入账号',
-                                        trigger: 'blur'
-                                    }
-                                ]"
-                                prop="username"
-                            >
-                                <el-input
-                                    clearable
-                                    v-model="ruleForm.username"
-                                    placeholder="账号"
-                                    :prefix-icon="useRenderIcon(User)"
-                                />
-                            </el-form-item>
-                        </Motion>
-
-                        <Motion :delay="150">
-                            <el-form-item prop="password">
-                                <el-input
-                                    clearable
-                                    show-password
-                                    v-model="ruleForm.password"
-                                    placeholder="密码"
-                                    :prefix-icon="useRenderIcon(Lock)"
-                                />
-                            </el-form-item>
-                        </Motion>
-
-                        <Motion :delay="250">
-                            <el-button
-                                class="w-full mt-4"
-                                size="default"
-                                type="primary"
-                                :loading="loading"
-                                @click="onLogin(ruleFormRef)"
-                            >
-                                登录
-                            </el-button>
-                        </Motion>
-                    </el-form>
-                </div>
+            <div class="content">
+                <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" @keyup.enter="handleLogin">
+                    <el-form-item prop="username">
+                        <el-input
+                            v-model.trim="loginForm.username"
+                            placeholder="用户名"
+                            type="text"
+                            tabindex="1"
+                            :prefix-icon="User"
+                            size="large"
+                        />
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input
+                            v-model.trim="loginForm.password"
+                            placeholder="密码"
+                            type="password"
+                            tabindex="2"
+                            :prefix-icon="Lock"
+                            size="large"
+                            show-password
+                        />
+                    </el-form-item>
+                    <el-button :loading="loading" type="primary" size="large" @click.prevent="handleLogin">
+                        登 录
+                    </el-button>
+                </el-form>
             </div>
         </div>
     </div>
 </template>
 
-<style scoped>
-@import url("@/style/login.css");
-</style>
-
 <style lang="scss" scoped>
-:deep(.el-input-group__append, .el-input-group__prepend) {
-    padding: 0;
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+    .theme-switch {
+        position: fixed;
+        top: 5%;
+        right: 5%;
+        cursor: pointer;
+    }
+    .login-card {
+        width: 480px;
+        border-radius: 20px;
+        box-shadow: 0 0 10px #dcdfe6;
+        background-color: #fff;
+        overflow: hidden;
+        .title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+            img {
+                height: 100%;
+            }
+        }
+        .content {
+            padding: 20px 50px 50px 50px;
+            :deep(.el-input-group__append) {
+                padding: 0;
+                overflow: hidden;
+                .el-image {
+                    width: 100px;
+                    height: 40px;
+                    border-left: 0px;
+                    user-select: none;
+                    cursor: pointer;
+                    text-align: center;
+                }
+            }
+            .el-button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    }
 }
 </style>

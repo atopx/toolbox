@@ -1,22 +1,26 @@
-<template>
-    <el-config-provider :locale="currentLocale">
-        <router-view />
-    </el-config-provider>
-</template>
+<script lang="ts" setup>
+import { h } from "vue"
+import { useTheme } from "@/hooks/useTheme"
+import { ElNotification } from "element-plus"
+import zhCn from "element-plus/lib/locale/lang/zh-cn"
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import { ElConfigProvider } from "element-plus";
-import zhCn from "element-plus/lib/locale/lang/zh-cn";
-export default defineComponent({
-    name: "app",
-    components: {
-        [ElConfigProvider.name]: ElConfigProvider
-    },
-    computed: {
-        currentLocale() {
-            return zhCn;
-        }
-    }
-});
+const { initTheme } = useTheme()
+
+/** 初始化主题 */
+initTheme()
+/** 将 Element Plus 的语言设置为中文 */
+const locale = zhCn
+
+ElNotification({
+    title: "Hello",
+    message: h("a", { style: "color: teal", target: "_blank", href: "https://github.com/atopx/v3ep_temp" }, "hello"),
+    duration: 0,
+    position: "bottom-right"
+})
 </script>
+
+<template>
+    <ElConfigProvider :locale="locale">
+        <router-view />
+    </ElConfigProvider>
+</template>
