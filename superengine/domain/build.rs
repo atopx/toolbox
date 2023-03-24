@@ -2,7 +2,7 @@ use std::{env, fs, path::Path, vec};
 
 fn main() {
     let current_dir = env::current_dir().unwrap();
-    let base_path = Path::new(&current_dir).join("../../protocol/protos");
+    let base_path = Path::new(&current_dir).join("../../protocol/proto");
 
     let mut proto_files = vec![];
     let mut proto_paths = vec![];

@@ -9,12 +9,12 @@ function build() {
 
 function proto() {
 	rm -rf domain
-	protoc --proto_path ../protocol/protos --go-grpc_out=../ --go_out=../ ../protocol/protos/*/*.proto  
+	protoc --proto_path ../protocol/proto --go-grpc_out=../ --go_out=../ ../protocol/proto/*/*.proto  
 }
 
 function swagger() {
-	rm -f ../protocol/apis/swagger.yaml
-	swag init --output ../protocol/apis --outputTypes yaml --parseInternal
+	rm -f ../protocol/api/swagger.yaml
+	swag init --output ../protocol/api --outputTypes yaml --parseInternal
 }
 
 function status() {
