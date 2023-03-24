@@ -2,19 +2,18 @@ package info
 
 import (
 	"errors"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
 	"superserver/common/interface/ecode_iface"
 	"superserver/common/logger"
 	"superserver/internal/model"
 	"superserver/internal/model/user"
 	"superserver/internal/model/user_role"
+
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 func (ctl *Controller) Deal() {
-	params := ctl.Params.(*Params)
-
-	userPo := user.User{Base: model.Base{Id: params.Id}}
+	userPo := user.User{Base: model.Base{Id: ctl.GetOperator()}}
 	dao := user.NewDao(ctl.GetDatabase())
 	err := dao.Load(&userPo)
 	if errors.Is(err, gorm.ErrRecordNotFound) {

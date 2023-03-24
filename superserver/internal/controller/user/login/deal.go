@@ -7,6 +7,7 @@ import (
 	"superserver/common/system"
 	"superserver/internal/model/user"
 	"superserver/internal/model/user_token"
+	"time"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -34,10 +35,29 @@ func (ctl *Controller) Deal() {
 		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "登录密码错误")
 		return
 	}
-	token := system.SignClaims(po.Id)
-	token.UserId = po.Id
+	// 如果已有token，直接返回给用户
 	tokenDao := user_token.NewDao(ctl.GetDatabase())
-	if err = tokenDao.Create(&token); err != nil {
+	token, err := tokenDao.First(func(db *gorm.DB) *gorm.DB {
+		return db.Where("user_id = ?", po.Id)
+	})
+
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			logger.Error(ctl.Context, "user login tokenDao.First failed", zap.Error(err))
+			ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "[12001]系统错误, 请联系管理员")
+			return
+		}
+	}
+	// 如果没有token, 或者token过期， 需要重新签发
+	if token.ExpireTime <= time.Now().Unix() {
+		newToken := system.SignClaims(po.Id)
+		token.AccessToken = newToken.AccessToken
+		token.RefreshToken = newToken.RefreshToken
+		token.ExpireTime = newToken.IssuedTime
+		token.UserId = po.Id
+	}
+
+	if err = tokenDao.UpsertByUserId(token); err != nil {
 		logger.Error(ctl.Context, "user login system.SignClaims failed", zap.Error(err))
 		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "[12002]系统错误, 请联系管理员")
 		return

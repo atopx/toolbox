@@ -1,8 +1,9 @@
 package info
 
 import (
-	"github.com/gin-gonic/gin"
 	"superserver/internal/controller"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
@@ -13,9 +14,7 @@ func NewController(ctx *gin.Context) *Controller {
 	return &Controller{Controller: controller.Controller{Params: new(Params), Context: ctx}}
 }
 
-type Params struct {
-	Id int `form:"id"`
-}
+type Params struct{}
 
 type Reply struct {
 	Id         int    `json:"id"`

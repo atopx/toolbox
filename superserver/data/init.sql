@@ -95,6 +95,7 @@ CREATE TABLE su_user_token (
     update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
     delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒'
 ) ENGINE = INNODB COMMENT = '用户令牌表';
+ALTER TABLE su_user_token ADD UNIQUE INDEX user_token_idx (user_id);
 ALTER TABLE su_user_token ADD UNIQUE INDEX access_token_idx(access_token);
 ALTER TABLE su_user_token ADD UNIQUE INDEX refresh_token_idx(refresh_token);
 

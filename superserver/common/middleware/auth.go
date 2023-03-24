@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"net/http"
 	"strings"
 	"superserver/common/interface/common_iface"
@@ -12,7 +11,10 @@ import (
 	"superserver/internal/model/access"
 	"superserver/internal/model/permission"
 	"superserver/internal/model/user"
+	"superserver/internal/model/user_token"
 	"time"
+
+	"gorm.io/gorm"
 
 	"go.uber.org/zap"
 
@@ -49,7 +51,8 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 			}
 
 			// token解析
-			claims, err := system.UnSignClaims(token)
+			tokenStr := token[strings.Index(token, " ")+1:]
+			claims, err := user_token.NewDao(m.db).First(func(tx *gorm.DB) *gorm.DB { tx.Where("access_token=?", tokenStr); return tx })
 			if err != nil {
 				logger.Error(ctx, "auth system.UnSignClaims failed", zap.Error(err))
 				chain.Message = ecode_iface.ECode_AUTH_INVALID.String()
@@ -58,7 +61,7 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 			}
 
 			// 过期时间验证
-			if claims.ExpiresAt.Before(time.Now().Local()) {
+			if claims.ExpireTime < time.Now().Unix() {
 				chain.Message = ecode_iface.ECode_AUTH_EXPIRED.String()
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
 				return
@@ -71,13 +74,6 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 					ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
 					return
 				}
-			}
-
-			// 如果是刷新token，携带的必须是RefreshToken
-			if accessPo.Path == "/api/user/refresh" && !claims.IsRefresh {
-				chain.Message = ecode_iface.ECode_AUTH_NOT_ACCESS_TOKEN.String()
-				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
-				return
 			}
 
 			chain.UserId = claims.UserId
