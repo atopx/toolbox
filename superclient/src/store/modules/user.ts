@@ -13,7 +13,7 @@ export const useUserStore = defineStore("user", () => {
 
     const tagsViewStore = useTagsViewStore()
 
-    /** 登录 */
+    // get token
     const login = (loginData: ILoginRequestData) => {
         return new Promise((resolve, reject) => {
             loginApi(loginData)
@@ -21,7 +21,7 @@ export const useUserStore = defineStore("user", () => {
                     const login_token = {
                         access_token: res.data.access_token,
                         refresh_token: res.data.refresh_token,
-                        expires: res.data.expires
+                        expires: res.data.expires * 1000
                     }
                     setToken(login_token)
                     token.value = login_token
@@ -32,10 +32,12 @@ export const useUserStore = defineStore("user", () => {
                 })
         })
     }
+    // refresh token
     const refreshToken = (refreshData: IRefreshRequestData) => {
         return new Promise((resolve, reject) => {
             refreshTokenApi(refreshData)
                 .then((res) => {
+                    res.data.expires = res.data.expires * 1000
                     setToken(res.data)
                     token.value = res.data
                     resolve(true)
@@ -46,7 +48,7 @@ export const useUserStore = defineStore("user", () => {
         })
     }
 
-    /** 获取用户详情 */
+    // get user info
     const getInfo = () => {
         return new Promise((resolve, reject) => {
             getUserInfoApi()
@@ -60,13 +62,13 @@ export const useUserStore = defineStore("user", () => {
                 })
         })
     }
-    /** 登出 */
+    // 登出
     const logout = () => {
         resetToken()
         resetRouter()
         _resetTagsView()
     }
-    /** 重置 Token */
+    // 重置 Token
     const resetToken = () => {
         removeToken()
         token.value = {
@@ -75,7 +77,7 @@ export const useUserStore = defineStore("user", () => {
             expires: 0
         }
     }
-    /** 重置 visited views 和 cached views */
+    // 重置 visited views 和 cached views
     const _resetTagsView = () => {
         tagsViewStore.delAllVisitedViews()
         tagsViewStore.delAllCachedViews()
@@ -84,7 +86,7 @@ export const useUserStore = defineStore("user", () => {
     return { token, username, login, getInfo, logout, resetToken, refreshToken }
 })
 
-/** 在 setup 外使用 */
+// 在 setup 外使用
 export function useUserStoreHook() {
     return useUserStore(store)
 }

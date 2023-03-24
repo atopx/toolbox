@@ -88,30 +88,30 @@ export const constantRoutes: RouteRecordRaw[] = [
         ]
     },
     {
-        path: "/table",
+        path: "/computer",
         component: Layout,
-        redirect: "/table/element-plus",
-        name: "Table",
+        redirect: "/computer/computerManage",
+        name: "computer",
         meta: {
-            title: "表格",
+            title: "主机管理",
             elIcon: "Grid"
         },
         children: [
             {
-                path: "element-plus",
-                component: () => import("@/views/table/element-plus/index.vue"),
-                name: "ElementPlus",
+                path: "computerManage",
+                component: () => import("@/views/computer/computerManage/index.vue"),
+                name: "computerManage",
                 meta: {
-                    title: "Element Plus",
+                    title: "设备管理",
                     keepAlive: true
                 }
             },
             {
-                path: "vxe-table",
-                component: () => import("@/views/table/vxe-table/index.vue"),
-                name: "VxeTable",
+                path: "portManage",
+                component: () => import("@/views/computer/computerManage/index.vue"),
+                name: "portManage",
                 meta: {
-                    title: "Vxe Table",
+                    title: "端口管理",
                     keepAlive: true
                 }
             }
