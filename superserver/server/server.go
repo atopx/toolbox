@@ -7,7 +7,6 @@ import (
 	"os/signal"
 	"superserver/common/logger"
 	"superserver/common/middleware"
-	"superserver/docs"
 	"superserver/internal/api"
 	"superserver/internal/model/access"
 	"superserver/internal/model/role"
@@ -23,6 +22,7 @@ import (
 	"github.com/spf13/viper"
 	files "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/swag/example/basic/docs"
 	"gorm.io/gorm"
 )
 

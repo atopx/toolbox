@@ -1,0 +1,28 @@
+syntax = "proto3";
+package auth_service;
+option go_package = "superserver/domain/auth_service";
+
+import "public/common.proto";
+
+message Token {
+    int64 id = 1;
+    int64 user_id = 2;
+    string access_token = 3;
+    string refresh_token = 4;
+    int64 issued_time = 5;
+    int64 expire_time = 6;
+
+    int64 delete_time = 1001;
+    int64 create_time = 1002;
+    int64 update_time = 1003;
+}
+
+
+message AuthorizationParams {
+    public.Header header = 1;
+    Token data = 2;
+}
+
+message AuthorizationReply {
+    public.ReplyHeader header = 1;
+}

@@ -1,0 +1,74 @@
+syntax = "proto3";
+package auth_service;
+option go_package = "superserver/domain/auth_service";
+
+import "public/common.proto";
+
+enum RoleNature {
+    ROLE_DEFAULT = 0; // 初始化角色
+    ROLE_SYSTEM = 1; // 系统角色
+    ROLE_CUSTOM = 2; // 自定义角色
+}
+
+message Role {
+    int64 id = 1;
+    string name = 2;
+    RoleNature nature = 3;
+
+    int64 delete_time = 1001;
+    int64 create_time = 1002;
+    int64 update_time = 1003;
+    int64 creator = 1004;
+    int64 updater = 1005;
+}
+
+message RoleFilter {
+    repeated int64 ids = 1;
+    repeated string names = 2;
+    repeated RoleNature natures = 3;
+
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
+    repeated int64 creators = 104;
+    repeated int64 updaters = 105;
+
+
+    Keywords keywords = 201;
+    message Keywords {
+        string name = 1;
+    }
+}
+
+
+message ListRoleParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    RoleFilter filter = 4;
+}
+
+message ListRoleReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated Role data = 3;
+}
+
+message OperateRoleParams {
+    public.Header header = 1;
+    Role data = 2;
+}
+
+message OperateRoleReply {
+    public.ReplyHeader header = 1;
+    Role data = 2;
+}
+
+message BatchOperateRoleParams {
+    public.Header header = 1;
+    repeated Role data = 2;
+}
+
+message BatchOperateRoleReply {
+    public.ReplyHeader header = 1;
+}

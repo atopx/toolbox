@@ -2,10 +2,6 @@ package create
 
 import (
 	"errors"
-	"github.com/gocolly/colly/v2"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"net/url"
 	"strings"
 	"superserver/common/interface/ecode_iface"
@@ -13,6 +9,11 @@ import (
 	"superserver/common/logger"
 	"superserver/internal/model/novel"
 	"time"
+
+	"github.com/gocolly/colly/v2"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func (ctl *Controller) Deal() {

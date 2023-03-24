@@ -1,0 +1,64 @@
+syntax = "proto3";
+package auth_service;
+option go_package = "superserver/domain/auth_service";
+
+import "public/common.proto";
+
+enum UserStatus {
+    USER_NORMAL = 0; // 正常
+    USER_STATUS_DISABLED = 1; // 禁用
+    USER_STATUS_BLACK = 2; // 黑名单
+}
+
+message User {
+    int64 id = 1;
+    string username = 2;
+    string password = 3;
+    UserStatus status = 4;
+
+    int64 delete_time = 1001;
+    int64 create_time = 1002;
+    int64 update_time = 1003;
+}
+
+message UserFilter {
+    repeated int64 ids = 1;
+    repeated string usernames = 2;
+    repeated UserStatus states = 3;
+    
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
+}
+
+message ListUserParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    UserFilter filter = 4;
+}
+
+message ListUserReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated User data = 3;
+}
+
+message OperateUserParams {
+    public.Header header = 1;
+    User data = 2;
+}
+
+message OperateUserReply {
+    public.ReplyHeader header = 1;
+    User data = 2;
+}
+
+message BatchOperateUserParams {
+    public.Header header = 1;
+    repeated User data = 2;
+}
+
+message BatchOperateUserReply {
+    public.ReplyHeader header = 1;
+}

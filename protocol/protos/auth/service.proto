@@ -1,0 +1,36 @@
+syntax = "proto3";
+package auth_service;
+option go_package = "superserver/domain/auth_service";
+
+import "auth/user.proto";
+import "auth/role.proto";
+import "auth/access.proto";
+import "auth/token.proto";
+import "auth/permission.proto";
+
+
+service AuthService {
+    // 用户
+    rpc ListUser(ListUserParams) returns(ListUserReply);
+    rpc OperateUser(OperateUserParams) returns(OperateUserReply);
+    rpc BatchOperateUser(BatchOperateUserParams) returns(BatchOperateUserReply);
+    
+    // 角色
+    rpc ListRole(ListRoleParams) returns(ListRoleReply);
+    rpc OperateRole(OperateRoleParams) returns(OperateRoleReply);
+    rpc BatchOperateRole(BatchOperateRoleParams) returns(BatchOperateRoleReply);
+
+    // api接口
+    rpc ListAccess(ListAccessParams) returns(ListAccessReply);
+    rpc OperateAccess(OperateAccessParams) returns(OperateAccessReply);
+    rpc BatchOperateAccess(BatchOperateAccessParams) returns(BatchOperateAccessReply);
+
+    // api接口权限
+    rpc ListPermission(ListPermissionParams) returns(ListPermissionReply);
+    rpc OperatePermission(OperatePermissionParams) returns(OperatePermissionReply);
+    rpc BatchOperatePermission(BatchOperatePermissionParams) returns(BatchOperatePermissionReply);
+    
+    // 认证接口: 无token则创建, 如果token已过期则刷新token
+    rpc Authorization(AuthorizationParams) returns(AuthorizationReply);
+}
+

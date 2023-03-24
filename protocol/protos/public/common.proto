@@ -1,0 +1,61 @@
+syntax = "proto3";
+package public;
+option go_package = "superserver/domain/public/common";
+import "public/ecode.proto";
+
+enum RangeScope {
+    RANGE_ALL = 0; // 含左右
+    RANGE_LEFT = 1; // 含左
+    RANGE_RIGHT = 2; // 含右
+}
+
+message Pager {
+    int32 index = 1; // 页码
+    int32 size = 2; // 数量
+    int64 count = 3; // 总数量
+    bool disabled = 5; // 禁用分页
+}
+
+message RangeI64 {
+    int64 left = 1; // 区间左
+    int64 right = 2; // 区间右
+    RangeScope scope = 3; // 应用范围
+}
+
+message Header {
+    int64 trace_id = 1;
+    string source = 2; 
+    int64 operator = 3;
+}
+
+message ReplyHeader {
+    public.ECode code = 1;
+    string message = 2;
+}
+
+enum SortDirection {
+    SORT_ASC = 0;
+    SORT_DESC = 1;
+}
+
+message BetweenInt64 {
+    RangeScope scope = 1;
+    int64 left = 2;
+    int64 right = 3;
+}
+
+message Sort {
+    string field = 1;
+    SortDirection direction = 2; 
+}
+
+enum Operation {
+    // 基础操作类型
+    OPERATION_CREATE = 0;
+    OPERATION_UPDATE = 1;
+    OPERATION_DELETE = 2;
+    OPERATION_REAL_DELETE = 3;
+
+    // 高阶操作类型
+    OPERATION_UPSERT = 101;
+}

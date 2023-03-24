@@ -1,0 +1,17 @@
+[package]
+name = "auth_srv"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+prost = "0.11"
+tonic = "0.8"
+prost-types = "0.11"
+
+tokio = { version = "1", features = ["full"] }
+sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "mysql", "chrono" ] }
+
+domain = { path = "../domain" }
+common = { path = "../common" }

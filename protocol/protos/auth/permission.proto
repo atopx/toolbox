@@ -1,0 +1,62 @@
+syntax = "proto3";
+package auth_service;
+option go_package = "superserver/domain/auth_service";
+
+import "public/common.proto";
+
+message Permission {
+    int64 id = 1;
+    int64 access_id = 2;
+    int64 role_id = 3;
+    
+    int64 delete_time = 1001;
+    int64 create_time = 1002;
+    int64 update_time = 1003;
+    int64 creator = 1004;
+    int64 updater = 1005;
+}
+
+message PermissionFilter {
+    repeated int64 ids = 1;
+    repeated int64 access_ids = 2;
+    repeated int64 role_ids = 3;
+
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
+    repeated int64 creators = 104;
+    repeated int64 updaters = 105;
+}
+
+
+message ListPermissionParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    PermissionFilter filter = 4;
+}
+
+message ListPermissionReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated Permission data = 3;
+}
+
+message OperatePermissionParams {
+    public.Header header = 1;
+    Permission data = 2;
+}
+
+message OperatePermissionReply {
+    public.ReplyHeader header = 1;
+    Permission data = 2;
+}
+
+message BatchOperatePermissionParams {
+    public.Header header = 1;
+    repeated Permission data = 2;
+}
+
+message BatchOperatePermissionReply {
+    public.ReplyHeader header = 1;
+}

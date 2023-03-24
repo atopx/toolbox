@@ -12,10 +12,13 @@ require (
 	github.com/swaggo/swag v1.8.10
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.6.0
+	google.golang.org/grpc v1.52.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/gorm v1.24.5
 )
+
+require google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

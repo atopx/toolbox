@@ -1,0 +1,58 @@
+syntax = "proto3";
+package auth_service;
+option go_package = "superserver/domain/auth_service";
+
+import "public/common.proto";
+
+enum AccessStatus {
+    ACCESS_DEFAULT = 0; // 默认状态, 需要验证权限
+    ACCESS_ANONYMOUS = 1; // 可匿名访问，无需验证权限
+    ACCESS_DISABLED = 2; // 已禁用，禁止访问
+}
+
+message Access {
+    int64 id = 1;
+    string path = 2;
+    string method = 3;
+    AccessStatus status = 4;
+}
+
+message AccessFilter {
+    repeated int64 ids = 1;
+    repeated string paths = 2;
+    repeated string methods = 3;
+    repeated AccessStatus status = 4;
+}
+
+
+message ListAccessParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    AccessFilter filter = 4;
+}
+
+message ListAccessReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated Access data = 3;
+}
+
+message OperateAccessParams {
+    public.Header header = 1;
+    Access data = 2;
+}
+
+message OperateAccessReply {
+    public.ReplyHeader header = 1;
+    Access data = 2;
+}
+
+message BatchOperateAccessParams {
+    public.Header header = 1;
+    repeated Access data = 2;
+}
+
+message BatchOperateAccessReply {
+    public.ReplyHeader header = 1;
+}

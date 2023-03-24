@@ -3,17 +3,15 @@ package main
 import (
 	"flag"
 	"log"
-
 	"superserver/common/logger"
 	"superserver/server"
 
 	"github.com/spf13/viper"
-
-	_ "superserver/docs"
 )
 
 // @title           superserver
 // @version         0.1.0
+// @host			localhost:18000
 // @description     集成网盘、多媒体、Webdav、服务器监控等一体的超级服务器后台
 
 // @contact.name   atopx
@@ -28,7 +26,7 @@ func main() {
 	if err := viper.ReadInConfig(); err != nil {
 		viper.Set("server.mode", "release")
 		viper.Set("server.host", "127.0.0.1")
-		viper.Set("server.port", 8000)
+		viper.Set("server.port", 18000)
 		viper.Set("server.loglevel", "info")
 		viper.Set("admin.user", "superuser")
 		viper.Set("admin.pass", "superuser")
@@ -47,4 +45,5 @@ func main() {
 	if err := server.New().Start(); err != nil {
 		log.Panicf("start server failed: %s", err.Error())
 	}
+
 }

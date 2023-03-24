@@ -8,11 +8,13 @@ function build() {
 }
 
 function proto() {
-	protoc --go_out=. data/protos/*.proto
+	rm -rf domain
+	protoc --proto_path ../protocol/protos --go-grpc_out=../ --go_out=../ ../protocol/protos/*/*.proto  
 }
 
 function swagger() {
-	swag init
+	rm -f ../protocol/apis/swagger.yaml
+	swag init --output ../protocol/apis --outputTypes yaml --parseInternal
 }
 
 function status() {
