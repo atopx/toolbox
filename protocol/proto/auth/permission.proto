@@ -5,15 +5,15 @@ option go_package = "superserver/domain/auth_service";
 import "public/common.proto";
 
 message Permission {
-    int64 id = 1;
+    int32 id = 1;
     int64 access_id = 2;
     int64 role_id = 3;
     
     int64 delete_time = 1001;
     int64 create_time = 1002;
     int64 update_time = 1003;
-    int64 creator = 1004;
-    int64 updater = 1005;
+    int32 creator = 1004;
+    int32 updater = 1005;
 }
 
 message PermissionFilter {
@@ -24,8 +24,8 @@ message PermissionFilter {
     public.BetweenInt64 delete_time_range = 101;
     public.BetweenInt64 create_time_range = 102;
     public.BetweenInt64 update_time_range = 103;
-    repeated int64 creators = 104;
-    repeated int64 updaters = 105;
+    repeated int32 creators = 104;
+    repeated int32 updaters = 105;
 }
 
 
@@ -44,7 +44,8 @@ message ListPermissionReply {
 
 message OperatePermissionParams {
     public.Header header = 1;
-    Permission data = 2;
+    public.Operation operate = 2;
+    Permission data = 3;
 }
 
 message OperatePermissionReply {
@@ -54,7 +55,8 @@ message OperatePermissionReply {
 
 message BatchOperatePermissionParams {
     public.Header header = 1;
-    repeated Permission data = 2;
+    public.Operation operate = 2;
+    repeated Permission data = 3;
 }
 
 message BatchOperatePermissionReply {

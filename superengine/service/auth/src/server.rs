@@ -1,13 +1,16 @@
-use domain::auth_service;
+use sea_orm::DatabaseConnection;
 use tonic::{Request, Response, Result, Status};
 
+use domain::auth_service;
+use domain::auth_service::User;
+use domain::public;
+
 pub struct AuthService {
-    db: sqlx::MySqlPool,
+    db: DatabaseConnection,
 }
 
 impl AuthService {
-    pub fn new(db: sqlx::MySqlPool) -> Self {
-        println!("this");
+    pub fn new(db: DatabaseConnection) -> Self {
         return Self { db };
     }
 }
@@ -20,16 +23,58 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::ListUserReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::ListUserReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn operate_user(
         &self,
         request: Request<auth_service::OperateUserParams>,
     ) -> Result<Response<auth_service::OperateUserReply>, Status> {
-        println!("{:?}", request);
-        let reply = auth_service::OperateUserReply::default();
-        return Ok(tonic::Response::new(reply));
+        let params = request.into_inner();
+        let _header = params.header.unwrap();
+        return match params.data {
+            None => {
+                let reply = auth_service::OperateUserReply {
+                    header: common::header::reply(public::ECode::BadRequest),
+                    data: None,
+                };
+                Ok(Response::new(reply))
+            }
+            Some(user) => {
+                return match public::Operation::from_i32(params.operate).unwrap() {
+                    public::Operation::Create => {
+                        let result = super::business::user::Dao::insert(&self.db, user).await.unwrap();
+                        Ok(Response::new(auth_service::OperateUserReply {
+                            header: common::header::reply(public::ECode::Success),
+                            data: Some(User {
+                                id: result.id,
+                                ..Default::default()
+                            }),
+                        }))
+                    }
+                    public::Operation::Update => {
+                        super::business::user::Dao::update(&self.db, user.clone()).await.unwrap();
+                        let reply = auth_service::OperateUserReply {
+                            header: common::header::reply(public::ECode::Success),
+                            data: Some(user),
+                        };
+                        Ok(Response::new(reply))
+                    }
+                    public::Operation::Delete => {
+                        super::business::user::Dao::delete(&self.db, user.id).await.unwrap();
+                        Ok(Response::new(auth_service::OperateUserReply::default()))
+                    }
+                    public::Operation::RealDelete => {
+                        println!("RealDelete");
+                        Ok(Response::new(auth_service::OperateUserReply::default()))
+                    }
+                    public::Operation::Upsert => {
+                        println!("Upsert");
+                        Ok(Response::new(auth_service::OperateUserReply::default()))
+                    }
+                };
+            }
+        };
     }
 
     async fn batch_operate_user(
@@ -38,7 +83,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::BatchOperateUserReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::BatchOperateUserReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn list_role(
@@ -47,7 +92,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::ListRoleReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::ListRoleReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn operate_role(
@@ -56,7 +101,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::OperateRoleReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::OperateRoleReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn batch_operate_role(
@@ -65,7 +110,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::BatchOperateRoleReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::BatchOperateRoleReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn list_access(
@@ -74,7 +119,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::ListAccessReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::ListAccessReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn operate_access(
@@ -83,7 +128,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::OperateAccessReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::OperateAccessReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn batch_operate_access(
@@ -92,7 +137,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::BatchOperateAccessReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::BatchOperateAccessReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn list_permission(
@@ -101,7 +146,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::ListPermissionReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::ListPermissionReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn operate_permission(
@@ -110,7 +155,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::OperatePermissionReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::OperatePermissionReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn batch_operate_permission(
@@ -119,7 +164,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::BatchOperatePermissionReply>, Status> {
         println!("{:?}", request);
         let reply = auth_service::BatchOperatePermissionReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 
     async fn authorization(
@@ -130,6 +175,6 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         println!("metadata: {:?}", request.metadata());
         println!("message: {:?}", request.get_ref());
         let reply = auth_service::AuthorizationReply::default();
-        return Ok(tonic::Response::new(reply));
+        return Ok(Response::new(reply));
     }
 }

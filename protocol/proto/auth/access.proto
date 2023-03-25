@@ -11,7 +11,7 @@ enum AccessStatus {
 }
 
 message Access {
-    int64 id = 1;
+    int32 id = 1;
     string path = 2;
     string method = 3;
     AccessStatus status = 4;
@@ -40,7 +40,8 @@ message ListAccessReply {
 
 message OperateAccessParams {
     public.Header header = 1;
-    Access data = 2;
+    public.Operation operate = 2;
+    Access data = 3;
 }
 
 message OperateAccessReply {
@@ -50,7 +51,8 @@ message OperateAccessReply {
 
 message BatchOperateAccessParams {
     public.Header header = 1;
-    repeated Access data = 2;
+    public.Operation operate = 2;
+    repeated Access data = 3;
 }
 
 message BatchOperateAccessReply {

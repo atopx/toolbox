@@ -5,7 +5,7 @@ option go_package = "superserver/domain/auth_service";
 import "public/common.proto";
 
 message Token {
-    int64 id = 1;
+    int32 id = 1;
     int64 user_id = 2;
     string access_token = 3;
     string refresh_token = 4;
