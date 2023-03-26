@@ -1,16 +1,15 @@
-# super
+# Super - toolbox
 
-> Developer's Super Toolbox
+> a developer's super toolbox, and micro service templates.
+>
+> warn: currently in a fast iteration state
 
-## feature
-- Common development tools
-- Self-built entertainment service
-- Home multimedia service
-- Online cloud disk
-- Online notes
-- ...
+![super-draft](C:\Users\atopx\works\toolbox\super-draft.png)
 
-## todo
-* [x] super-server: go + gin
-* [ ] super-web/desktop: rust + tauri + vue3 
-* [ ] super-mobile: flutter
+## Todo
+* [ ] super-web`5%`: vue3 + typescript + element-plus
+* [ ] super-desktop`not-start`: rust + tauri + vue3 + element-plus
+* [ ] super-mobile`not-start`: flutter,   `not start`
+* [ ] super-server`5%`: go + gin + gorm,    progress:  
+* [ ] super-engine`5%`: rust + tokio + tonic + sea-orm,    progress:  10%
+* [ ] super-monitor`not-start`: elasticsearch + jaeger + prometheus + open-telemetry + vector
