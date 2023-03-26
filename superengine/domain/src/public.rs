@@ -107,8 +107,8 @@ pub struct Header {
     pub trace_id: i64,
     #[prost(string, tag = "2")]
     pub source: ::prost::alloc::string::String,
-    #[prost(int64, tag = "3")]
-    pub operator: i64,
+    #[prost(int32, tag = "3")]
+    pub operator: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

@@ -1,102 +1,80 @@
 use std::str::FromStr;
 
-use sea_orm::ActiveValue::Set;
 use sea_orm::{
     sea_query, ActiveModelTrait, ColumnTrait, DbConn, DbErr, EntityTrait, PaginatorTrait,
     QueryFilter, QueryOrder,
 };
 
 use domain::{auth_service, public};
-use model::user::{ActiveModel, Column, Entity, Model};
+use model::permission::{ActiveModel, Column, Entity, Model};
 
 pub struct Dao<'a> {
     /// 我实例化的对象(所有权), 借给你(智能指针), 你需要声明用多久(生命周期);
     db: &'a DbConn,
+    operator: i32,
 }
 
 impl<'a> Dao<'a> {
-    pub fn new(db: &'a DbConn) -> Dao<'a> {
-        return Dao { db };
+    pub fn new(db: &'a DbConn, operator: i32) -> Dao<'a> {
+        return Dao { db, operator };
     }
 
-    async fn transformed(&self, model: Model) -> auth_service::User {
-        return auth_service::User {
-            id: model.id,
-            username: model.username,
-            password: model.password,
-            status: model.status,
-            delete_time: model.delete_time,
-            create_time: model.create_time,
-            update_time: model.update_time,
-        };
-    }
-
-    // 插入
-    pub async fn insert(&self, dto: auth_service::User) -> Result<Model, DbErr> {
+    async fn from_dto(&self, dto: auth_service::Permission) -> Model {
         let current_time = common::utils::current_timestamp();
-        let value = Model {
+        return Model {
             id: 0,
-            username: dto.username,
-            password: dto.password,
-            status: dto.status,
+            access_id: dto.access_id,
+            role_id: dto.role_id,
+            creator: self.operator,
+            updater: self.operator,
             create_time: current_time,
             update_time: current_time,
             delete_time: 0,
         };
+    }
+
+    async fn transformed(&self, model: Model) -> auth_service::Permission {
+        return auth_service::Permission {
+            id: model.id,
+            access_id: model.access_id,
+            role_id: model.role_id,
+            delete_time: model.delete_time,
+            create_time: model.create_time,
+            update_time: model.update_time,
+            creator: self.operator,
+            updater: self.operator,
+        };
+    }
+
+    // 插入
+    pub async fn insert(&self, dto: auth_service::Permission) -> Result<Model, DbErr> {
+        let value = self.from_dto(dto).await;
         let active: ActiveModel = value.into();
         return active.insert(self.db).await;
     }
 
-    // 更新
-    pub async fn update(&self, dto: auth_service::User) -> Result<Model, DbErr> {
-        let value: Option<Model> = Entity::find_by_id(dto.id).one(self.db).await?;
-        let mut active: ActiveModel = value.unwrap().into();
-        active.username = Set(dto.username);
-        active.password = Set(dto.password);
-        active.status = Set(dto.status);
-        active.update_time = Set(common::utils::current_timestamp());
-        return active.update(self.db).await;
-    }
-
-    // 逻辑删除
-    pub async fn delete(&self, id: i32) -> Result<Model, DbErr> {
-        let value: Option<Model> = Entity::find_by_id(id).one(self.db).await?;
-        let mut active: ActiveModel = value.unwrap().into();
-        active.delete_time = Set(common::utils::current_timestamp());
-        return active.update(self.db).await;
-    }
-
     // 物理删除
-    pub async fn delete_real(&self, id: i32) -> Result<sea_orm::DeleteResult, DbErr> {
+    pub async fn delete(&self, id: i32) -> Result<sea_orm::DeleteResult, DbErr> {
         return Entity::delete_by_id(id).exec(self.db).await;
     }
 
     // 批量写入，有冲突则更新
     pub async fn save(
         &self,
-        dtos: Vec<auth_service::User>,
+        dtos: Vec<auth_service::Permission>,
     ) -> Result<sea_orm::InsertResult<ActiveModel>, DbErr> {
-        let current_time = common::utils::current_timestamp();
         let mut actives = vec![];
         for dto in dtos {
-            let value = Model {
-                id: 0,
-                username: dto.username,
-                password: dto.password,
-                status: dto.status,
-                create_time: current_time,
-                update_time: current_time,
-                delete_time: 0,
-            };
+            let value = self.from_dto(dto).await;
             let active: ActiveModel = value.into();
             actives.push(active);
         }
         return Entity::insert_many(actives)
             .on_conflict(
                 // 定义冲突
-                sea_query::OnConflict::column(Column::Username)
+                sea_query::OnConflict::columns([Column::AccessId, Column::RoleId])
                     // 冲突后更新的字段
-                    .update_columns([Column::Password, Column::Status, Column::UpdateTime])
+                    .do_nothing()
                     .to_owned(),
             )
             .exec(self.db)
@@ -106,8 +84,8 @@ impl<'a> Dao<'a> {
     // 列表筛选
     pub async fn list(
         &self,
-        params: auth_service::ListUserParams,
-    ) -> Result<(Vec<auth_service::User>, Option<public::Pager>), DbErr> {
+        params: auth_service::ListPermissionParams,
+    ) -> Result<(Vec<auth_service::Permission>, Option<public::Pager>), DbErr> {
         let mut query = Entity::find().filter(Column::DeleteTime.eq(0));
 
         // 筛选
@@ -115,11 +93,17 @@ impl<'a> Dao<'a> {
             if !filter.ids.is_empty() {
                 query = query.filter(Column::Id.is_in(filter.ids));
             }
-            if !filter.usernames.is_empty() {
-                query = query.filter(Column::Username.is_in(filter.usernames));
+            if !filter.role_ids.is_empty() {
+                query = query.filter(Column::RoleId.is_in(filter.role_ids));
             }
-            if !filter.states.is_empty() {
-                query = query.filter(Column::Status.is_in(filter.states));
+            if !filter.access_ids.is_empty() {
+                query = query.filter(Column::AccessId.is_in(filter.access_ids));
+            }
+            if !filter.creators.is_empty() {
+                query = query.filter(Column::Creator.is_in(filter.creators));
+            }
+            if !filter.updaters.is_empty() {
+                query = query.filter(Column::Updater.is_in(filter.updaters));
             }
             if let Some(range) = filter.create_time_range {
                 query = query.filter(Column::CreateTime.between(range.left, range.right))

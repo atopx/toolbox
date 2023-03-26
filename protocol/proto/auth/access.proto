@@ -18,10 +18,10 @@ message Access {
 }
 
 message AccessFilter {
-    repeated int64 ids = 1;
+    repeated int32 ids = 1;
     repeated string paths = 2;
     repeated string methods = 3;
-    repeated AccessStatus status = 4;
+    repeated AccessStatus states = 4;
 }
 
 

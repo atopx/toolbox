@@ -25,7 +25,7 @@ message RangeI64 {
 message Header {
     int64 trace_id = 1;
     string source = 2; 
-    int64 operator = 3;
+    int32 operator = 3;
 }
 
 message ReplyHeader {

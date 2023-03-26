@@ -4,63 +4,61 @@ option go_package = "superserver/domain/auth_service";
 
 import "public/common.proto";
 
-enum UserStatus {
-    USER_NORMAL = 0; // 正常
-    USER_STATUS_DISABLED = 1; // 禁用
-    USER_STATUS_BLACK = 2; // 黑名单
-}
-
-message User {
+message UserRoleRef {
     int32 id = 1;
-    string username = 2;
-    string password = 3;
-    UserStatus status = 4;
-
+    int32 user_id = 2;
+    int32 role_id = 3;
+    
     int64 delete_time = 1001;
     int64 create_time = 1002;
     int64 update_time = 1003;
+    int32 creator = 1004;
+    int32 updater = 1005;
 }
 
-message UserFilter {
+message UserRoleRefFilter {
     repeated int32 ids = 1;
-    repeated string usernames = 2;
-    repeated UserStatus states = 3;
-    
+    repeated int32 user_id = 2;
+    repeated int32 role_ids = 3;
+
     public.BetweenInt64 delete_time_range = 101;
     public.BetweenInt64 create_time_range = 102;
     public.BetweenInt64 update_time_range = 103;
+    repeated int32 creators = 104;
+    repeated int32 updaters = 105;
 }
 
-message ListUserParams {
+
+message ListUserRoleRefParams {
     public.Header header = 1;
     public.Pager pager = 2;
     repeated public.Sort sorts = 3;
-    UserFilter filter = 4;
+    UserRoleRefFilter filter = 4;
 }
 
-message ListUserReply {
+message ListUserRoleRefReply {
     public.ReplyHeader header = 1;
     public.Pager pager = 2;
-    repeated User data = 3;
+    repeated UserRoleRef data = 3;
 }
 
-message OperateUserParams {
+message OperateUserRoleRefParams {
     public.Header header = 1;
     public.Operation operate = 2;
-    User data = 3;
+    UserRoleRef data = 3;
 }
 
-message OperateUserReply {
+message OperateUserRoleRefReply {
     public.ReplyHeader header = 1;
-    User data = 2;
+    UserRoleRef data = 2;
 }
 
-message BatchOperateUserParams {
+message BatchOperateUserRoleRefParams {
     public.Header header = 1;
     public.Operation operate = 2;
-    repeated User data = 3;
+    repeated UserRoleRef data = 3;
 }
 
-message BatchOperateUserReply {
+message BatchOperateUserRoleRefReply {
     public.ReplyHeader header = 1;
 }

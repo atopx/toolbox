@@ -23,7 +23,7 @@ message Role {
 }
 
 message RoleFilter {
-    repeated int64 ids = 1;
+    repeated int32 ids = 1;
     repeated string names = 2;
     repeated RoleNature natures = 3;
 

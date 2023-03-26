@@ -13,14 +13,14 @@ pub struct Access {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AccessFilter {
-    #[prost(int64, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i64>,
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(string, repeated, tag = "2")]
     pub paths: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(string, repeated, tag = "3")]
     pub methods: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(enumeration = "AccessStatus", repeated, tag = "4")]
-    pub status: ::prost::alloc::vec::Vec<i32>,
+    pub states: ::prost::alloc::vec::Vec<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -115,10 +115,10 @@ impl AccessStatus {
 pub struct Permission {
     #[prost(int32, tag = "1")]
     pub id: i32,
-    #[prost(int64, tag = "2")]
-    pub access_id: i64,
-    #[prost(int64, tag = "3")]
-    pub role_id: i64,
+    #[prost(int32, tag = "2")]
+    pub access_id: i32,
+    #[prost(int32, tag = "3")]
+    pub role_id: i32,
     #[prost(int64, tag = "1001")]
     pub delete_time: i64,
     #[prost(int64, tag = "1002")]
@@ -133,12 +133,12 @@ pub struct Permission {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PermissionFilter {
-    #[prost(int64, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i64>,
-    #[prost(int64, repeated, tag = "2")]
-    pub access_ids: ::prost::alloc::vec::Vec<i64>,
-    #[prost(int64, repeated, tag = "3")]
-    pub role_ids: ::prost::alloc::vec::Vec<i64>,
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "2")]
+    pub access_ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "3")]
+    pub role_ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(message, optional, tag = "101")]
     pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
     #[prost(message, optional, tag = "102")]
@@ -229,8 +229,8 @@ pub struct Role {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RoleFilter {
-    #[prost(int64, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i64>,
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(string, repeated, tag = "2")]
     pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(enumeration = "RoleNature", repeated, tag = "3")]
@@ -366,8 +366,8 @@ pub struct User {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UserFilter {
-    #[prost(int64, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i64>,
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(string, repeated, tag = "2")]
     pub usernames: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(enumeration = "UserStatus", repeated, tag = "3")]
@@ -472,8 +472,8 @@ impl UserStatus {
 pub struct Token {
     #[prost(int32, tag = "1")]
     pub id: i32,
-    #[prost(int64, tag = "2")]
-    pub user_id: i64,
+    #[prost(int32, tag = "2")]
+    pub user_id: i32,
     #[prost(string, tag = "3")]
     pub access_token: ::prost::alloc::string::String,
     #[prost(string, tag = "4")]
@@ -1179,4 +1179,100 @@ pub mod auth_service_server {
     impl<T: AuthService> tonic::server::NamedService for AuthServiceServer<T> {
         const NAME: &'static str = "auth_service.AuthService";
     }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UserRoleRef {
+    #[prost(int32, tag = "1")]
+    pub id: i32,
+    #[prost(int32, tag = "2")]
+    pub user_id: i32,
+    #[prost(int32, tag = "3")]
+    pub role_id: i32,
+    #[prost(int64, tag = "1001")]
+    pub delete_time: i64,
+    #[prost(int64, tag = "1002")]
+    pub create_time: i64,
+    #[prost(int64, tag = "1003")]
+    pub update_time: i64,
+    #[prost(int32, tag = "1004")]
+    pub creator: i32,
+    #[prost(int32, tag = "1005")]
+    pub updater: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UserRoleRefFilter {
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "2")]
+    pub user_id: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "3")]
+    pub role_ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(message, optional, tag = "101")]
+    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "102")]
+    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "103")]
+    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(int32, repeated, tag = "104")]
+    pub creators: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "105")]
+    pub updaters: ::prost::alloc::vec::Vec<i32>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListUserRoleRefParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
+    #[prost(message, optional, tag = "4")]
+    pub filter: ::core::option::Option<UserRoleRefFilter>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListUserRoleRefReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateUserRoleRefParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, optional, tag = "3")]
+    pub data: ::core::option::Option<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateUserRoleRefReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub data: ::core::option::Option<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateUserRoleRefParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateUserRoleRefReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
 }

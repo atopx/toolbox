@@ -7,38 +7,44 @@ use sea_orm::{
 };
 
 use domain::{auth_service, public};
-use model::user::{ActiveModel, Column, Entity, Model};
+use model::role::{ActiveModel, Column, Entity, Model};
 
 pub struct Dao<'a> {
     /// 我实例化的对象(所有权), 借给你(智能指针), 你需要声明用多久(生命周期);
     db: &'a DbConn,
+    operator: i32,
 }
 
 impl<'a> Dao<'a> {
-    pub fn new(db: &'a DbConn) -> Dao<'a> {
-        return Dao { db };
+    pub fn new(db: &'a DbConn, operator: i32) -> Dao<'a> {
+        return Dao {
+            db,
+            operator,
+        };
     }
 
-    async fn transformed(&self, model: Model) -> auth_service::User {
-        return auth_service::User {
+    async fn transformed(&self, model: Model) -> auth_service::Role {
+        return auth_service::Role {
             id: model.id,
-            username: model.username,
-            password: model.password,
-            status: model.status,
+            name: model.name,
+            nature: model.nature,
             delete_time: model.delete_time,
             create_time: model.create_time,
             update_time: model.update_time,
+            creator: self.operator,
+            updater: self.operator,
         };
     }
 
     // 插入
-    pub async fn insert(&self, dto: auth_service::User) -> Result<Model, DbErr> {
+    pub async fn insert(&self, dto: auth_service::Role) -> Result<Model, DbErr> {
         let current_time = common::utils::current_timestamp();
         let value = Model {
             id: 0,
-            username: dto.username,
-            password: dto.password,
-            status: dto.status,
+            name: dto.name,
+            nature: dto.nature,
+            creator: self.operator,
+            updater: self.operator,
             create_time: current_time,
             update_time: current_time,
             delete_time: 0,
@@ -48,12 +54,12 @@ impl<'a> Dao<'a> {
     }
 
     // 更新
-    pub async fn update(&self, dto: auth_service::User) -> Result<Model, DbErr> {
+    pub async fn update(&self, dto: auth_service::Role) -> Result<Model, DbErr> {
         let value: Option<Model> = Entity::find_by_id(dto.id).one(self.db).await?;
         let mut active: ActiveModel = value.unwrap().into();
-        active.username = Set(dto.username);
-        active.password = Set(dto.password);
-        active.status = Set(dto.status);
+        active.name = Set(dto.name);
+        active.nature = Set(dto.nature);
+        active.updater = Set(self.operator);
         active.update_time = Set(common::utils::current_timestamp());
         return active.update(self.db).await;
     }
@@ -63,6 +69,7 @@ impl<'a> Dao<'a> {
         let value: Option<Model> = Entity::find_by_id(id).one(self.db).await?;
         let mut active: ActiveModel = value.unwrap().into();
         active.delete_time = Set(common::utils::current_timestamp());
+        active.updater = Set(self.operator);
         return active.update(self.db).await;
     }
 
@@ -74,16 +81,17 @@ impl<'a> Dao<'a> {
     // 批量写入，有冲突则更新
     pub async fn save(
         &self,
-        dtos: Vec<auth_service::User>,
+        dtos: Vec<auth_service::Role>,
     ) -> Result<sea_orm::InsertResult<ActiveModel>, DbErr> {
         let current_time = common::utils::current_timestamp();
         let mut actives = vec![];
         for dto in dtos {
             let value = Model {
                 id: 0,
-                username: dto.username,
-                password: dto.password,
-                status: dto.status,
+                name: dto.name,
+                nature: dto.nature,
+                creator: self.operator,
+                updater: self.operator,
                 create_time: current_time,
                 update_time: current_time,
                 delete_time: 0,
@@ -94,9 +102,9 @@ impl<'a> Dao<'a> {
         return Entity::insert_many(actives)
             .on_conflict(
                 // 定义冲突
-                sea_query::OnConflict::column(Column::Username)
+                sea_query::OnConflict::column(Column::Name)
                     // 冲突后更新的字段
-                    .update_columns([Column::Password, Column::Status, Column::UpdateTime])
+                    .update_columns([Column::Nature, Column::Updater, Column::UpdateTime])
                     .to_owned(),
             )
             .exec(self.db)
@@ -106,8 +114,8 @@ impl<'a> Dao<'a> {
     // 列表筛选
     pub async fn list(
         &self,
-        params: auth_service::ListUserParams,
-    ) -> Result<(Vec<auth_service::User>, Option<public::Pager>), DbErr> {
+        params: auth_service::ListRoleParams,
+    ) -> Result<(Vec<auth_service::Role>, Option<public::Pager>), DbErr> {
         let mut query = Entity::find().filter(Column::DeleteTime.eq(0));
 
         // 筛选
@@ -115,11 +123,17 @@ impl<'a> Dao<'a> {
             if !filter.ids.is_empty() {
                 query = query.filter(Column::Id.is_in(filter.ids));
             }
-            if !filter.usernames.is_empty() {
-                query = query.filter(Column::Username.is_in(filter.usernames));
+            if !filter.names.is_empty() {
+                query = query.filter(Column::Name.is_in(filter.names));
             }
-            if !filter.states.is_empty() {
-                query = query.filter(Column::Status.is_in(filter.states));
+            if !filter.natures.is_empty() {
+                query = query.filter(Column::Nature.is_in(filter.natures));
+            }
+            if !filter.creators.is_empty() {
+                query = query.filter(Column::Creator.is_in(filter.creators));
+            }
+            if !filter.updaters.is_empty() {
+                query = query.filter(Column::Updater.is_in(filter.updaters));
             }
             if let Some(range) = filter.create_time_range {
                 query = query.filter(Column::CreateTime.between(range.left, range.right))

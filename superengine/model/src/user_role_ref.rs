@@ -9,6 +9,8 @@ pub struct Model {
     pub id: i32,
     pub user_id: i32,
     pub role_id: i32,
+    pub creator: i32,
+    pub updater: i32,
     pub create_time: i64,
     pub update_time: i64,
     pub delete_time: i64,
