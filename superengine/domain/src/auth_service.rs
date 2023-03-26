@@ -469,7 +469,7 @@ impl UserStatus {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Token {
+pub struct AuthToken {
     #[prost(int32, tag = "1")]
     pub id: i32,
     #[prost(int32, tag = "2")]
@@ -491,15 +491,175 @@ pub struct Token {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct AuthorizationParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<Token>,
+pub struct AuthTokenFilter {
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "2")]
+    pub user_ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(string, repeated, tag = "3")]
+    pub access_tokens: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "4")]
+    pub refresh_tokens: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(message, optional, tag = "21")]
+    pub issued_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "22")]
+    pub expire_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "101")]
+    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "102")]
+    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "103")]
+    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct AuthorizationReply {
+pub struct ListAuthTokenParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
+    #[prost(message, optional, tag = "4")]
+    pub filter: ::core::option::Option<AuthTokenFilter>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListAuthTokenReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<AuthToken>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateAuthTokenParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, optional, tag = "3")]
+    pub data: ::core::option::Option<AuthToken>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateAuthTokenReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub data: ::core::option::Option<AuthToken>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateAuthTokenParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<AuthToken>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateAuthTokenReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UserRoleRef {
+    #[prost(int32, tag = "1")]
+    pub id: i32,
+    #[prost(int32, tag = "2")]
+    pub user_id: i32,
+    #[prost(int32, tag = "3")]
+    pub role_id: i32,
+    #[prost(int64, tag = "1001")]
+    pub delete_time: i64,
+    #[prost(int64, tag = "1002")]
+    pub create_time: i64,
+    #[prost(int64, tag = "1003")]
+    pub update_time: i64,
+    #[prost(int32, tag = "1004")]
+    pub creator: i32,
+    #[prost(int32, tag = "1005")]
+    pub updater: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UserRoleRefFilter {
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "2")]
+    pub user_id: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "3")]
+    pub role_ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(message, optional, tag = "101")]
+    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "102")]
+    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "103")]
+    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(int32, repeated, tag = "104")]
+    pub creators: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "105")]
+    pub updaters: ::prost::alloc::vec::Vec<i32>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListUserRoleRefParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
+    #[prost(message, optional, tag = "4")]
+    pub filter: ::core::option::Option<UserRoleRefFilter>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListUserRoleRefReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateUserRoleRefParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, optional, tag = "3")]
+    pub data: ::core::option::Option<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateUserRoleRefReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub data: ::core::option::Option<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateUserRoleRefParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<UserRoleRef>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateUserRoleRefReply {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::ReplyHeader>,
 }
@@ -536,6 +696,19 @@ pub mod auth_service_server {
             &self,
             request: tonic::Request<super::BatchOperateRoleParams>,
         ) -> Result<tonic::Response<super::BatchOperateRoleReply>, tonic::Status>;
+        /// 用户&角色
+        async fn list_user_role_ref(
+            &self,
+            request: tonic::Request<super::ListUserRoleRefParams>,
+        ) -> Result<tonic::Response<super::ListUserRoleRefReply>, tonic::Status>;
+        async fn operate_user_role_ref(
+            &self,
+            request: tonic::Request<super::OperateUserRoleRefParams>,
+        ) -> Result<tonic::Response<super::OperateUserRoleRefReply>, tonic::Status>;
+        async fn batch_operate_user_role_ref(
+            &self,
+            request: tonic::Request<super::BatchOperateUserRoleRefParams>,
+        ) -> Result<tonic::Response<super::BatchOperateUserRoleRefReply>, tonic::Status>;
         /// api接口
         async fn list_access(
             &self,
@@ -562,11 +735,19 @@ pub mod auth_service_server {
             &self,
             request: tonic::Request<super::BatchOperatePermissionParams>,
         ) -> Result<tonic::Response<super::BatchOperatePermissionReply>, tonic::Status>;
-        /// 认证接口: 无token则创建, 如果token已过期则刷新token
-        async fn authorization(
+        /// 认证令牌
+        async fn list_auth_token(
             &self,
-            request: tonic::Request<super::AuthorizationParams>,
-        ) -> Result<tonic::Response<super::AuthorizationReply>, tonic::Status>;
+            request: tonic::Request<super::ListAuthTokenParams>,
+        ) -> Result<tonic::Response<super::ListAuthTokenReply>, tonic::Status>;
+        async fn operate_auth_token(
+            &self,
+            request: tonic::Request<super::OperateAuthTokenParams>,
+        ) -> Result<tonic::Response<super::OperateAuthTokenReply>, tonic::Status>;
+        async fn batch_operate_auth_token(
+            &self,
+            request: tonic::Request<super::BatchOperateAuthTokenParams>,
+        ) -> Result<tonic::Response<super::BatchOperateAuthTokenReply>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct AuthServiceServer<T: AuthService> {
@@ -863,6 +1044,126 @@ pub mod auth_service_server {
                     };
                     Box::pin(fut)
                 }
+                "/auth_service.AuthService/ListUserRoleRef" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListUserRoleRefSvc<T: AuthService>(pub Arc<T>);
+                    impl<
+                        T: AuthService,
+                    > tonic::server::UnaryService<super::ListUserRoleRefParams>
+                    for ListUserRoleRefSvc<T> {
+                        type Response = super::ListUserRoleRefReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListUserRoleRefParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).list_user_role_ref(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListUserRoleRefSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/auth_service.AuthService/OperateUserRoleRef" => {
+                    #[allow(non_camel_case_types)]
+                    struct OperateUserRoleRefSvc<T: AuthService>(pub Arc<T>);
+                    impl<
+                        T: AuthService,
+                    > tonic::server::UnaryService<super::OperateUserRoleRefParams>
+                    for OperateUserRoleRefSvc<T> {
+                        type Response = super::OperateUserRoleRefReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::OperateUserRoleRefParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).operate_user_role_ref(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = OperateUserRoleRefSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/auth_service.AuthService/BatchOperateUserRoleRef" => {
+                    #[allow(non_camel_case_types)]
+                    struct BatchOperateUserRoleRefSvc<T: AuthService>(pub Arc<T>);
+                    impl<
+                        T: AuthService,
+                    > tonic::server::UnaryService<super::BatchOperateUserRoleRefParams>
+                    for BatchOperateUserRoleRefSvc<T> {
+                        type Response = super::BatchOperateUserRoleRefReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::BatchOperateUserRoleRefParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).batch_operate_user_role_ref(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = BatchOperateUserRoleRefSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
                 "/auth_service.AuthService/ListAccess" => {
                     #[allow(non_camel_case_types)]
                     struct ListAccessSvc<T: AuthService>(pub Arc<T>);
@@ -1101,25 +1402,25 @@ pub mod auth_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/auth_service.AuthService/Authorization" => {
+                "/auth_service.AuthService/ListAuthToken" => {
                     #[allow(non_camel_case_types)]
-                    struct AuthorizationSvc<T: AuthService>(pub Arc<T>);
+                    struct ListAuthTokenSvc<T: AuthService>(pub Arc<T>);
                     impl<
                         T: AuthService,
-                    > tonic::server::UnaryService<super::AuthorizationParams>
-                    for AuthorizationSvc<T> {
-                        type Response = super::AuthorizationReply;
+                    > tonic::server::UnaryService<super::ListAuthTokenParams>
+                    for ListAuthTokenSvc<T> {
+                        type Response = super::ListAuthTokenReply;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::AuthorizationParams>,
+                            request: tonic::Request<super::ListAuthTokenParams>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
                             let fut = async move {
-                                (*inner).authorization(request).await
+                                (*inner).list_auth_token(request).await
                             };
                             Box::pin(fut)
                         }
@@ -1129,7 +1430,87 @@ pub mod auth_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = AuthorizationSvc(inner);
+                        let method = ListAuthTokenSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/auth_service.AuthService/OperateAuthToken" => {
+                    #[allow(non_camel_case_types)]
+                    struct OperateAuthTokenSvc<T: AuthService>(pub Arc<T>);
+                    impl<
+                        T: AuthService,
+                    > tonic::server::UnaryService<super::OperateAuthTokenParams>
+                    for OperateAuthTokenSvc<T> {
+                        type Response = super::OperateAuthTokenReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::OperateAuthTokenParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).operate_auth_token(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = OperateAuthTokenSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/auth_service.AuthService/BatchOperateAuthToken" => {
+                    #[allow(non_camel_case_types)]
+                    struct BatchOperateAuthTokenSvc<T: AuthService>(pub Arc<T>);
+                    impl<
+                        T: AuthService,
+                    > tonic::server::UnaryService<super::BatchOperateAuthTokenParams>
+                    for BatchOperateAuthTokenSvc<T> {
+                        type Response = super::BatchOperateAuthTokenReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::BatchOperateAuthTokenParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).batch_operate_auth_token(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = BatchOperateAuthTokenSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -1179,100 +1560,4 @@ pub mod auth_service_server {
     impl<T: AuthService> tonic::server::NamedService for AuthServiceServer<T> {
         const NAME: &'static str = "auth_service.AuthService";
     }
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UserRoleRef {
-    #[prost(int32, tag = "1")]
-    pub id: i32,
-    #[prost(int32, tag = "2")]
-    pub user_id: i32,
-    #[prost(int32, tag = "3")]
-    pub role_id: i32,
-    #[prost(int64, tag = "1001")]
-    pub delete_time: i64,
-    #[prost(int64, tag = "1002")]
-    pub create_time: i64,
-    #[prost(int64, tag = "1003")]
-    pub update_time: i64,
-    #[prost(int32, tag = "1004")]
-    pub creator: i32,
-    #[prost(int32, tag = "1005")]
-    pub updater: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UserRoleRefFilter {
-    #[prost(int32, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "2")]
-    pub user_id: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "3")]
-    pub role_ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(message, optional, tag = "101")]
-    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "102")]
-    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "103")]
-    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(int32, repeated, tag = "104")]
-    pub creators: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "105")]
-    pub updaters: ::prost::alloc::vec::Vec<i32>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListUserRoleRefParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
-    #[prost(message, optional, tag = "4")]
-    pub filter: ::core::option::Option<UserRoleRefFilter>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListUserRoleRefReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<UserRoleRef>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateUserRoleRefParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, optional, tag = "3")]
-    pub data: ::core::option::Option<UserRoleRef>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateUserRoleRefReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<UserRoleRef>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateUserRoleRefParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<UserRoleRef>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateUserRoleRefReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
 }

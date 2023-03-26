@@ -24,6 +24,8 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListUserParams>,
     ) -> Result<Response<auth_service::ListUserReply>, Status> {
         let params = request.into_inner();
+        let header = params.header.as_ref().unwrap();
+        info!("list_user {}", header.trace_id);
         let dao = business::user::Dao::new(&self.db);
         let (data, pager) = dao.list(params).await.unwrap();
         return Ok(Response::new(auth_service::ListUserReply {
@@ -38,7 +40,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::OperateUserParams>,
     ) -> Result<Response<auth_service::OperateUserReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.unwrap();
+        let header = params.header.as_ref().unwrap();
         info!("operate_user {}", header.trace_id);
         return match params.data {
             None => {
@@ -129,6 +131,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::ListRoleReply>, Status> {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap();
+        info!("list_role {}", header.trace_id);
         let dao = business::role::Dao::new(&self.db, header.operator);
         let (data, pager) = dao.list(params).await.unwrap();
         return Ok(Response::new(auth_service::ListRoleReply {
@@ -144,6 +147,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::OperateRoleReply>, Status> {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap();
+        info!("operate_role {}", header.trace_id);
         return match params.data {
             None => {
                 let reply = auth_service::OperateRoleReply {
@@ -199,6 +203,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::BatchOperateRoleReply>, Status> {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap();
+        info!("batch_operate_role {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateRoleReply {
                 header: common::header::reply(public::ECode::BadRequest),
@@ -231,6 +236,8 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListAccessParams>,
     ) -> Result<Response<auth_service::ListAccessReply>, Status> {
         let params = request.into_inner();
+        let header = params.header.as_ref().unwrap();
+        info!("list_access {}", header.trace_id);
         let dao = business::access::Dao::new(&self.db);
         let (data, pager) = dao.list(params).await.unwrap();
         return Ok(Response::new(auth_service::ListAccessReply {
@@ -331,6 +338,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::ListPermissionReply>, Status> {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap();
+        info!("list_permission {}", header.trace_id);
         let dao = business::permission::Dao::new(&self.db, header.operator);
         let (data, pager) = dao.list(params).await.unwrap();
         return Ok(Response::new(auth_service::ListPermissionReply {
@@ -346,6 +354,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
     ) -> Result<Response<auth_service::OperatePermissionReply>, Status> {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap();
+        info!("operate_permission {}", header.trace_id);
         return match params.data {
             None => {
                 let reply = auth_service::OperatePermissionReply {
@@ -417,14 +426,163 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         };
     }
 
-    async fn authorization(
+    async fn list_user_role_ref(
         &self,
-        request: Request<auth_service::AuthorizationParams>,
-    ) -> Result<Response<auth_service::AuthorizationReply>, Status> {
-        println!("extensions: {:#?}", request.extensions());
-        println!("metadata: {:?}", request.metadata());
-        println!("message: {:?}", request.get_ref());
-        let reply = auth_service::AuthorizationReply::default();
-        return Ok(Response::new(reply));
+        request: Request<auth_service::ListUserRoleRefParams>,
+    ) -> Result<Response<auth_service::ListUserRoleRefReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.as_ref().unwrap();
+        info!("list_user_role_ref {}", header.trace_id);
+        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+        let (data, pager) = dao.list(params).await.unwrap();
+        return Ok(Response::new(auth_service::ListUserRoleRefReply {
+            header: common::header::reply(public::ECode::Success),
+            pager,
+            data,
+        }));
+    }
+
+    async fn operate_user_role_ref(
+        &self,
+        request: Request<auth_service::OperateUserRoleRefParams>,
+    ) -> Result<Response<auth_service::OperateUserRoleRefReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.as_ref().unwrap();
+        info!("operate_user_role_ref {}", header.trace_id);
+        return match params.data {
+            None => {
+                let reply = auth_service::OperateUserRoleRefReply {
+                    header: common::header::reply(public::ECode::BadRequest),
+                    data: None,
+                };
+                Ok(Response::new(reply))
+            }
+            Some(dto) => {
+                return match public::Operation::from_i32(params.operate).unwrap() {
+                    public::Operation::Create => {
+                        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+                        let result = dao.insert(dto).await.unwrap();
+                        Ok(Response::new(auth_service::OperateUserRoleRefReply {
+                            header: common::header::reply(public::ECode::Success),
+                            data: Some(auth_service::UserRoleRef {
+                                id: result.id,
+                                ..Default::default()
+                            }),
+                        }))
+                    }
+                    public::Operation::Delete | public::Operation::RealDelete => {
+                        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+                        dao.delete(dto.id).await.unwrap();
+                        Ok(Response::new(
+                            auth_service::OperateUserRoleRefReply::default(),
+                        ))
+                    }
+                    public::Operation::Update | public::Operation::Upsert => {
+                        let code = tonic::Code::Unimplemented;
+                        Err(Status::new(code, code.description()))
+                    }
+                };
+            }
+        };
+    }
+
+    async fn batch_operate_user_role_ref(
+        &self,
+        request: Request<auth_service::BatchOperateUserRoleRefParams>,
+    ) -> Result<Response<auth_service::BatchOperateUserRoleRefReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.as_ref().unwrap();
+        info!("batch_operate_user_role_ref {}", header.trace_id);
+        if params.data.is_empty() {
+            return Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
+                header: common::header::reply(public::ECode::BadRequest),
+            }));
+        }
+        return match public::Operation::from_i32(params.operate).unwrap() {
+            public::Operation::Upsert => {
+                let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+                match dao.save(params.data).await {
+                    Ok(_) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
+                        header: common::header::reply(public::ECode::BadRequest),
+                    })),
+                    Err(err) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
+                        header: common::header::err_reply(
+                            public::ECode::SystemError,
+                            err.to_string(),
+                        ),
+                    })),
+                }
+            }
+            _ => {
+                let code = tonic::Code::Unimplemented;
+                Err(Status::new(code, code.description()))
+            }
+        };
+    }
+
+    async fn list_auth_token(
+        &self,
+        request: Request<auth_service::ListAuthTokenParams>,
+    ) -> Result<Response<auth_service::ListAuthTokenReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.as_ref().unwrap();
+        info!("list_auth_token {}", header.trace_id);
+        let dao = business::auth_token::Dao::new(&self.db);
+        let (data, pager) = dao.list(params).await.unwrap();
+        return Ok(Response::new(auth_service::ListAuthTokenReply {
+            header: common::header::reply(public::ECode::Success),
+            pager,
+            data,
+        }));
+    }
+
+    async fn operate_auth_token(
+        &self,
+        request: Request<auth_service::OperateAuthTokenParams>,
+    ) -> Result<Response<auth_service::OperateAuthTokenReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.as_ref().unwrap();
+        info!("operate_auth_token {}", header.trace_id);
+        return match params.data {
+            None => {
+                let reply = auth_service::OperateAuthTokenReply {
+                    header: common::header::reply(public::ECode::BadRequest),
+                    data: None,
+                };
+                Ok(Response::new(reply))
+            }
+            Some(dto) => {
+                return match public::Operation::from_i32(params.operate).unwrap() {
+                    public::Operation::Create => {
+                        let dao = business::auth_token::Dao::new(&self.db);
+                        let result = dao.insert(dto).await.unwrap();
+                        Ok(Response::new(auth_service::OperateAuthTokenReply {
+                            header: common::header::reply(public::ECode::Success),
+                            data: Some(auth_service::AuthToken {
+                                id: result.id,
+                                ..Default::default()
+                            }),
+                        }))
+                    }
+                    public::Operation::Delete | public::Operation::RealDelete => {
+                        let dao = business::auth_token::Dao::new(&self.db);
+                        dao.delete(dto.id).await.unwrap();
+                        Ok(Response::new(auth_service::OperateAuthTokenReply::default()))
+                    }
+                    public::Operation::Update | public::Operation::Upsert => {
+                        let code = tonic::Code::Unimplemented;
+                        Err(Status::new(code, code.description()))
+                    }
+                };
+            }
+        };
+    }
+
+    async fn batch_operate_auth_token(
+        &self,
+        _: Request<auth_service::BatchOperateAuthTokenParams>,
+    ) -> Result<Response<auth_service::BatchOperateAuthTokenReply>, Status> {
+        let code = tonic::Code::Unimplemented;
+        Err(Status::new(code, code.description()))
     }
 }

@@ -19,6 +19,19 @@ impl<'a> Dao<'a> {
         return Dao { db };
     }
 
+    async fn from_dto(&self, dto: auth_service::User) -> Model {
+        let current_time = common::utils::current_timestamp();
+        return Model {
+            id: 0,
+            username: dto.username,
+            password: dto.password,
+            status: dto.status,
+            create_time: current_time,
+            update_time: current_time,
+            delete_time: 0,
+        };
+    }
+
     async fn transformed(&self, model: Model) -> auth_service::User {
         return auth_service::User {
             id: model.id,
@@ -33,16 +46,7 @@ impl<'a> Dao<'a> {
 
     // 插入
     pub async fn insert(&self, dto: auth_service::User) -> Result<Model, DbErr> {
-        let current_time = common::utils::current_timestamp();
-        let value = Model {
-            id: 0,
-            username: dto.username,
-            password: dto.password,
-            status: dto.status,
-            create_time: current_time,
-            update_time: current_time,
-            delete_time: 0,
-        };
+        let value = self.from_dto(dto).await;
         let active: ActiveModel = value.into();
         return active.insert(self.db).await;
     }
@@ -76,19 +80,9 @@ impl<'a> Dao<'a> {
         &self,
         dtos: Vec<auth_service::User>,
     ) -> Result<sea_orm::InsertResult<ActiveModel>, DbErr> {
-        let current_time = common::utils::current_timestamp();
         let mut actives = vec![];
         for dto in dtos {
-            let value = Model {
-                id: 0,
-                username: dto.username,
-                password: dto.password,
-                status: dto.status,
-                create_time: current_time,
-                update_time: current_time,
-                delete_time: 0,
-            };
-            let active: ActiveModel = value.into();
+            let active: ActiveModel = self.from_dto(dto).await.into();
             actives.push(active);
         }
         return Entity::insert_many(actives)
@@ -176,10 +170,4 @@ impl<'a> Dao<'a> {
             Err(err) => Err(err),
         };
     }
-}
-
-mod tests {
-
-    #[test]
-    fn test_insert_many() {}
 }

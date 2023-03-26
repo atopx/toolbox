@@ -19,6 +19,15 @@ impl<'a> Dao<'a> {
         return Dao { db };
     }
 
+    async fn from_dto(&self, dto: auth_service::Access) -> Model {
+        return Model {
+            id: 0,
+            status: dto.status,
+            path: dto.path,
+            method: dto.method,
+        };
+    }
+
     async fn transformed(&self, model: Model) -> auth_service::Access {
         return auth_service::Access {
             id: model.id,
@@ -30,12 +39,7 @@ impl<'a> Dao<'a> {
 
     // 插入
     pub async fn insert(&self, dto: auth_service::Access) -> Result<Model, DbErr> {
-        let value = Model {
-            id: 0,
-            status: dto.status,
-            path: dto.path,
-            method: dto.method,
-        };
+        let value = self.from_dto(dto).await;
         let active: ActiveModel = value.into();
         return active.insert(self.db).await;
     }
@@ -61,13 +65,7 @@ impl<'a> Dao<'a> {
     ) -> Result<sea_orm::InsertResult<ActiveModel>, DbErr> {
         let mut actives = vec![];
         for dto in dtos {
-            let value = Model {
-                id: 0,
-                status: dto.status,
-                path: dto.path,
-                method: dto.method,
-            };
-            let active: ActiveModel = value.into();
+            let active: ActiveModel = self.from_dto(dto).await.into();
             actives.push(active);
         }
         return Entity::insert_many(actives)
@@ -149,10 +147,4 @@ impl<'a> Dao<'a> {
             Err(err) => Err(err),
         };
     }
-}
-
-mod tests {
-
-    #[test]
-    fn test_insert_many() {}
 }

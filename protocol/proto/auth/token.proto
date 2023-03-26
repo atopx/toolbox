@@ -4,7 +4,7 @@ option go_package = "superserver/domain/auth_service";
 
 import "public/common.proto";
 
-message Token {
+message AuthToken {
     int32 id = 1;
     int32 user_id = 2;
     string access_token = 3;
@@ -17,12 +17,50 @@ message Token {
     int64 update_time = 1003;
 }
 
-
-message AuthorizationParams {
-    public.Header header = 1;
-    Token data = 2;
+message AuthTokenFilter {
+    repeated int32 ids = 1;
+    repeated int32 user_ids = 2;
+    repeated string access_tokens = 3;
+    repeated string refresh_tokens = 4;
+    public.BetweenInt64 issued_time_range = 21;
+    public.BetweenInt64 expire_time_range = 22;
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
 }
 
-message AuthorizationReply {
+message ListAuthTokenParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    AuthTokenFilter filter = 4;
+}
+
+message ListAuthTokenReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated AuthToken data = 3;
+}
+
+message OperateAuthTokenParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    AuthToken data = 3;
+}
+
+message OperateAuthTokenReply {
+    public.ReplyHeader header = 1;
+    AuthToken data = 2;
+}
+
+message BatchOperateAuthTokenParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    repeated AuthToken data = 3;
+}
+
+message BatchOperateAuthTokenReply {
     public.ReplyHeader header = 1;
 }
+
+

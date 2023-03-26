@@ -161,9 +161,3 @@ impl<'a> Dao<'a> {
         };
     }
 }
-
-mod tests {
-
-    #[test]
-    fn test_insert_many() {}
-}

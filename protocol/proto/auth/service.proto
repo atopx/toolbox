@@ -7,6 +7,7 @@ import "auth/role.proto";
 import "auth/access.proto";
 import "auth/token.proto";
 import "auth/permission.proto";
+import "auth/user_role_ref.proto";
 
 
 service AuthService {
@@ -20,6 +21,11 @@ service AuthService {
     rpc OperateRole(OperateRoleParams) returns(OperateRoleReply);
     rpc BatchOperateRole(BatchOperateRoleParams) returns(BatchOperateRoleReply);
 
+    // 用户&角色
+    rpc ListUserRoleRef (ListUserRoleRefParams) returns (ListUserRoleRefReply);
+    rpc OperateUserRoleRef (OperateUserRoleRefParams) returns (OperateUserRoleRefReply);
+    rpc BatchOperateUserRoleRef (BatchOperateUserRoleRefParams) returns (BatchOperateUserRoleRefReply);
+
     // api接口
     rpc ListAccess(ListAccessParams) returns(ListAccessReply);
     rpc OperateAccess(OperateAccessParams) returns(OperateAccessReply);
@@ -29,8 +35,10 @@ service AuthService {
     rpc ListPermission(ListPermissionParams) returns(ListPermissionReply);
     rpc OperatePermission(OperatePermissionParams) returns(OperatePermissionReply);
     rpc BatchOperatePermission(BatchOperatePermissionParams) returns(BatchOperatePermissionReply);
-    
-    // 认证接口: 无token则创建, 如果token已过期则刷新token
-    rpc Authorization(AuthorizationParams) returns(AuthorizationReply);
+
+    // 认证令牌
+    rpc ListAuthToken (ListAuthTokenParams) returns (ListAuthTokenReply);
+    rpc OperateAuthToken (OperateAuthTokenParams) returns (OperateAuthTokenReply);
+    rpc BatchOperateAuthToken (BatchOperateAuthTokenParams) returns (BatchOperateAuthTokenReply);
 }
 
