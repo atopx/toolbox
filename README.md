@@ -4,7 +4,7 @@
 >
 > warn: currently in a fast iteration state
 
-![super-draft](C:\Users\atopx\works\toolbox\super-draft.png)
+![super-draft](./super-draft.png)
 
 ## Todo
 * [ ] super-web`5%`: vue3 + typescript + element-plus
