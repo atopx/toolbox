@@ -2,8 +2,9 @@ use sea_orm::DatabaseConnection;
 use tonic::{Request, Response, Result, Status};
 
 use domain::auth_service;
-use domain::auth_service::User;
 use domain::public;
+
+use super::business;
 
 pub struct AuthService {
     db: DatabaseConnection,
@@ -21,9 +22,14 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         &self,
         request: Request<auth_service::ListUserParams>,
     ) -> Result<Response<auth_service::ListUserReply>, Status> {
-        println!("{:?}", request);
-        let reply = auth_service::ListUserReply::default();
-        return Ok(Response::new(reply));
+        let params = request.into_inner();
+        let dao = business::user::Dao::new(&self.db);
+        let (data, pager) = dao.list(params).await.unwrap();
+        return Ok(Response::new(auth_service::ListUserReply {
+            header: common::header::reply(public::ECode::Success),
+            pager,
+            data,
+        }));
     }
 
     async fn operate_user(
@@ -43,17 +49,19 @@ impl auth_service::auth_service_server::AuthService for AuthService {
             Some(user) => {
                 return match public::Operation::from_i32(params.operate).unwrap() {
                     public::Operation::Create => {
-                        let result = super::business::user::Dao::insert(&self.db, user).await.unwrap();
+                        let dao = business::user::Dao::new(&self.db);
+                        let result = dao.insert(user).await.unwrap();
                         Ok(Response::new(auth_service::OperateUserReply {
                             header: common::header::reply(public::ECode::Success),
-                            data: Some(User {
+                            data: Some(auth_service::User {
                                 id: result.id,
                                 ..Default::default()
                             }),
                         }))
                     }
                     public::Operation::Update => {
-                        super::business::user::Dao::update(&self.db, user.clone()).await.unwrap();
+                        let dao = business::user::Dao::new(&self.db);
+                        dao.update(user.clone()).await.unwrap();
                         let reply = auth_service::OperateUserReply {
                             header: common::header::reply(public::ECode::Success),
                             data: Some(user),
@@ -61,16 +69,18 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                         Ok(Response::new(reply))
                     }
                     public::Operation::Delete => {
-                        super::business::user::Dao::delete(&self.db, user.id).await.unwrap();
+                        let dao = business::user::Dao::new(&self.db);
+                        dao.delete(user.id).await.unwrap();
                         Ok(Response::new(auth_service::OperateUserReply::default()))
                     }
                     public::Operation::RealDelete => {
-                        println!("RealDelete");
+                        let dao = business::user::Dao::new(&self.db);
+                        dao.delete_real(user.id).await.unwrap();
                         Ok(Response::new(auth_service::OperateUserReply::default()))
                     }
                     public::Operation::Upsert => {
-                        println!("Upsert");
-                        Ok(Response::new(auth_service::OperateUserReply::default()))
+                        let code = tonic::Code::Unimplemented;
+                        Err(Status::new(code, code.description()))
                     }
                 };
             }

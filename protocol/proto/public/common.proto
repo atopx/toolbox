@@ -10,9 +10,9 @@ enum RangeScope {
 }
 
 message Pager {
-    int32 index = 1; // 页码
-    int32 size = 2; // 数量
-    int64 count = 3; // 总数量
+    uint64 index = 1; // 页码
+    uint64 size = 2; // 数量
+    uint64 count = 3; // 总数量
     bool disabled = 5; // 禁用分页
 }
 

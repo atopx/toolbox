@@ -20,15 +20,16 @@ func TestNewGrpcClient(t *testing.T) {
 	ctx := context.Background()
 	header := metadata.New(map[string]string{"trace_id": "123123"})
 	ctx = metadata.NewOutgoingContext(ctx, header)
-	reply, err := auth_service.NewAuthServiceClient(conn).OperateUser(ctx, &auth_service.OperateUserParams{
-		Header:  &common.Header{},
-		Operate: 2,
-		Data: &auth_service.User{
-			Id:       15,
-			Username: "2a3112312422342226333333333523",
-			Password: "mengfei6522323",
-			Status:   auth_service.UserStatus_USER_STATUS_DISABLED,
+	reply, err := auth_service.NewAuthServiceClient(conn).ListUser(ctx, &auth_service.ListUserParams{
+		Header: &common.Header{},
+		Pager: &common.Pager{
+			Index:    1,
+			Size:     20,
+			Count:    0,
+			Disabled: true,
 		},
+		Sorts:  []*common.Sort{{Field: "create_time", Direction: common.SortDirection_SORT_ASC}},
+		Filter: &auth_service.UserFilter{States: []auth_service.UserStatus{auth_service.UserStatus_USER_STATUS_DISABLED}},
 	})
 	if err != nil {
 		t.Error(err)

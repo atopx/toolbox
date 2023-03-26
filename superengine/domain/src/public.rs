@@ -75,14 +75,14 @@ impl ECode {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Pager {
     /// 页码
-    #[prost(int32, tag = "1")]
-    pub index: i32,
+    #[prost(uint64, tag = "1")]
+    pub index: u64,
     /// 数量
-    #[prost(int32, tag = "2")]
-    pub size: i32,
+    #[prost(uint64, tag = "2")]
+    pub size: u64,
     /// 总数量
-    #[prost(int64, tag = "3")]
-    pub count: i64,
+    #[prost(uint64, tag = "3")]
+    pub count: u64,
     /// 禁用分页
     #[prost(bool, tag = "5")]
     pub disabled: bool,
