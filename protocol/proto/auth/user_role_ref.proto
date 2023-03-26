@@ -18,7 +18,7 @@ message UserRoleRef {
 
 message UserRoleRefFilter {
     repeated int32 ids = 1;
-    repeated int32 user_id = 2;
+    repeated int32 user_ids = 2;
     repeated int32 role_ids = 3;
 
     public.BetweenInt64 delete_time_range = 101;

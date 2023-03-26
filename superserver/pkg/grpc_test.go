@@ -12,7 +12,7 @@ import (
 
 func TestNewGrpcClient(t *testing.T) {
 	viper.SetConfigFile("../config.yaml")
-	viper.ReadInConfig()
+	_ = viper.ReadInConfig()
 	conn, err := NewGrpcClient(viper.GetStringSlice("service.auth"))
 	if err != nil {
 		t.Error(err)

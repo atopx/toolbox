@@ -1,52 +1,27 @@
 package info
 
 import (
-	"errors"
-	"superserver/common/interface/ecode_iface"
-	"superserver/common/logger"
-	"superserver/internal/model"
-	"superserver/internal/model/user"
-	"superserver/internal/model/user_role"
-
-	"go.uber.org/zap"
-	"gorm.io/gorm"
+	"superserver/common/system"
+	"superserver/domain/auth_service"
+	"superserver/domain/public/common"
+	"superserver/domain/public/ecode"
+	"superserver/service/auth_client"
 )
 
-func (ctl *Controller) Deal() {
-	userPo := user.User{Base: model.Base{Id: ctl.GetOperator()}}
-	dao := user.NewDao(ctl.GetDatabase())
-	err := dao.Load(&userPo)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "用户不存在")
-		return
+func (c *Controller) Deal() (any, ecode.ECode) {
+	if c.Header.Operator == 0 {
+		return nil, ecode.ECode_USER_PARAMS_ERROR_UserNotFound
 	}
-	if err != nil {
-		logger.Error(ctl.Context, "user info dao.Load failed", zap.Error(err))
-		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "[12001]系统错误, 请联系管理员")
-		return
+	listUserReply, code := auth_client.ListUser(c.Context, &auth_service.ListUserParams{
+		Header: system.NewServiceHeader(c.Header),
+		Pager:  &common.Pager{Index: 1, Size: 1},
+		Filter: &auth_service.UserFilter{Ids: []int32{c.Header.Operator}},
+	})
+	if code != ecode.ECode_SUCCESS {
+		return nil, code
 	}
-	reply := Reply{
-		Id:         userPo.Id,
-		Name:       userPo.Name,
-		Username:   userPo.Username,
-		LoginTime:  ctl.GetAuthTime(),
-		CreateTime: userPo.CreateTime,
-		UpdateTime: userPo.UpdateTime,
-		Roles:      []Role{},
+	if len(listUserReply.Data) == 0 {
+		return nil, ecode.ECode_USER_PARAMS_ERROR_UserNotFound
 	}
-
-	// get user roles
-	roles, err := user_role.NewDao(ctl.GetDatabase()).GetRoles(userPo.Id)
-	if err != nil {
-		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "用户不存在")
-		return
-	}
-	for _, role := range roles {
-		reply.Roles = append(reply.Roles, Role{
-			Id:   role.Id,
-			Name: role.Name,
-		})
-	}
-
-	ctl.NewOkResponse(&reply)
+	return listUserReply.Data[0], ecode.ECode_SUCCESS
 }

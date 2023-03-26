@@ -1,22 +1,14 @@
 package middleware
 
 import (
-	"errors"
 	"net/http"
 	"strings"
-	"superserver/common/interface/common_iface"
-	"superserver/common/interface/ecode_iface"
-	"superserver/common/logger"
 	"superserver/common/system"
-	"superserver/internal/model/access"
-	"superserver/internal/model/permission"
-	"superserver/internal/model/user"
-	"superserver/internal/model/user_token"
+	"superserver/domain/auth_service"
+	"superserver/domain/public/common"
+	"superserver/domain/public/ecode"
+	"superserver/service/auth_client"
 	"time"
-
-	"gorm.io/gorm"
-
-	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,61 +16,107 @@ import (
 func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.Request.Header.Get("Authorization")
-		chain := system.GetChainMessage(ctx)
+		header := system.GetRequestHeader(ctx)
+		responseHeader := system.GetResponseHeader(ctx)
+		serviceHeader := system.NewServiceHeader(header)
+		servicePager := &common.Pager{Index: 1, Size: 1}
 
 		// 查询access是否是游客权限
-		accessPo, err := access.NewDao(m.db).Get(ctx.Request.Method, ctx.Request.RequestURI)
-
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			chain.Message = "404"
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+		listAccessReply, code := auth_client.ListAccess(ctx, &auth_service.ListAccessParams{
+			Header: serviceHeader,
+			Pager:  servicePager,
+			Filter: &auth_service.AccessFilter{
+				Methods: []string{ctx.Request.Method},
+				Paths:   []string{ctx.Request.RequestURI},
+			},
+		})
+		if code != ecode.ECode_SUCCESS {
+			responseHeader.Code = code
+			ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 			return
 		}
-		if err != nil {
-			logger.Error(ctx, "auth accessPo.Get failed", zap.Error(err))
-			chain.Message = "[14101]系统错误, 请联系管理员"
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, chain)
+
+		if len(listAccessReply.Data) == 0 {
+			responseHeader.Code = ecode.ECode_ACCESS_NotFound
+			ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 			return
 		}
 
-		if accessPo.Status != common_iface.AccessStatus_ACCESS_ANONYMOUS {
+		accessPo := listAccessReply.Data[0]
+		if accessPo.Status == auth_service.AccessStatus_ACCESS_DISABLED {
+			responseHeader.Code = ecode.ECode_ACCESS_Disabled
+			ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
+			return
+		}
+
+		if accessPo.Status != auth_service.AccessStatus_ACCESS_ANONYMOUS {
 
 			// 不是游客权限, 进行认证
 			if token == "" || !strings.HasPrefix(token, "Bearer ") {
-				chain.Message = "账户未登录"
-				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+				responseHeader.Code = ecode.ECode_AUTH_TOKEN_Required
+				ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 				return
 			}
 
 			// token解析
 			tokenStr := token[strings.Index(token, " ")+1:]
-			claims, err := user_token.NewDao(m.db).First(func(tx *gorm.DB) *gorm.DB { tx.Where("access_token=?", tokenStr); return tx })
-			if err != nil {
-				logger.Error(ctx, "auth system.UnSignClaims failed", zap.Error(err))
-				chain.Message = ecode_iface.ECode_AUTH_INVALID.String()
-				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			listAuthTokenReply, code := auth_client.ListAuthToken(ctx, &auth_service.ListAuthTokenParams{
+				Header: serviceHeader,
+				Pager:  servicePager,
+				Filter: &auth_service.AuthTokenFilter{AccessTokens: []string{tokenStr}},
+			})
+			if code != ecode.ECode_SUCCESS {
+				ctx.AbortWithStatusJSON(http.StatusOK, code)
+				return
+			}
+			if len(listAuthTokenReply.Data) == 0 {
+				responseHeader.Code = ecode.ECode_AUTH_TOKEN_NotFound
+				ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 				return
 			}
 
-			// 过期时间验证
-			if claims.ExpireTime < time.Now().Unix() {
-				chain.Message = ecode_iface.ECode_AUTH_EXPIRED.String()
-				ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			authToken := listAuthTokenReply.Data[0]
+			header.Operator = authToken.UserId
+
+			if authToken.ExpireTime < time.Now().Local().Unix() {
+				responseHeader.Code = ecode.ECode_AUTH_TOKEN_Expired
+				ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 				return
 			}
 
-			// 非系统管理员进行权限验证
-			if claims.UserId != user.SystemUser.Id {
-				if !permission.NewDao(m.db).Inspector(claims.UserId, accessPo.Id) {
-					chain.Message = "无权限"
-					ctx.AbortWithStatusJSON(http.StatusUnauthorized, chain)
+			if authToken.UserId != system.User.Id {
+				listUserRoleRefReply, code := auth_client.ListUserRoleRef(ctx, &auth_service.ListUserRoleRefParams{
+					Header: serviceHeader,
+					Pager:  &common.Pager{Disabled: true},
+					Filter: &auth_service.UserRoleRefFilter{
+						UserIds: []int32{authToken.UserId},
+					},
+				})
+				if code != ecode.ECode_SUCCESS {
+					ctx.AbortWithStatusJSON(http.StatusOK, code)
+					return
+				}
+				role := listUserRoleRefReply.Data[0]
+
+				listPermissionReply, code := auth_client.ListPermission(ctx, &auth_service.ListPermissionParams{
+					Header: serviceHeader,
+					Pager:  servicePager,
+					Filter: &auth_service.PermissionFilter{
+						AccessIds: []int32{accessPo.Id},
+						RoleIds:   []int32{role.Id},
+					},
+				})
+				if code != ecode.ECode_SUCCESS {
+					ctx.AbortWithStatusJSON(http.StatusOK, code)
+					return
+				}
+				if len(listPermissionReply.Data) == 0 {
+					responseHeader.Code = ecode.ECode_ACCESS_Forbidden
+					ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 					return
 				}
 			}
-
-			chain.UserId = claims.UserId
 		}
-
 		ctx.Next()
 	}
 }

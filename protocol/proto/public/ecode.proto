@@ -5,22 +5,73 @@ option go_package = "superserver/domain/public/ecode";
 enum ECode {
     SUCCESS = 0; // 默认无错误
 
-    // 客户端错误
-    BAD_REQUEST = 40000; // 请求异常
-    INVALID_PARAMS = 40001; // 无效的请求参数
-    RECODE_NOT_FOUND = 40002; // 查询的记录不存在
-    REQUEST_CONFLICT = 40003; // 资源冲突
-
-    AUTH_NOTIN = 40100; // 账户未登录
-    AUTH_INVALID = 40102; // 无效Token
-    AUTH_EXPIRED = 40103; // 账户已过期
-    AUTH_LIMIT = 40104; // 限制登录
-    AUTH_NOT_ACCESS_TOKEN = 40105; // 不是access-token
-
-    ACCESS_FORBIDDEN = 40300; // 禁止访问
 
 
-    // 服务端错误
-    SYSTEM_ERROR = 50000;
-    DB_ERROR = 50100;
+    // ######### 客户端错误 #########
+    BAD_REQUEST = 400000; // 请求异常
+
+    // auth token error
+    AUTH_TOKEN_Required = 400001; // 账户未登录
+    AUTH_TOKEN_Invalid = 400002; // 无效Token
+    AUTH_TOKEN_NotFound = 400003; // token不存在
+    AUTH_TOKEN_Expired = 400004; // token过期
+
+
+    // access error
+    ACCESS_NotFound = 401001;
+    ACCESS_Forbidden = 401002; // 没有访问权限
+    ACCESS_Disabled = 401003; // 接口已禁用
+
+
+
+    // ######### 参数错误 #########
+    INVALID_PARAMS = 431000; // 参数异常
+
+    // user params error
+    USER_PARAMS_ERROR_NameRequired = 431001;
+    USER_PARAMS_ERROR_UsernameRequired = 431002;
+    USER_PARAMS_ERROR_PasswordRequired = 431003;
+    USER_PARAMS_ERROR_UsernameExist = 431004;
+    USER_PARAMS_ERROR_UserNotFound = 431005;
+    
+    // user login
+    USER_PARAMS_ERROR_NameInvalid = 431006;
+    USER_PARAMS_ERROR_UsernameInvalid = 431007;
+    USER_PARAMS_ERROR_PasswordInvalid = 431008;
+
+
+    // ######### 服务端错误 #########
+    SYSTEM_INTERNAL_ERROR = 500000; // 服务异常
+    SYSTEM_ERROR_Unimplemented = 500001; // 功能未实现
+
+    // auth-service access error
+    AUTH_SERVICE_ERROR_ListAccess = 510001;
+    AUTH_SERVICE_ERROR_OperateAccess = 510002;
+    AUTH_SERVICE_ERROR_BatchOperateAccess = 510003;
+
+    // auth-service token error
+    AUTH_SERVICE_ERROR_ListAuthToken = 511001;
+    AUTH_SERVICE_ERROR_OperateAuthToken = 511002;
+    AUTH_SERVICE_ERROR_BatchOperateAuthToken = 511003;
+
+    // auth-service user error
+    AUTH_SERVICE_ERROR_ListUser = 512001;
+    AUTH_SERVICE_ERROR_OperateUser = 512002;
+    AUTH_SERVICE_ERROR_BatchOperateUser = 512003;
+
+    // auth-service role error
+    AUTH_SERVICE_ERROR_ListRole = 513001;
+    AUTH_SERVICE_ERROR_OperateRole = 513002;
+    AUTH_SERVICE_ERROR_BatchOperateRole = 513003;
+
+    // auth-service permission error
+    AUTH_SERVICE_ERROR_ListUserRoleRef = 514001;
+    AUTH_SERVICE_ERROR_OperateUserRoleRef = 514002;
+    AUTH_SERVICE_ERROR_BatchOperateUserRoleRef = 514003;
+
+    // auth-service permission error
+    AUTH_SERVICE_ERROR_ListPermission = 515001;
+    AUTH_SERVICE_ERROR_OperatePermission = 515002;
+    AUTH_SERVICE_ERROR_BatchOperatePermission = 515003;
+
 }

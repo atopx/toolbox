@@ -2,77 +2,56 @@ package controller
 
 import (
 	"net/http"
-	"superserver/common/interface/ecode_iface"
-
+	"superserver/common/consts"
 	"superserver/common/logger"
 	"superserver/common/system"
+	"superserver/domain/public/common"
+	"superserver/domain/public/ecode"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
 
 // Controller 控制器
 type Controller struct {
 	Context *gin.Context
-	db      *gorm.DB
-	chain   *system.ChainMessage
+	Header  *common.Header
 	Params  any
 }
 
-func (ctl *Controller) GetDatabase() *gorm.DB {
-	return ctl.db
-}
-
-func (ctl *Controller) GetAuthTime() int64 {
-	return ctl.chain.AuthTime
-}
-
-// ContextLoader 上下文加载器
-func (ctl *Controller) ContextLoader() {
-	ctl.chain = system.GetChainMessage(ctl.Context)
-}
-
-func (ctl *Controller) GetOperator() int {
-	return ctl.chain.UserId
-}
-
-// HandleLoader 句柄加载器
-func (ctl *Controller) HandleLoader(handler *system.Handler) {
-	ctl.db = handler.Db
-}
-
-// RequestParamsLoader 参数加载器
-func (ctl *Controller) RequestParamsLoader() error {
-	err := ctl.Context.ShouldBind(ctl.Params)
+func New(ctx *gin.Context, params any) *Controller {
+	err := ctx.ShouldBind(params)
 	if err != nil {
-		logger.Error(ctl.Context, "bind param error", zap.Error(err))
-		ctl.Context.JSON(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+		logger.Error(ctx, "bind param error", zap.Error(err))
+		ctx.JSON(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+		ctx.Abort()
 	}
-	return err
+	return &Controller{
+		Context: ctx,
+		Params:  params,
+		Header:  system.GetRequestHeader(ctx),
+	}
 }
 
-// NewOkResponse 正常的response
-func (ctl *Controller) NewOkResponse(data any) {
-	ctl.chain.WriteNormal(data)
-	ctl.Context.JSON(http.StatusOK, ctl.chain)
+func (ctl *Controller) NewServiceHeader() *common.Header {
+	return &common.Header{
+		TraceId:  ctl.Header.TraceId,
+		Source:   consts.ServiceName,
+		Operator: ctl.Header.Operator,
+	}
 }
 
-// NewErrorResponse 异常的response
-func (ctl *Controller) NewErrorResponse(ecode ecode_iface.ECode, message string) {
-	ctl.chain.WriteAbnormal(ecode_iface.ECode_BAD_REQUEST, message)
-	var code int
-	if ecode >= ecode_iface.ECode_SYSTEM_ERROR {
-		code = http.StatusInternalServerError
-	} else {
-		code = http.StatusBadRequest
-	}
-	ctl.Context.JSON(code, ctl.chain)
+func (ctl *Controller) Deal() (any, ecode.ECode) {
+	return nil, ecode.ECode_SYSTEM_ERROR_Unimplemented
+}
+
+func (ctl *Controller) About(data any, code ecode.ECode) {
+	header := system.GetResponseHeader(ctl.Context)
+	header.Code = code
+	ctl.Context.JSON(http.StatusOK, system.NewResponse(header, data))
 }
 
 type Iface interface {
-	ContextLoader()
-	HandleLoader(*system.Handler)
-	RequestParamsLoader() error
-	Deal()
+	Deal() (any, ecode.ECode)
+	About(any, ecode.ECode)
 }

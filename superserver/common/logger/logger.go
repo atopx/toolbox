@@ -74,8 +74,8 @@ func Panic(ctx context.Context, message string, fields ...zapcore.Field) {
 func output(ctx context.Context, level zapcore.Level, message string, fields ...zapcore.Field) {
 	if entity := logger.Check(level, message); entity != nil {
 		var traceId int64
-		if chain := system.GetChainMessageWithContext(ctx); chain != nil {
-			traceId = chain.TraceId
+		if header := system.GetRequestHeader(ctx); header != nil {
+			traceId = header.TraceId
 		}
 		fields = append(fields, zap.Int64("trace_id", traceId))
 		entity.Write(fields...)

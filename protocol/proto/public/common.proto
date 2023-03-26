@@ -29,8 +29,9 @@ message Header {
 }
 
 message ReplyHeader {
-    public.ECode code = 1;
-    string message = 2;
+    int64 trace_id = 1;
+    public.ECode code = 2;
+    string message = 3;
 }
 
 enum SortDirection {

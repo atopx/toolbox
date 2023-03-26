@@ -6,11 +6,11 @@ import (
 )
 
 type Controller struct {
-	controller.Controller
+	*controller.Controller
 }
 
 func NewController(ctx *gin.Context) *Controller {
-	return &Controller{Controller: controller.Controller{Params: new(Params), Context: ctx}}
+	return &Controller{controller.New(ctx, new(Params))}
 }
 
 type Params struct {
@@ -18,5 +18,3 @@ type Params struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
-
-type Reply struct{}

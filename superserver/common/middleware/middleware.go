@@ -1,15 +1,7 @@
 package middleware
 
-import "gorm.io/gorm"
-
-type Middleware struct {
-	db *gorm.DB
-}
+type Middleware struct{}
 
 func New() *Middleware {
 	return &Middleware{}
-}
-
-func (m *Middleware) SetDatabase(db *gorm.DB) {
-	m.db = db
 }

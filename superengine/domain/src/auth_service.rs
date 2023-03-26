@@ -593,7 +593,7 @@ pub struct UserRoleRefFilter {
     #[prost(int32, repeated, tag = "1")]
     pub ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "2")]
-    pub user_id: ::prost::alloc::vec::Vec<i32>,
+    pub user_ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "3")]
     pub role_ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(message, optional, tag = "101")]

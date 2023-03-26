@@ -1,39 +1,56 @@
 package middleware
 
 import (
-	"net/http"
-	"superserver/common/interface/ecode_iface"
-	"time"
-
-	"superserver/common/logger"
 	"superserver/common/system"
+	"superserver/common/utils"
+	"superserver/domain/public/common"
+	"superserver/domain/public/ecode"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"superserver/common/logger"
 )
 
 // ContextMiddleware 日志中间件
 func (m *Middleware) ContextMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// set context
-		chain := system.NewChainMessage()
-		chain.IntoContext(ctx)
-		defer chain.Recycle()
-		// request
-		logger.Info(ctx, "request", zap.String("path", ctx.Request.URL.Path), zap.String("client", ctx.ClientIP()))
+		// new context
+		source := ctx.GetHeader("source")
+		system.SetRequestHeader(ctx, &common.Header{
+			TraceId:  utils.NewTraceId(),
+			Source:   source,
+			Operator: 0,
+		})
+		responseHeader := &common.ReplyHeader{
+			TraceId: utils.NewTraceId(),
+			Code:    ecode.ECode_SUCCESS,
+			Message: "",
+		}
+		system.SetResponseHeader(ctx, responseHeader)
+
+		// request log
+		logger.Info(ctx, "request",
+			zap.String("method", ctx.Request.Method),
+			zap.String("path", ctx.Request.URL.Path),
+			zap.String("source", source),
+			zap.String("client", ctx.ClientIP()),
+		)
 
 		// 执行接口逻辑
 		beginTime := time.Now()
 		ctx.Next()
-		cost := zap.String("cost", time.Since(beginTime).String())
 
-		if chain.Level < ecode_iface.ECode_BAD_REQUEST {
+		cost := zap.String("cost", time.Since(beginTime).String())
+		if responseHeader.Code < ecode.ECode_BAD_REQUEST {
 			logger.Info(ctx, "response", cost)
-		} else if chain.Level < ecode_iface.ECode_SYSTEM_ERROR {
-			logger.Warn(ctx, "response", cost, zap.String("warn", chain.Message))
 		} else {
-			logger.Error(ctx, "response", cost, zap.String("error", chain.Message))
+			message := system.GetErrorMessage(responseHeader.Code)
+			if responseHeader.Code < ecode.ECode_SYSTEM_INTERNAL_ERROR {
+				logger.Warn(ctx, "response", cost, zap.String("warn", message))
+			} else {
+				logger.Error(ctx, "response", cost, zap.String("error", message))
+			}
 		}
-		chain.Message = http.StatusText(ctx.Writer.Status())
 	}
 }

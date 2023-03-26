@@ -96,8 +96,8 @@ impl<'a> Dao<'a> {
             if !filter.role_ids.is_empty() {
                 query = query.filter(Column::RoleId.is_in(filter.role_ids));
             }
-            if !filter.user_id.is_empty() {
-                query = query.filter(Column::UserId.is_in(filter.user_id));
+            if !filter.user_ids.is_empty() {
+                query = query.filter(Column::UserId.is_in(filter.user_ids));
             }
             if !filter.creators.is_empty() {
                 query = query.filter(Column::Creator.is_in(filter.creators));

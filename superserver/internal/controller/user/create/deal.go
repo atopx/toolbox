@@ -1,63 +1,49 @@
 package create
 
 import (
-	"errors"
-	"go.uber.org/zap"
-	"superserver/common/interface/ecode_iface"
-	"superserver/common/interface/user_iface"
-	"superserver/common/logger"
-	"superserver/internal/model/role"
-	"superserver/internal/model/user"
-	"superserver/internal/model/user_role"
-
-	"gorm.io/gorm"
+	"superserver/common/system"
+	"superserver/common/utils"
+	"superserver/domain/auth_service"
+	"superserver/domain/public/common"
+	"superserver/domain/public/ecode"
+	"superserver/service/auth_client"
 )
 
-func (ctl *Controller) Deal() {
-	params := ctl.Params.(*Params)
+func (c *Controller) Deal() (any, ecode.ECode) {
+	params := c.Params.(*Params)
 	if params.Name == "" {
-		ctl.NewErrorResponse(ecode_iface.ECode_INVALID_PARAMS, "名称不能为空")
-		return
+		return nil, ecode.ECode_USER_PARAMS_ERROR_NameRequired
 	}
 	if params.Username == "" {
-		ctl.NewErrorResponse(ecode_iface.ECode_INVALID_PARAMS, "用户名不能为空")
-		return
+		return nil, ecode.ECode_USER_PARAMS_ERROR_UsernameRequired
 	}
 	if params.Password == "" {
-		ctl.NewErrorResponse(ecode_iface.ECode_INVALID_PARAMS, "密码不能为空")
-		return
-	}
-	dao := user.NewDao(ctl.GetDatabase())
-
-	_, err := dao.GetUserByUsername(params.Username, true)
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		ctl.NewErrorResponse(ecode_iface.ECode_REQUEST_CONFLICT, "用户名已存在")
-		return
+		return nil, ecode.ECode_USER_PARAMS_ERROR_PasswordRequired
 	}
 
-	if err != nil {
-		logger.Error(ctl.Context, "create user dao.GetUserByUsername failed", zap.Error(err))
-		ctl.NewErrorResponse(ecode_iface.ECode_DB_ERROR, "系统错误, 请联系管理员")
-		return
+	listReply, code := auth_client.ListUser(c.Context, &auth_service.ListUserParams{
+		Header: system.NewServiceHeader(c.Header),
+		Pager:  &common.Pager{Index: 1, Size: 1},
+		Filter: &auth_service.UserFilter{Usernames: []string{params.Username}},
+	})
+	if code != ecode.ECode_SUCCESS {
+		return nil, code
+	}
+	if len(listReply.Data) > 0 {
+		return nil, ecode.ECode_USER_PARAMS_ERROR_UsernameExist
 	}
 
-	po := user.User{
-		Name:     params.Name,
-		Username: params.Username,
-		Status:   user_iface.UserStatus_USER_NORMAL,
+	operateReply, code := auth_client.OperateUser(c.Context, &auth_service.OperateUserParams{
+		Header:  system.NewServiceHeader(c.Header),
+		Operate: common.Operation_OPERATION_CREATE,
+		Data: &auth_service.User{
+			Username: params.Username,
+			Password: utils.Hash(params.Password),
+			Status:   auth_service.UserStatus_USER_NORMAL,
+		},
+	})
+	if code != ecode.ECode_SUCCESS {
+		return nil, code
 	}
-	po.SetPassword(params.Password)
-
-	if err = dao.Create(&po); err != nil {
-		ctl.NewErrorResponse(ecode_iface.ECode_DB_ERROR, "系统错误, 请联系管理员")
-		return
-	}
-
-	// 绑定默认角色
-	if err = user_role.NewDao(ctl.GetDatabase()).Create(&user_role.UserRoleRef{UserId: po.Id, RoleId: role.DefaultRole.Id}); err != nil {
-		ctl.NewErrorResponse(ecode_iface.ECode_DB_ERROR, "系统错误, 请联系管理员")
-		return
-	}
-
-	ctl.NewOkResponse(&Reply{})
+	return operateReply.Data, ecode.ECode_SUCCESS
 }

@@ -45,5 +45,4 @@ func main() {
 	if err := server.New().Start(); err != nil {
 		log.Panicf("start server failed: %s", err.Error())
 	}
-
 }

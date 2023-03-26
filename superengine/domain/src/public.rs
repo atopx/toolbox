@@ -3,31 +3,70 @@
 pub enum ECode {
     /// 默认无错误
     Success = 0,
-    /// 客户端错误
+    /// ######### 客户端错误 #########
     ///
     /// 请求异常
-    BadRequest = 40000,
-    /// 无效的请求参数
-    InvalidParams = 40001,
-    /// 查询的记录不存在
-    RecodeNotFound = 40002,
-    /// 资源冲突
-    RequestConflict = 40003,
+    BadRequest = 400000,
+    /// auth token error
+    ///
     /// 账户未登录
-    AuthNotin = 40100,
+    AuthTokenRequired = 400001,
     /// 无效Token
-    AuthInvalid = 40102,
-    /// 账户已过期
-    AuthExpired = 40103,
-    /// 限制登录
-    AuthLimit = 40104,
-    /// 不是access-token
-    AuthNotAccessToken = 40105,
-    /// 禁止访问
-    AccessForbidden = 40300,
-    /// 服务端错误
-    SystemError = 50000,
-    DbError = 50100,
+    AuthTokenInvalid = 400002,
+    /// token不存在
+    AuthTokenNotFound = 400003,
+    /// token过期
+    AuthTokenExpired = 400004,
+    /// access error
+    AccessNotFound = 401001,
+    /// 没有访问权限
+    AccessForbidden = 401002,
+    /// 接口已禁用
+    AccessDisabled = 401003,
+    /// ######### 参数错误 #########
+    ///
+    /// 参数异常
+    InvalidParams = 431000,
+    /// user params error
+    UserParamsErrorNameRequired = 431001,
+    UserParamsErrorUsernameRequired = 431002,
+    UserParamsErrorPasswordRequired = 431003,
+    UserParamsErrorUsernameExist = 431004,
+    UserParamsErrorUserNotFound = 431005,
+    /// user login
+    UserParamsErrorNameInvalid = 431006,
+    UserParamsErrorUsernameInvalid = 431007,
+    UserParamsErrorPasswordInvalid = 431008,
+    /// ######### 服务端错误 #########
+    ///
+    /// 服务异常
+    SystemInternalError = 500000,
+    /// 功能未实现
+    SystemErrorUnimplemented = 500001,
+    /// auth-service access error
+    AuthServiceErrorListAccess = 510001,
+    AuthServiceErrorOperateAccess = 510002,
+    AuthServiceErrorBatchOperateAccess = 510003,
+    /// auth-service token error
+    AuthServiceErrorListAuthToken = 511001,
+    AuthServiceErrorOperateAuthToken = 511002,
+    AuthServiceErrorBatchOperateAuthToken = 511003,
+    /// auth-service user error
+    AuthServiceErrorListUser = 512001,
+    AuthServiceErrorOperateUser = 512002,
+    AuthServiceErrorBatchOperateUser = 512003,
+    /// auth-service role error
+    AuthServiceErrorListRole = 513001,
+    AuthServiceErrorOperateRole = 513002,
+    AuthServiceErrorBatchOperateRole = 513003,
+    /// auth-service permission error
+    AuthServiceErrorListUserRoleRef = 514001,
+    AuthServiceErrorOperateUserRoleRef = 514002,
+    AuthServiceErrorBatchOperateUserRoleRef = 514003,
+    /// auth-service permission error
+    AuthServiceErrorListPermission = 515001,
+    AuthServiceErrorOperatePermission = 515002,
+    AuthServiceErrorBatchOperatePermission = 515003,
 }
 impl ECode {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -38,17 +77,66 @@ impl ECode {
         match self {
             ECode::Success => "SUCCESS",
             ECode::BadRequest => "BAD_REQUEST",
+            ECode::AuthTokenRequired => "AUTH_TOKEN_Required",
+            ECode::AuthTokenInvalid => "AUTH_TOKEN_Invalid",
+            ECode::AuthTokenNotFound => "AUTH_TOKEN_NotFound",
+            ECode::AuthTokenExpired => "AUTH_TOKEN_Expired",
+            ECode::AccessNotFound => "ACCESS_NotFound",
+            ECode::AccessForbidden => "ACCESS_Forbidden",
+            ECode::AccessDisabled => "ACCESS_Disabled",
             ECode::InvalidParams => "INVALID_PARAMS",
-            ECode::RecodeNotFound => "RECODE_NOT_FOUND",
-            ECode::RequestConflict => "REQUEST_CONFLICT",
-            ECode::AuthNotin => "AUTH_NOTIN",
-            ECode::AuthInvalid => "AUTH_INVALID",
-            ECode::AuthExpired => "AUTH_EXPIRED",
-            ECode::AuthLimit => "AUTH_LIMIT",
-            ECode::AuthNotAccessToken => "AUTH_NOT_ACCESS_TOKEN",
-            ECode::AccessForbidden => "ACCESS_FORBIDDEN",
-            ECode::SystemError => "SYSTEM_ERROR",
-            ECode::DbError => "DB_ERROR",
+            ECode::UserParamsErrorNameRequired => "USER_PARAMS_ERROR_NameRequired",
+            ECode::UserParamsErrorUsernameRequired => {
+                "USER_PARAMS_ERROR_UsernameRequired"
+            }
+            ECode::UserParamsErrorPasswordRequired => {
+                "USER_PARAMS_ERROR_PasswordRequired"
+            }
+            ECode::UserParamsErrorUsernameExist => "USER_PARAMS_ERROR_UsernameExist",
+            ECode::UserParamsErrorUserNotFound => "USER_PARAMS_ERROR_UserNotFound",
+            ECode::UserParamsErrorNameInvalid => "USER_PARAMS_ERROR_NameInvalid",
+            ECode::UserParamsErrorUsernameInvalid => "USER_PARAMS_ERROR_UsernameInvalid",
+            ECode::UserParamsErrorPasswordInvalid => "USER_PARAMS_ERROR_PasswordInvalid",
+            ECode::SystemInternalError => "SYSTEM_INTERNAL_ERROR",
+            ECode::SystemErrorUnimplemented => "SYSTEM_ERROR_Unimplemented",
+            ECode::AuthServiceErrorListAccess => "AUTH_SERVICE_ERROR_ListAccess",
+            ECode::AuthServiceErrorOperateAccess => "AUTH_SERVICE_ERROR_OperateAccess",
+            ECode::AuthServiceErrorBatchOperateAccess => {
+                "AUTH_SERVICE_ERROR_BatchOperateAccess"
+            }
+            ECode::AuthServiceErrorListAuthToken => "AUTH_SERVICE_ERROR_ListAuthToken",
+            ECode::AuthServiceErrorOperateAuthToken => {
+                "AUTH_SERVICE_ERROR_OperateAuthToken"
+            }
+            ECode::AuthServiceErrorBatchOperateAuthToken => {
+                "AUTH_SERVICE_ERROR_BatchOperateAuthToken"
+            }
+            ECode::AuthServiceErrorListUser => "AUTH_SERVICE_ERROR_ListUser",
+            ECode::AuthServiceErrorOperateUser => "AUTH_SERVICE_ERROR_OperateUser",
+            ECode::AuthServiceErrorBatchOperateUser => {
+                "AUTH_SERVICE_ERROR_BatchOperateUser"
+            }
+            ECode::AuthServiceErrorListRole => "AUTH_SERVICE_ERROR_ListRole",
+            ECode::AuthServiceErrorOperateRole => "AUTH_SERVICE_ERROR_OperateRole",
+            ECode::AuthServiceErrorBatchOperateRole => {
+                "AUTH_SERVICE_ERROR_BatchOperateRole"
+            }
+            ECode::AuthServiceErrorListUserRoleRef => {
+                "AUTH_SERVICE_ERROR_ListUserRoleRef"
+            }
+            ECode::AuthServiceErrorOperateUserRoleRef => {
+                "AUTH_SERVICE_ERROR_OperateUserRoleRef"
+            }
+            ECode::AuthServiceErrorBatchOperateUserRoleRef => {
+                "AUTH_SERVICE_ERROR_BatchOperateUserRoleRef"
+            }
+            ECode::AuthServiceErrorListPermission => "AUTH_SERVICE_ERROR_ListPermission",
+            ECode::AuthServiceErrorOperatePermission => {
+                "AUTH_SERVICE_ERROR_OperatePermission"
+            }
+            ECode::AuthServiceErrorBatchOperatePermission => {
+                "AUTH_SERVICE_ERROR_BatchOperatePermission"
+            }
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -56,17 +144,76 @@ impl ECode {
         match value {
             "SUCCESS" => Some(Self::Success),
             "BAD_REQUEST" => Some(Self::BadRequest),
+            "AUTH_TOKEN_Required" => Some(Self::AuthTokenRequired),
+            "AUTH_TOKEN_Invalid" => Some(Self::AuthTokenInvalid),
+            "AUTH_TOKEN_NotFound" => Some(Self::AuthTokenNotFound),
+            "AUTH_TOKEN_Expired" => Some(Self::AuthTokenExpired),
+            "ACCESS_NotFound" => Some(Self::AccessNotFound),
+            "ACCESS_Forbidden" => Some(Self::AccessForbidden),
+            "ACCESS_Disabled" => Some(Self::AccessDisabled),
             "INVALID_PARAMS" => Some(Self::InvalidParams),
-            "RECODE_NOT_FOUND" => Some(Self::RecodeNotFound),
-            "REQUEST_CONFLICT" => Some(Self::RequestConflict),
-            "AUTH_NOTIN" => Some(Self::AuthNotin),
-            "AUTH_INVALID" => Some(Self::AuthInvalid),
-            "AUTH_EXPIRED" => Some(Self::AuthExpired),
-            "AUTH_LIMIT" => Some(Self::AuthLimit),
-            "AUTH_NOT_ACCESS_TOKEN" => Some(Self::AuthNotAccessToken),
-            "ACCESS_FORBIDDEN" => Some(Self::AccessForbidden),
-            "SYSTEM_ERROR" => Some(Self::SystemError),
-            "DB_ERROR" => Some(Self::DbError),
+            "USER_PARAMS_ERROR_NameRequired" => Some(Self::UserParamsErrorNameRequired),
+            "USER_PARAMS_ERROR_UsernameRequired" => {
+                Some(Self::UserParamsErrorUsernameRequired)
+            }
+            "USER_PARAMS_ERROR_PasswordRequired" => {
+                Some(Self::UserParamsErrorPasswordRequired)
+            }
+            "USER_PARAMS_ERROR_UsernameExist" => Some(Self::UserParamsErrorUsernameExist),
+            "USER_PARAMS_ERROR_UserNotFound" => Some(Self::UserParamsErrorUserNotFound),
+            "USER_PARAMS_ERROR_NameInvalid" => Some(Self::UserParamsErrorNameInvalid),
+            "USER_PARAMS_ERROR_UsernameInvalid" => {
+                Some(Self::UserParamsErrorUsernameInvalid)
+            }
+            "USER_PARAMS_ERROR_PasswordInvalid" => {
+                Some(Self::UserParamsErrorPasswordInvalid)
+            }
+            "SYSTEM_INTERNAL_ERROR" => Some(Self::SystemInternalError),
+            "SYSTEM_ERROR_Unimplemented" => Some(Self::SystemErrorUnimplemented),
+            "AUTH_SERVICE_ERROR_ListAccess" => Some(Self::AuthServiceErrorListAccess),
+            "AUTH_SERVICE_ERROR_OperateAccess" => {
+                Some(Self::AuthServiceErrorOperateAccess)
+            }
+            "AUTH_SERVICE_ERROR_BatchOperateAccess" => {
+                Some(Self::AuthServiceErrorBatchOperateAccess)
+            }
+            "AUTH_SERVICE_ERROR_ListAuthToken" => {
+                Some(Self::AuthServiceErrorListAuthToken)
+            }
+            "AUTH_SERVICE_ERROR_OperateAuthToken" => {
+                Some(Self::AuthServiceErrorOperateAuthToken)
+            }
+            "AUTH_SERVICE_ERROR_BatchOperateAuthToken" => {
+                Some(Self::AuthServiceErrorBatchOperateAuthToken)
+            }
+            "AUTH_SERVICE_ERROR_ListUser" => Some(Self::AuthServiceErrorListUser),
+            "AUTH_SERVICE_ERROR_OperateUser" => Some(Self::AuthServiceErrorOperateUser),
+            "AUTH_SERVICE_ERROR_BatchOperateUser" => {
+                Some(Self::AuthServiceErrorBatchOperateUser)
+            }
+            "AUTH_SERVICE_ERROR_ListRole" => Some(Self::AuthServiceErrorListRole),
+            "AUTH_SERVICE_ERROR_OperateRole" => Some(Self::AuthServiceErrorOperateRole),
+            "AUTH_SERVICE_ERROR_BatchOperateRole" => {
+                Some(Self::AuthServiceErrorBatchOperateRole)
+            }
+            "AUTH_SERVICE_ERROR_ListUserRoleRef" => {
+                Some(Self::AuthServiceErrorListUserRoleRef)
+            }
+            "AUTH_SERVICE_ERROR_OperateUserRoleRef" => {
+                Some(Self::AuthServiceErrorOperateUserRoleRef)
+            }
+            "AUTH_SERVICE_ERROR_BatchOperateUserRoleRef" => {
+                Some(Self::AuthServiceErrorBatchOperateUserRoleRef)
+            }
+            "AUTH_SERVICE_ERROR_ListPermission" => {
+                Some(Self::AuthServiceErrorListPermission)
+            }
+            "AUTH_SERVICE_ERROR_OperatePermission" => {
+                Some(Self::AuthServiceErrorOperatePermission)
+            }
+            "AUTH_SERVICE_ERROR_BatchOperatePermission" => {
+                Some(Self::AuthServiceErrorBatchOperatePermission)
+            }
             _ => None,
         }
     }
@@ -113,9 +260,11 @@ pub struct Header {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ReplyHeader {
-    #[prost(enumeration = "ECode", tag = "1")]
+    #[prost(int64, tag = "1")]
+    pub trace_id: i64,
+    #[prost(enumeration = "ECode", tag = "2")]
     pub code: i32,
-    #[prost(string, tag = "2")]
+    #[prost(string, tag = "3")]
     pub message: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

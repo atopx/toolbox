@@ -1,74 +1,80 @@
 package login
 
 import (
-	"errors"
-	"superserver/common/interface/ecode_iface"
-	"superserver/common/logger"
 	"superserver/common/system"
-	"superserver/internal/model/user"
-	"superserver/internal/model/user_token"
+	"superserver/common/utils"
+	"superserver/domain/auth_service"
+	"superserver/domain/public/common"
+	"superserver/domain/public/ecode"
+	"superserver/service/auth_client"
 	"time"
-
-	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
 
-func (ctl *Controller) Deal() {
-	params := ctl.Params.(*Params)
-	if params.Username == "" || params.Password == "" {
-		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "用户名或密码错误")
-		return
+func (c *Controller) Deal() (any, ecode.ECode) {
+	params := c.Params.(*Params)
+	if params.Username == "" {
+		return nil, ecode.ECode_USER_PARAMS_ERROR_UsernameRequired
 	}
-	dao := user.NewDao(ctl.GetDatabase())
-
-	po, err := dao.GetUserByUsername(params.Username, true)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "用户不存在")
-		return
+	if params.Password == "" {
+		return nil, ecode.ECode_USER_PARAMS_ERROR_PasswordRequired
 	}
-	if err != nil {
-		logger.Error(ctl.Context, "user login dao.GetUserByUsername failed", zap.Error(err))
-		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "[12001]系统错误, 请联系管理员")
-		return
-	}
-	if !po.ComparePassword(params.Password) {
-		ctl.NewErrorResponse(ecode_iface.ECode_BAD_REQUEST, "登录密码错误")
-		return
-	}
-	// 如果已有token，直接返回给用户
-	tokenDao := user_token.NewDao(ctl.GetDatabase())
-	token, err := tokenDao.First(func(db *gorm.DB) *gorm.DB {
-		return db.Where("user_id = ?", po.Id)
+	listUserReply, code := auth_client.ListUser(c.Context, &auth_service.ListUserParams{
+		Header: system.NewServiceHeader(c.Header),
+		Pager:  &common.Pager{Index: 1, Size: 1},
+		Filter: &auth_service.UserFilter{Usernames: []string{params.Username}},
 	})
+	if code != ecode.ECode_SUCCESS {
+		return nil, code
+	}
+	if len(listUserReply.Data) == 0 {
+		return nil, ecode.ECode_USER_PARAMS_ERROR_UserNotFound
+	}
 
-	if err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			logger.Error(ctl.Context, "user login tokenDao.First failed", zap.Error(err))
-			ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "[12001]系统错误, 请联系管理员")
-			return
+	user := listUserReply.Data[0]
+	if utils.Hash(params.Password) != user.Password {
+		return nil, ecode.ECode_USER_PARAMS_ERROR_PasswordInvalid
+	}
+
+	listTokenReply, code := auth_client.ListAuthToken(c.Context, &auth_service.ListAuthTokenParams{
+		Header: system.NewServiceHeader(c.Header),
+		Pager:  &common.Pager{Index: 1, Size: 1},
+		Filter: &auth_service.AuthTokenFilter{UserIds: []int32{user.Id}},
+	})
+	if code != ecode.ECode_SUCCESS {
+		return nil, code
+	}
+
+	current := time.Now().Local()
+
+	var token *auth_service.AuthToken
+
+	switch len(listTokenReply.Data) {
+	case 0:
+		token = new(auth_service.AuthToken)
+	default:
+		token = listTokenReply.Data[0]
+		// 已有token且未过期，直接返回给用户
+		if token.ExpireTime < current.Unix() {
+			return listTokenReply.Data[0], ecode.ECode_SUCCESS
 		}
 	}
-	// 如果没有token, 或者token过期， 需要重新签发
-	if token.ExpireTime <= time.Now().Unix() {
-		newToken := system.SignClaims(po.Id)
-		token.AccessToken = newToken.AccessToken
-		token.RefreshToken = newToken.RefreshToken
-		token.ExpireTime = newToken.IssuedTime
-		token.UserId = po.Id
-	}
 
-	if err = tokenDao.UpsertByUserId(token); err != nil {
-		logger.Error(ctl.Context, "user login system.SignClaims failed", zap.Error(err))
-		ctl.NewErrorResponse(ecode_iface.ECode_SYSTEM_ERROR, "[12002]系统错误, 请联系管理员")
-		return
-	}
+	// 没有token或已过期， 需要重新签发
+	expires := current.Add(24 * time.Hour)
+	token.UserId = user.Id
+	token.IssuedTime = current.Unix()
+	token.ExpireTime = expires.Unix()
+	token.AccessToken = utils.SignToken(current, expires, token.ExpireTime)
+	// 使用AccessToken的过期时间加密
+	token.RefreshToken = utils.SignToken(current, current.Add(7*24*time.Hour), token.ExpireTime)
 
-	ctl.NewOkResponse(&Reply{
-		UserId:       po.Id,
-		Name:         po.Name,
-		Username:     po.Username,
-		AccessToken:  token.AccessToken,
-		RefreshToken: token.RefreshToken,
-		Expires:      token.ExpireTime,
+	operateTokenReply, code := auth_client.OperateAuthToken(c.Context, &auth_service.OperateAuthTokenParams{
+		Header:  system.NewServiceHeader(c.Header),
+		Operate: common.Operation_OPERATION_UPSERT,
+		Data:    token,
 	})
+	if code != ecode.ECode_SUCCESS {
+		return nil, code
+	}
+	return operateTokenReply.Data, ecode.ECode_SUCCESS
 }

@@ -19,19 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthService_ListUser_FullMethodName               = "/auth_service.AuthService/ListUser"
-	AuthService_OperateUser_FullMethodName            = "/auth_service.AuthService/OperateUser"
-	AuthService_BatchOperateUser_FullMethodName       = "/auth_service.AuthService/BatchOperateUser"
-	AuthService_ListRole_FullMethodName               = "/auth_service.AuthService/ListRole"
-	AuthService_OperateRole_FullMethodName            = "/auth_service.AuthService/OperateRole"
-	AuthService_BatchOperateRole_FullMethodName       = "/auth_service.AuthService/BatchOperateRole"
-	AuthService_ListAccess_FullMethodName             = "/auth_service.AuthService/ListAccess"
-	AuthService_OperateAccess_FullMethodName          = "/auth_service.AuthService/OperateAccess"
-	AuthService_BatchOperateAccess_FullMethodName     = "/auth_service.AuthService/BatchOperateAccess"
-	AuthService_ListPermission_FullMethodName         = "/auth_service.AuthService/ListPermission"
-	AuthService_OperatePermission_FullMethodName      = "/auth_service.AuthService/OperatePermission"
-	AuthService_BatchOperatePermission_FullMethodName = "/auth_service.AuthService/BatchOperatePermission"
-	AuthService_Authorization_FullMethodName          = "/auth_service.AuthService/Authorization"
+	AuthService_ListUser_FullMethodName                = "/auth_service.AuthService/ListUser"
+	AuthService_OperateUser_FullMethodName             = "/auth_service.AuthService/OperateUser"
+	AuthService_BatchOperateUser_FullMethodName        = "/auth_service.AuthService/BatchOperateUser"
+	AuthService_ListRole_FullMethodName                = "/auth_service.AuthService/ListRole"
+	AuthService_OperateRole_FullMethodName             = "/auth_service.AuthService/OperateRole"
+	AuthService_BatchOperateRole_FullMethodName        = "/auth_service.AuthService/BatchOperateRole"
+	AuthService_ListUserRoleRef_FullMethodName         = "/auth_service.AuthService/ListUserRoleRef"
+	AuthService_OperateUserRoleRef_FullMethodName      = "/auth_service.AuthService/OperateUserRoleRef"
+	AuthService_BatchOperateUserRoleRef_FullMethodName = "/auth_service.AuthService/BatchOperateUserRoleRef"
+	AuthService_ListAccess_FullMethodName              = "/auth_service.AuthService/ListAccess"
+	AuthService_OperateAccess_FullMethodName           = "/auth_service.AuthService/OperateAccess"
+	AuthService_BatchOperateAccess_FullMethodName      = "/auth_service.AuthService/BatchOperateAccess"
+	AuthService_ListPermission_FullMethodName          = "/auth_service.AuthService/ListPermission"
+	AuthService_OperatePermission_FullMethodName       = "/auth_service.AuthService/OperatePermission"
+	AuthService_BatchOperatePermission_FullMethodName  = "/auth_service.AuthService/BatchOperatePermission"
+	AuthService_ListAuthToken_FullMethodName           = "/auth_service.AuthService/ListAuthToken"
+	AuthService_OperateAuthToken_FullMethodName        = "/auth_service.AuthService/OperateAuthToken"
+	AuthService_BatchOperateAuthToken_FullMethodName   = "/auth_service.AuthService/BatchOperateAuthToken"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -46,6 +51,10 @@ type AuthServiceClient interface {
 	ListRole(ctx context.Context, in *ListRoleParams, opts ...grpc.CallOption) (*ListRoleReply, error)
 	OperateRole(ctx context.Context, in *OperateRoleParams, opts ...grpc.CallOption) (*OperateRoleReply, error)
 	BatchOperateRole(ctx context.Context, in *BatchOperateRoleParams, opts ...grpc.CallOption) (*BatchOperateRoleReply, error)
+	// 用户&角色
+	ListUserRoleRef(ctx context.Context, in *ListUserRoleRefParams, opts ...grpc.CallOption) (*ListUserRoleRefReply, error)
+	OperateUserRoleRef(ctx context.Context, in *OperateUserRoleRefParams, opts ...grpc.CallOption) (*OperateUserRoleRefReply, error)
+	BatchOperateUserRoleRef(ctx context.Context, in *BatchOperateUserRoleRefParams, opts ...grpc.CallOption) (*BatchOperateUserRoleRefReply, error)
 	// api接口
 	ListAccess(ctx context.Context, in *ListAccessParams, opts ...grpc.CallOption) (*ListAccessReply, error)
 	OperateAccess(ctx context.Context, in *OperateAccessParams, opts ...grpc.CallOption) (*OperateAccessReply, error)
@@ -54,8 +63,10 @@ type AuthServiceClient interface {
 	ListPermission(ctx context.Context, in *ListPermissionParams, opts ...grpc.CallOption) (*ListPermissionReply, error)
 	OperatePermission(ctx context.Context, in *OperatePermissionParams, opts ...grpc.CallOption) (*OperatePermissionReply, error)
 	BatchOperatePermission(ctx context.Context, in *BatchOperatePermissionParams, opts ...grpc.CallOption) (*BatchOperatePermissionReply, error)
-	// 认证接口: 无token则创建, 如果token已过期则刷新token
-	Authorization(ctx context.Context, in *AuthorizationParams, opts ...grpc.CallOption) (*AuthorizationReply, error)
+	// 认证令牌
+	ListAuthToken(ctx context.Context, in *ListAuthTokenParams, opts ...grpc.CallOption) (*ListAuthTokenReply, error)
+	OperateAuthToken(ctx context.Context, in *OperateAuthTokenParams, opts ...grpc.CallOption) (*OperateAuthTokenReply, error)
+	BatchOperateAuthToken(ctx context.Context, in *BatchOperateAuthTokenParams, opts ...grpc.CallOption) (*BatchOperateAuthTokenReply, error)
 }
 
 type authServiceClient struct {
@@ -120,6 +131,33 @@ func (c *authServiceClient) BatchOperateRole(ctx context.Context, in *BatchOpera
 	return out, nil
 }
 
+func (c *authServiceClient) ListUserRoleRef(ctx context.Context, in *ListUserRoleRefParams, opts ...grpc.CallOption) (*ListUserRoleRefReply, error) {
+	out := new(ListUserRoleRefReply)
+	err := c.cc.Invoke(ctx, AuthService_ListUserRoleRef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) OperateUserRoleRef(ctx context.Context, in *OperateUserRoleRefParams, opts ...grpc.CallOption) (*OperateUserRoleRefReply, error) {
+	out := new(OperateUserRoleRefReply)
+	err := c.cc.Invoke(ctx, AuthService_OperateUserRoleRef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) BatchOperateUserRoleRef(ctx context.Context, in *BatchOperateUserRoleRefParams, opts ...grpc.CallOption) (*BatchOperateUserRoleRefReply, error) {
+	out := new(BatchOperateUserRoleRefReply)
+	err := c.cc.Invoke(ctx, AuthService_BatchOperateUserRoleRef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) ListAccess(ctx context.Context, in *ListAccessParams, opts ...grpc.CallOption) (*ListAccessReply, error) {
 	out := new(ListAccessReply)
 	err := c.cc.Invoke(ctx, AuthService_ListAccess_FullMethodName, in, out, opts...)
@@ -174,9 +212,27 @@ func (c *authServiceClient) BatchOperatePermission(ctx context.Context, in *Batc
 	return out, nil
 }
 
-func (c *authServiceClient) Authorization(ctx context.Context, in *AuthorizationParams, opts ...grpc.CallOption) (*AuthorizationReply, error) {
-	out := new(AuthorizationReply)
-	err := c.cc.Invoke(ctx, AuthService_Authorization_FullMethodName, in, out, opts...)
+func (c *authServiceClient) ListAuthToken(ctx context.Context, in *ListAuthTokenParams, opts ...grpc.CallOption) (*ListAuthTokenReply, error) {
+	out := new(ListAuthTokenReply)
+	err := c.cc.Invoke(ctx, AuthService_ListAuthToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) OperateAuthToken(ctx context.Context, in *OperateAuthTokenParams, opts ...grpc.CallOption) (*OperateAuthTokenReply, error) {
+	out := new(OperateAuthTokenReply)
+	err := c.cc.Invoke(ctx, AuthService_OperateAuthToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) BatchOperateAuthToken(ctx context.Context, in *BatchOperateAuthTokenParams, opts ...grpc.CallOption) (*BatchOperateAuthTokenReply, error) {
+	out := new(BatchOperateAuthTokenReply)
+	err := c.cc.Invoke(ctx, AuthService_BatchOperateAuthToken_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -195,6 +251,10 @@ type AuthServiceServer interface {
 	ListRole(context.Context, *ListRoleParams) (*ListRoleReply, error)
 	OperateRole(context.Context, *OperateRoleParams) (*OperateRoleReply, error)
 	BatchOperateRole(context.Context, *BatchOperateRoleParams) (*BatchOperateRoleReply, error)
+	// 用户&角色
+	ListUserRoleRef(context.Context, *ListUserRoleRefParams) (*ListUserRoleRefReply, error)
+	OperateUserRoleRef(context.Context, *OperateUserRoleRefParams) (*OperateUserRoleRefReply, error)
+	BatchOperateUserRoleRef(context.Context, *BatchOperateUserRoleRefParams) (*BatchOperateUserRoleRefReply, error)
 	// api接口
 	ListAccess(context.Context, *ListAccessParams) (*ListAccessReply, error)
 	OperateAccess(context.Context, *OperateAccessParams) (*OperateAccessReply, error)
@@ -203,8 +263,10 @@ type AuthServiceServer interface {
 	ListPermission(context.Context, *ListPermissionParams) (*ListPermissionReply, error)
 	OperatePermission(context.Context, *OperatePermissionParams) (*OperatePermissionReply, error)
 	BatchOperatePermission(context.Context, *BatchOperatePermissionParams) (*BatchOperatePermissionReply, error)
-	// 认证接口: 无token则创建, 如果token已过期则刷新token
-	Authorization(context.Context, *AuthorizationParams) (*AuthorizationReply, error)
+	// 认证令牌
+	ListAuthToken(context.Context, *ListAuthTokenParams) (*ListAuthTokenReply, error)
+	OperateAuthToken(context.Context, *OperateAuthTokenParams) (*OperateAuthTokenReply, error)
+	BatchOperateAuthToken(context.Context, *BatchOperateAuthTokenParams) (*BatchOperateAuthTokenReply, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -230,6 +292,15 @@ func (UnimplementedAuthServiceServer) OperateRole(context.Context, *OperateRoleP
 func (UnimplementedAuthServiceServer) BatchOperateRole(context.Context, *BatchOperateRoleParams) (*BatchOperateRoleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateRole not implemented")
 }
+func (UnimplementedAuthServiceServer) ListUserRoleRef(context.Context, *ListUserRoleRefParams) (*ListUserRoleRefReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUserRoleRef not implemented")
+}
+func (UnimplementedAuthServiceServer) OperateUserRoleRef(context.Context, *OperateUserRoleRefParams) (*OperateUserRoleRefReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperateUserRoleRef not implemented")
+}
+func (UnimplementedAuthServiceServer) BatchOperateUserRoleRef(context.Context, *BatchOperateUserRoleRefParams) (*BatchOperateUserRoleRefReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateUserRoleRef not implemented")
+}
 func (UnimplementedAuthServiceServer) ListAccess(context.Context, *ListAccessParams) (*ListAccessReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAccess not implemented")
 }
@@ -248,8 +319,14 @@ func (UnimplementedAuthServiceServer) OperatePermission(context.Context, *Operat
 func (UnimplementedAuthServiceServer) BatchOperatePermission(context.Context, *BatchOperatePermissionParams) (*BatchOperatePermissionReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchOperatePermission not implemented")
 }
-func (UnimplementedAuthServiceServer) Authorization(context.Context, *AuthorizationParams) (*AuthorizationReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authorization not implemented")
+func (UnimplementedAuthServiceServer) ListAuthToken(context.Context, *ListAuthTokenParams) (*ListAuthTokenReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAuthToken not implemented")
+}
+func (UnimplementedAuthServiceServer) OperateAuthToken(context.Context, *OperateAuthTokenParams) (*OperateAuthTokenReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperateAuthToken not implemented")
+}
+func (UnimplementedAuthServiceServer) BatchOperateAuthToken(context.Context, *BatchOperateAuthTokenParams) (*BatchOperateAuthTokenReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateAuthToken not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -372,6 +449,60 @@ func _AuthService_BatchOperateRole_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_ListUserRoleRef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserRoleRefParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ListUserRoleRef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ListUserRoleRef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ListUserRoleRef(ctx, req.(*ListUserRoleRefParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_OperateUserRoleRef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OperateUserRoleRefParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).OperateUserRoleRef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_OperateUserRoleRef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).OperateUserRoleRef(ctx, req.(*OperateUserRoleRefParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_BatchOperateUserRoleRef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchOperateUserRoleRefParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).BatchOperateUserRoleRef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_BatchOperateUserRoleRef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).BatchOperateUserRoleRef(ctx, req.(*BatchOperateUserRoleRefParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_ListAccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListAccessParams)
 	if err := dec(in); err != nil {
@@ -480,20 +611,56 @@ func _AuthService_BatchOperatePermission_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_Authorization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthorizationParams)
+func _AuthService_ListAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAuthTokenParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).Authorization(ctx, in)
+		return srv.(AuthServiceServer).ListAuthToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AuthService_Authorization_FullMethodName,
+		FullMethod: AuthService_ListAuthToken_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Authorization(ctx, req.(*AuthorizationParams))
+		return srv.(AuthServiceServer).ListAuthToken(ctx, req.(*ListAuthTokenParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_OperateAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OperateAuthTokenParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).OperateAuthToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_OperateAuthToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).OperateAuthToken(ctx, req.(*OperateAuthTokenParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_BatchOperateAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchOperateAuthTokenParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).BatchOperateAuthToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_BatchOperateAuthToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).BatchOperateAuthToken(ctx, req.(*BatchOperateAuthTokenParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -530,6 +697,18 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_BatchOperateRole_Handler,
 		},
 		{
+			MethodName: "ListUserRoleRef",
+			Handler:    _AuthService_ListUserRoleRef_Handler,
+		},
+		{
+			MethodName: "OperateUserRoleRef",
+			Handler:    _AuthService_OperateUserRoleRef_Handler,
+		},
+		{
+			MethodName: "BatchOperateUserRoleRef",
+			Handler:    _AuthService_BatchOperateUserRoleRef_Handler,
+		},
+		{
 			MethodName: "ListAccess",
 			Handler:    _AuthService_ListAccess_Handler,
 		},
@@ -554,8 +733,16 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_BatchOperatePermission_Handler,
 		},
 		{
-			MethodName: "Authorization",
-			Handler:    _AuthService_Authorization_Handler,
+			MethodName: "ListAuthToken",
+			Handler:    _AuthService_ListAuthToken_Handler,
+		},
+		{
+			MethodName: "OperateAuthToken",
+			Handler:    _AuthService_OperateAuthToken_Handler,
+		},
+		{
+			MethodName: "BatchOperateAuthToken",
+			Handler:    _AuthService_BatchOperateAuthToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
