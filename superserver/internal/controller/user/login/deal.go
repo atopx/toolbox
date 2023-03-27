@@ -67,8 +67,7 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	token.AccessToken = utils.SignToken(current, expires, token.ExpireTime)
 	// 使用AccessToken的过期时间加密
 	token.RefreshToken = utils.SignToken(current, current.Add(7*24*time.Hour), token.ExpireTime)
-
-	operateTokenReply, code := auth_client.OperateAuthToken(c.Context, &auth_service.OperateAuthTokenParams{
+	_, code = auth_client.OperateAuthToken(c.Context, &auth_service.OperateAuthTokenParams{
 		Header:  system.NewServiceHeader(c.Header),
 		Operate: common.Operation_OPERATION_UPSERT,
 		Data:    token,
@@ -76,5 +75,5 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	if code != ecode.ECode_SUCCESS {
 		return nil, code
 	}
-	return operateTokenReply.Data, ecode.ECode_SUCCESS
+	return token, ecode.ECode_SUCCESS
 }

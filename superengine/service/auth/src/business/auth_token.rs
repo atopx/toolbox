@@ -2,8 +2,8 @@ use std::str::FromStr;
 
 use sea_orm::ActiveValue::Set;
 use sea_orm::{
-    ActiveModelTrait, ColumnTrait, DbConn, DbErr, EntityTrait, PaginatorTrait, QueryFilter,
-    QueryOrder,
+    sea_query, ActiveModelTrait, ColumnTrait, DbConn, DbErr, EntityTrait, PaginatorTrait,
+    QueryFilter, QueryOrder,
 };
 
 use domain::{auth_service, public};
@@ -64,6 +64,30 @@ impl<'a> Dao<'a> {
         active.expire_time = Set(dto.expire_time);
         active.update_time = Set(common::utils::current_timestamp());
         return active.update(self.db).await;
+    }
+
+    // 批量写入，有冲突则更新
+    pub async fn save(
+        &self,
+        dto: auth_service::AuthToken,
+    ) -> Result<sea_orm::InsertResult<ActiveModel>, DbErr> {
+        let active: ActiveModel = self.from_dto(dto).await.into();
+        return Entity::insert(active)
+            .on_conflict(
+                // 定义冲突
+                sea_query::OnConflict::column(Column::UserId)
+                    // 冲突后更新的字段
+                    .update_columns([
+                        Column::AccessToken,
+                        Column::RefreshToken,
+                        Column::IssuedTime,
+                        Column::ExpireTime,
+                        Column::UpdateTime,
+                    ])
+                    .to_owned(),
+            )
+            .exec(self.db)
+            .await;
     }
 
     // 逻辑删除

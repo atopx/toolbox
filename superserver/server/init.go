@@ -4,6 +4,7 @@ import (
 	"context"
 	"superserver/common/consts"
 	"superserver/common/system"
+	"superserver/common/utils"
 	"superserver/domain/auth_service"
 	"superserver/domain/public/common"
 	"superserver/domain/public/ecode"
@@ -29,7 +30,7 @@ func initAccess(ctx context.Context, routes gin.RoutesInfo) {
 	}
 	_, code := auth_client.BatchOperateAccess(ctx, &auth_service.BatchOperateAccessParams{
 		Header:  &common.Header{TraceId: -1, Source: consts.ServiceName},
-		Operate: 0,
+		Operate: common.Operation_OPERATION_UPSERT,
 		Data:    accessList,
 	})
 	if code != ecode.ECode_SUCCESS {
@@ -38,15 +39,15 @@ func initAccess(ctx context.Context, routes gin.RoutesInfo) {
 }
 
 func initSystemUser(ctx context.Context) {
-	system.User = &auth_service.User{
+	user := &auth_service.User{
 		Username: viper.GetString("admin.user"),
-		Password: viper.GetString("admin.pass"),
+		Password: utils.Hash(viper.GetString("admin.pass")),
 		Status:   auth_service.UserStatus_USER_NORMAL,
 	}
 	listUserReply, code := auth_client.ListUser(ctx, &auth_service.ListUserParams{
 		Header: &common.Header{TraceId: -1, Source: consts.ServiceName},
 		Pager:  &common.Pager{Disabled: true},
-		Filter: &auth_service.UserFilter{Usernames: []string{system.User.Username}},
+		Filter: &auth_service.UserFilter{Usernames: []string{user.Username}},
 	})
 	if code != ecode.ECode_SUCCESS {
 		panic(system.GetErrorMessage(code))
@@ -56,14 +57,20 @@ func initSystemUser(ctx context.Context) {
 		operateUserReply, code := auth_client.OperateUser(ctx, &auth_service.OperateUserParams{
 			Header:  &common.Header{TraceId: -1, Source: consts.ServiceName},
 			Operate: common.Operation_OPERATION_CREATE,
-			Data:    system.User,
+			Data:    user,
 		})
 		if code != ecode.ECode_SUCCESS {
 			panic(system.GetErrorMessage(code))
 		}
-		system.User.Id = operateUserReply.Data.Id
+		system.User = &auth_service.User{
+			Id:       operateUserReply.Data.Id,
+			Username: user.Username,
+		}
 	} else {
-		system.User.Id = listUserReply.Data[0].Id
+		system.User = &auth_service.User{
+			Id:       listUserReply.Data[0].Id,
+			Username: user.Username,
+		}
 	}
 }
 

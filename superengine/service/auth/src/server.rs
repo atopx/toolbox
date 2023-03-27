@@ -100,7 +100,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         info!("batch_operate_user {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateUserReply {
-                header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
         return match public::Operation::from_i32(params.operate).unwrap() {
@@ -108,7 +108,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 let dao = business::user::Dao::new(&self.db);
                 match dao.save(params.data).await {
                     Ok(_) => Ok(Response::new(auth_service::BatchOperateUserReply {
-                        header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                        header: common::header::reply(header.trace_id, public::ECode::Success),
                     })),
                     Err(err) => Ok(Response::new(auth_service::BatchOperateUserReply {
                         header: common::header::err_reply(
@@ -207,7 +207,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         info!("batch_operate_role {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateRoleReply {
-                header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
         return match public::Operation::from_i32(params.operate).unwrap() {
@@ -215,7 +215,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 let dao = business::role::Dao::new(&self.db, header.operator);
                 match dao.save(params.data).await {
                     Ok(_) => Ok(Response::new(auth_service::BatchOperateRoleReply {
-                        header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                        header: common::header::reply(header.trace_id, public::ECode::Success),
                     })),
                     Err(err) => Ok(Response::new(auth_service::BatchOperateRoleReply {
                         header: common::header::err_reply(
@@ -309,7 +309,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         info!("batch_operate_access {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateAccessReply {
-                header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
         return match public::Operation::from_i32(params.operate).unwrap() {
@@ -317,7 +317,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 let dao = business::access::Dao::new(&self.db);
                 match dao.save(params.data).await {
                     Ok(_) => Ok(Response::new(auth_service::BatchOperateAccessReply {
-                        header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                        header: common::header::reply(header.trace_id, public::ECode::Success),
                     })),
                     Err(err) => Ok(Response::new(auth_service::BatchOperateAccessReply {
                         header: common::header::err_reply(
@@ -404,7 +404,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         info!("batch_operate_permission {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperatePermissionReply {
-                header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
         return match public::Operation::from_i32(params.operate).unwrap() {
@@ -412,7 +412,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 let dao = business::permission::Dao::new(&self.db, header.operator);
                 match dao.save(params.data).await {
                     Ok(_) => Ok(Response::new(auth_service::BatchOperatePermissionReply {
-                        header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                        header: common::header::reply(header.trace_id, public::ECode::Success),
                     })),
                     Err(err) => Ok(Response::new(auth_service::BatchOperatePermissionReply {
                         header: common::header::err_reply(
@@ -499,7 +499,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         info!("batch_operate_user_role_ref {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
-                header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
         return match public::Operation::from_i32(params.operate).unwrap() {
@@ -507,7 +507,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
                 match dao.save(params.data).await {
                     Ok(_) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
-                        header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                        header: common::header::reply(header.trace_id, public::ECode::Success),
                     })),
                     Err(err) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
                         header: common::header::err_reply(
@@ -575,8 +575,15 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                         Ok(Response::new(auth_service::OperateAuthTokenReply::default()))
                     }
                     public::Operation::Update | public::Operation::Upsert => {
-                        let code = tonic::Code::Unimplemented;
-                        Err(Status::new(code, code.description()))
+                        let dao = business::auth_token::Dao::new(&self.db);
+                        let result = dao.save(dto).await.unwrap();
+                        Ok(Response::new(auth_service::OperateAuthTokenReply {
+                            header: common::header::reply(header.trace_id, public::ECode::Success),
+                            data: Some(auth_service::AuthToken {
+                                id: result.last_insert_id,
+                                ..Default::default()
+                            }),
+                        }))
                     }
                 };
             }

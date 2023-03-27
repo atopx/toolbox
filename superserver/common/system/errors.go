@@ -6,15 +6,20 @@ import (
 )
 
 func GetErrorMessage(code ecode.ECode) string {
-	return CodeMap[code]
+	value, ok := CodeMap[code]
+	if !ok {
+		value = code.String()
+	}
+	return value
 }
 
 func NewResponse(header *common.ReplyHeader, data any) *Response {
+	header.Message = GetErrorMessage(header.Code)
 	return &Response{Header: header, Data: data}
 }
 
 func NewErrorResponse(header *common.ReplyHeader) *Response {
-	return &Response{Header: header}
+	return NewResponse(header, nil)
 }
 
 var CodeMap = map[ecode.ECode]string{

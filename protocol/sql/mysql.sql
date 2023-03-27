@@ -26,6 +26,8 @@ CREATE TABLE user_role_ref (
     id INT ( 11 ) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
     user_id INT ( 11 ) NOT NULL COMMENT '用户ID',
     role_id INT ( 11 ) NOT NULL COMMENT '角色ID',
+    creator INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '创建人',
+    updater INT ( 11 ) NOT NULL DEFAULT 0 COMMENT '更新人',
     create_time BIGINT NOT NULL COMMENT '创建时间 时间戳：秒',
     update_time BIGINT NOT NULL COMMENT '最后更新时间 时间戳：秒',
     delete_time BIGINT NOT NULL COMMENT '删除时间 时间戳：秒'

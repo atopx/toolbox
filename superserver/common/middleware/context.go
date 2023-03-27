@@ -7,9 +7,10 @@ import (
 	"superserver/domain/public/ecode"
 	"time"
 
+	"superserver/common/logger"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"superserver/common/logger"
 )
 
 // ContextMiddleware 日志中间件
@@ -45,11 +46,10 @@ func (m *Middleware) ContextMiddleware() gin.HandlerFunc {
 		if responseHeader.Code < ecode.ECode_BAD_REQUEST {
 			logger.Info(ctx, "response", cost)
 		} else {
-			message := system.GetErrorMessage(responseHeader.Code)
 			if responseHeader.Code < ecode.ECode_SYSTEM_INTERNAL_ERROR {
-				logger.Warn(ctx, "response", cost, zap.String("warn", message))
+				logger.Warn(ctx, "response", cost, zap.String("warn", responseHeader.Message))
 			} else {
-				logger.Error(ctx, "response", cost, zap.String("error", message))
+				logger.Error(ctx, "response", cost, zap.String("error", responseHeader.Message))
 			}
 		}
 	}
