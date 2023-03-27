@@ -32,15 +32,13 @@ impl ComputerAction {
         ipaddr: Option<IpAddr>,
     ) -> Result<(), Error> {
         let mut magic_packet = vec![0; MAGIC_PACKET_SIZE];
-        for i in 0..MAC_ADDR_SIZE {
-            magic_packet[i] = 0xff;
-            let value = u8::from_str_radix(&mac_addr[i * 2..i * 2 + 2], 16).unwrap();
-            for j in 0..16 {
-                magic_packet[MAC_ADDR_SIZE * (j + 1) + i] = value;
+        for index in 0..MAC_ADDR_SIZE {
+            magic_packet[index] = 0xff;
+            let value = u8::from_str_radix(&mac_addr[index * 2..index * 2 + 2], 16).unwrap();
+            for step in (MAC_ADDR_SIZE..MAGIC_PACKET_SIZE).step_by(MAC_ADDR_SIZE) {
+                magic_packet[step + index] = value;
             }
         }
-
-        println!("{:?}", magic_packet);
         let broadcast = broadcast.unwrap_or_else(|| DEFAULT_BROADCAST_ADDR);
         let ipaddr = ipaddr.unwrap_or_else(|| DEFAULT_BIND_ADDR);
         // Bind port, 0 means assigned by os
