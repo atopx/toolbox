@@ -1,204 +1,496 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Computer {
+    #[prost(int32, tag = "1")]
+    pub id: i32,
+    #[prost(string, tag = "2")]
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub username: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub password: ::prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub mac_address: ::prost::alloc::string::String,
+    #[prost(string, tag = "6")]
+    pub lan_hostname: ::prost::alloc::string::String,
+    #[prost(string, tag = "7")]
+    pub wan_hostname: ::prost::alloc::string::String,
+    #[prost(enumeration = "ComputerPowerStatus", tag = "8")]
+    pub power_status: i32,
+    #[prost(int64, tag = "9")]
+    pub scan_time: i64,
+    #[prost(int64, tag = "1001")]
+    pub delete_time: i64,
+    #[prost(int64, tag = "1002")]
+    pub create_time: i64,
+    #[prost(int64, tag = "1003")]
+    pub update_time: i64,
+    #[prost(int32, tag = "1004")]
+    pub creator: i32,
+    #[prost(int32, tag = "1005")]
+    pub updater: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ComputerFilter {
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(string, repeated, tag = "2")]
+    pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "3")]
+    pub usernames: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "4")]
+    pub passwords: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "5")]
+    pub mac_address: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "6")]
+    pub lan_hostnames: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "7")]
+    pub wan_hostnames: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(enumeration = "ComputerPowerStatus", repeated, tag = "8")]
+    pub power_states: ::prost::alloc::vec::Vec<i32>,
+    #[prost(message, optional, tag = "9")]
+    pub scan_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "10")]
+    pub keywords: ::core::option::Option<ComputerKeywords>,
+    #[prost(message, optional, tag = "101")]
+    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "102")]
+    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "103")]
+    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(int32, repeated, tag = "104")]
+    pub creators: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "105")]
+    pub updaters: ::prost::alloc::vec::Vec<i32>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ComputerKeywords {
+    #[prost(string, tag = "1")]
+    pub keyword: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub name_or_uname: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub hostname: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub name_or_uname_or_hostname: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListComputerParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
+    #[prost(message, optional, tag = "4")]
+    pub filter: ::core::option::Option<ComputerFilter>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListComputerReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<Computer>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateComputerParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, optional, tag = "3")]
+    pub data: ::core::option::Option<Computer>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateComputerReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub data: ::core::option::Option<Computer>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateComputerParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<Computer>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateComputerReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DealComputerParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "ComputerAction", tag = "2")]
+    pub action: i32,
+    #[prost(int32, tag = "3")]
+    pub id: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DealComputerReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
-pub enum MainframePowerStatus {
+pub enum ComputerPowerStatus {
     /// 未知状态
-    MainframePowerUnknown = 0,
+    ComputerPowerUnknown = 0,
     /// 关机状态
-    MainframePowerOff = 1,
+    ComputerPowerOff = 1,
     /// 开机状态
-    MainframePowerOn = 2,
+    ComputerPowerOn = 2,
 }
-impl MainframePowerStatus {
+impl ComputerPowerStatus {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            MainframePowerStatus::MainframePowerUnknown => "MAINFRAME_POWER_UNKNOWN",
-            MainframePowerStatus::MainframePowerOff => "MAINFRAME_POWER_OFF",
-            MainframePowerStatus::MainframePowerOn => "MAINFRAME_POWER_ON",
+            ComputerPowerStatus::ComputerPowerUnknown => "COMPUTER_POWER_UNKNOWN",
+            ComputerPowerStatus::ComputerPowerOff => "COMPUTER_POWER_OFF",
+            ComputerPowerStatus::ComputerPowerOn => "COMPUTER_POWER_ON",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
-            "MAINFRAME_POWER_UNKNOWN" => Some(Self::MainframePowerUnknown),
-            "MAINFRAME_POWER_OFF" => Some(Self::MainframePowerOff),
-            "MAINFRAME_POWER_ON" => Some(Self::MainframePowerOn),
+            "COMPUTER_POWER_UNKNOWN" => Some(Self::ComputerPowerUnknown),
+            "COMPUTER_POWER_OFF" => Some(Self::ComputerPowerOff),
+            "COMPUTER_POWER_ON" => Some(Self::ComputerPowerOn),
             _ => None,
         }
     }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
-pub enum MainframeOperate {
+pub enum ComputerAction {
     /// 关机
-    MainframeClose = 0,
+    ComputerClose = 0,
     /// 开机
-    MainframeOpen = 1,
+    ComputerOpen = 1,
     /// 探测
-    MainframeDetect = 2,
+    ComputerDetect = 2,
 }
-impl MainframeOperate {
+impl ComputerAction {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            MainframeOperate::MainframeClose => "MAINFRAME_CLOSE",
-            MainframeOperate::MainframeOpen => "MAINFRAME_OPEN",
-            MainframeOperate::MainframeDetect => "MAINFRAME_DETECT",
+            ComputerAction::ComputerClose => "COMPUTER_CLOSE",
+            ComputerAction::ComputerOpen => "COMPUTER_OPEN",
+            ComputerAction::ComputerDetect => "COMPUTER_DETECT",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
-            "MAINFRAME_CLOSE" => Some(Self::MainframeClose),
-            "MAINFRAME_OPEN" => Some(Self::MainframeOpen),
-            "MAINFRAME_DETECT" => Some(Self::MainframeDetect),
+            "COMPUTER_CLOSE" => Some(Self::ComputerClose),
+            "COMPUTER_OPEN" => Some(Self::ComputerOpen),
+            "COMPUTER_DETECT" => Some(Self::ComputerDetect),
             _ => None,
         }
     }
 }
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum MainframePortProtocol {
-    Unknown = 0,
-    Ftpdata = 20,
-    Ftpctl = 21,
-    Ssh = 22,
-    Telnet = 23,
-    Smtp = 25,
-    Dns = 53,
-    Dhcp = 67,
-    Http = 80,
-    Pop3 = 110,
-    Ntp = 123,
-    Imap = 143,
-    Snmp = 161,
-    Https = 443,
-    Ipsec = 500,
-    Radius = 1645,
-    L2tp = 1701,
-    Pptp = 1723,
-    Rdp = 3389,
-}
-impl MainframePortProtocol {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            MainframePortProtocol::Unknown => "MAINFRAME_PORT_PROTOCOL_UNKNOWN",
-            MainframePortProtocol::Ftpdata => "MAINFRAME_PORT_PROTOCOL_FTPDATA",
-            MainframePortProtocol::Ftpctl => "MAINFRAME_PORT_PROTOCOL_FTPCTL",
-            MainframePortProtocol::Ssh => "MAINFRAME_PORT_PROTOCOL_SSH",
-            MainframePortProtocol::Telnet => "MAINFRAME_PORT_PROTOCOL_TELNET",
-            MainframePortProtocol::Smtp => "MAINFRAME_PORT_PROTOCOL_SMTP",
-            MainframePortProtocol::Dns => "MAINFRAME_PORT_PROTOCOL_DNS",
-            MainframePortProtocol::Dhcp => "MAINFRAME_PORT_PROTOCOL_DHCP",
-            MainframePortProtocol::Http => "MAINFRAME_PORT_PROTOCOL_HTTP",
-            MainframePortProtocol::Pop3 => "MAINFRAME_PORT_PROTOCOL_POP3",
-            MainframePortProtocol::Ntp => "MAINFRAME_PORT_PROTOCOL_NTP",
-            MainframePortProtocol::Imap => "MAINFRAME_PORT_PROTOCOL_IMAP",
-            MainframePortProtocol::Snmp => "MAINFRAME_PORT_PROTOCOL_SNMP",
-            MainframePortProtocol::Https => "MAINFRAME_PORT_PROTOCOL_HTTPS",
-            MainframePortProtocol::Ipsec => "MAINFRAME_PORT_PROTOCOL_IPSEC",
-            MainframePortProtocol::Radius => "MAINFRAME_PORT_PROTOCOL_RADIUS",
-            MainframePortProtocol::L2tp => "MAINFRAME_PORT_PROTOCOL_L2TP",
-            MainframePortProtocol::Pptp => "MAINFRAME_PORT_PROTOCOL_PPTP",
-            MainframePortProtocol::Rdp => "MAINFRAME_PORT_PROTOCOL_RDP",
-        }
+/// Generated server implementations.
+pub mod mainframe_service_server {
+    #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
+    use tonic::codegen::*;
+    /// Generated trait containing gRPC methods that should be implemented for use with MainframeServiceServer.
+    #[async_trait]
+    pub trait MainframeService: Send + Sync + 'static {
+        async fn deal_computer(
+            &self,
+            request: tonic::Request<super::DealComputerParams>,
+        ) -> Result<tonic::Response<super::DealComputerReply>, tonic::Status>;
+        async fn list_computer(
+            &self,
+            request: tonic::Request<super::ListComputerParams>,
+        ) -> Result<tonic::Response<super::ListComputerReply>, tonic::Status>;
+        async fn operate_computer(
+            &self,
+            request: tonic::Request<super::OperateComputerParams>,
+        ) -> Result<tonic::Response<super::OperateComputerReply>, tonic::Status>;
+        async fn batch_operate_computer(
+            &self,
+            request: tonic::Request<super::BatchOperateComputerParams>,
+        ) -> Result<tonic::Response<super::BatchOperateComputerReply>, tonic::Status>;
     }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "MAINFRAME_PORT_PROTOCOL_UNKNOWN" => Some(Self::Unknown),
-            "MAINFRAME_PORT_PROTOCOL_FTPDATA" => Some(Self::Ftpdata),
-            "MAINFRAME_PORT_PROTOCOL_FTPCTL" => Some(Self::Ftpctl),
-            "MAINFRAME_PORT_PROTOCOL_SSH" => Some(Self::Ssh),
-            "MAINFRAME_PORT_PROTOCOL_TELNET" => Some(Self::Telnet),
-            "MAINFRAME_PORT_PROTOCOL_SMTP" => Some(Self::Smtp),
-            "MAINFRAME_PORT_PROTOCOL_DNS" => Some(Self::Dns),
-            "MAINFRAME_PORT_PROTOCOL_DHCP" => Some(Self::Dhcp),
-            "MAINFRAME_PORT_PROTOCOL_HTTP" => Some(Self::Http),
-            "MAINFRAME_PORT_PROTOCOL_POP3" => Some(Self::Pop3),
-            "MAINFRAME_PORT_PROTOCOL_NTP" => Some(Self::Ntp),
-            "MAINFRAME_PORT_PROTOCOL_IMAP" => Some(Self::Imap),
-            "MAINFRAME_PORT_PROTOCOL_SNMP" => Some(Self::Snmp),
-            "MAINFRAME_PORT_PROTOCOL_HTTPS" => Some(Self::Https),
-            "MAINFRAME_PORT_PROTOCOL_IPSEC" => Some(Self::Ipsec),
-            "MAINFRAME_PORT_PROTOCOL_RADIUS" => Some(Self::Radius),
-            "MAINFRAME_PORT_PROTOCOL_L2TP" => Some(Self::L2tp),
-            "MAINFRAME_PORT_PROTOCOL_PPTP" => Some(Self::Pptp),
-            "MAINFRAME_PORT_PROTOCOL_RDP" => Some(Self::Rdp),
-            _ => None,
-        }
+    #[derive(Debug)]
+    pub struct MainframeServiceServer<T: MainframeService> {
+        inner: _Inner<T>,
+        accept_compression_encodings: EnabledCompressionEncodings,
+        send_compression_encodings: EnabledCompressionEncodings,
     }
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum MainframePortTransport {
-    MainframeTransportUnknown = 0,
-    MainframeTransportTcp = 1,
-    MainframeTransportUdp = 2,
-}
-impl MainframePortTransport {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            MainframePortTransport::MainframeTransportUnknown => {
-                "MAINFRAME_TRANSPORT_UNKNOWN"
-            }
-            MainframePortTransport::MainframeTransportTcp => "MAINFRAME_TRANSPORT_TCP",
-            MainframePortTransport::MainframeTransportUdp => "MAINFRAME_TRANSPORT_UDP",
+    struct _Inner<T>(Arc<T>);
+    impl<T: MainframeService> MainframeServiceServer<T> {
+        pub fn new(inner: T) -> Self {
+            Self::from_arc(Arc::new(inner))
         }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "MAINFRAME_TRANSPORT_UNKNOWN" => Some(Self::MainframeTransportUnknown),
-            "MAINFRAME_TRANSPORT_TCP" => Some(Self::MainframeTransportTcp),
-            "MAINFRAME_TRANSPORT_UDP" => Some(Self::MainframeTransportUdp),
-            _ => None,
-        }
-    }
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum MainframePortUseType {
-    /// 空
-    MainframePortUsetypeNone = 0,
-    /// 网络探测
-    MainframePortUsetypeDetect = 1,
-}
-impl MainframePortUseType {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            MainframePortUseType::MainframePortUsetypeNone => {
-                "MAINFRAME_PORT_USETYPE_NONE"
-            }
-            MainframePortUseType::MainframePortUsetypeDetect => {
-                "MAINFRAME_PORT_USETYPE_DETECT"
+        pub fn from_arc(inner: Arc<T>) -> Self {
+            let inner = _Inner(inner);
+            Self {
+                inner,
+                accept_compression_encodings: Default::default(),
+                send_compression_encodings: Default::default(),
             }
         }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "MAINFRAME_PORT_USETYPE_NONE" => Some(Self::MainframePortUsetypeNone),
-            "MAINFRAME_PORT_USETYPE_DETECT" => Some(Self::MainframePortUsetypeDetect),
-            _ => None,
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
+        where
+            F: tonic::service::Interceptor,
+        {
+            InterceptedService::new(Self::new(inner), interceptor)
         }
+        /// Enable decompressing requests with the given encoding.
+        #[must_use]
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.accept_compression_encodings.enable(encoding);
+            self
+        }
+        /// Compress responses with the given encoding, if the client supports it.
+        #[must_use]
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.send_compression_encodings.enable(encoding);
+            self
+        }
+    }
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for MainframeServiceServer<T>
+    where
+        T: MainframeService,
+        B: Body + Send + 'static,
+        B::Error: Into<StdError> + Send + 'static,
+    {
+        type Response = http::Response<tonic::body::BoxBody>;
+        type Error = std::convert::Infallible;
+        type Future = BoxFuture<Self::Response, Self::Error>;
+        fn poll_ready(
+            &mut self,
+            _cx: &mut Context<'_>,
+        ) -> Poll<Result<(), Self::Error>> {
+            Poll::Ready(Ok(()))
+        }
+        fn call(&mut self, req: http::Request<B>) -> Self::Future {
+            let inner = self.inner.clone();
+            match req.uri().path() {
+                "/mainframe_service.MainframeService/DealComputer" => {
+                    #[allow(non_camel_case_types)]
+                    struct DealComputerSvc<T: MainframeService>(pub Arc<T>);
+                    impl<
+                        T: MainframeService,
+                    > tonic::server::UnaryService<super::DealComputerParams>
+                    for DealComputerSvc<T> {
+                        type Response = super::DealComputerReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DealComputerParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).deal_computer(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DealComputerSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/mainframe_service.MainframeService/ListComputer" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListComputerSvc<T: MainframeService>(pub Arc<T>);
+                    impl<
+                        T: MainframeService,
+                    > tonic::server::UnaryService<super::ListComputerParams>
+                    for ListComputerSvc<T> {
+                        type Response = super::ListComputerReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListComputerParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).list_computer(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListComputerSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/mainframe_service.MainframeService/OperateComputer" => {
+                    #[allow(non_camel_case_types)]
+                    struct OperateComputerSvc<T: MainframeService>(pub Arc<T>);
+                    impl<
+                        T: MainframeService,
+                    > tonic::server::UnaryService<super::OperateComputerParams>
+                    for OperateComputerSvc<T> {
+                        type Response = super::OperateComputerReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::OperateComputerParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).operate_computer(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = OperateComputerSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/mainframe_service.MainframeService/BatchOperateComputer" => {
+                    #[allow(non_camel_case_types)]
+                    struct BatchOperateComputerSvc<T: MainframeService>(pub Arc<T>);
+                    impl<
+                        T: MainframeService,
+                    > tonic::server::UnaryService<super::BatchOperateComputerParams>
+                    for BatchOperateComputerSvc<T> {
+                        type Response = super::BatchOperateComputerReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::BatchOperateComputerParams>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).batch_operate_computer(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = BatchOperateComputerSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                _ => {
+                    Box::pin(async move {
+                        Ok(
+                            http::Response::builder()
+                                .status(200)
+                                .header("grpc-status", "12")
+                                .header("content-type", "application/grpc")
+                                .body(empty_body())
+                                .unwrap(),
+                        )
+                    })
+                }
+            }
+        }
+    }
+    impl<T: MainframeService> Clone for MainframeServiceServer<T> {
+        fn clone(&self) -> Self {
+            let inner = self.inner.clone();
+            Self {
+                inner,
+                accept_compression_encodings: self.accept_compression_encodings,
+                send_compression_encodings: self.send_compression_encodings,
+            }
+        }
+    }
+    impl<T: MainframeService> Clone for _Inner<T> {
+        fn clone(&self) -> Self {
+            Self(self.0.clone())
+        }
+    }
+    impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{:?}", self.0)
+        }
+    }
+    impl<T: MainframeService> tonic::server::NamedService for MainframeServiceServer<T> {
+        const NAME: &'static str = "mainframe_service.MainframeService";
     }
 }

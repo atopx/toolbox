@@ -3,14 +3,21 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "user")]
+#[sea_orm(table_name = "computer")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    #[sea_orm(unique)]
+    pub name: String,
     pub username: String,
     pub password: String,
-    pub status: i32,
+    pub lan_hostname: String,
+    pub wan_hostname: String,
+    #[sea_orm(unique)]
+    pub mac_address: String,
+    pub power_status: i32,
+    pub scan_time: i64,
+    pub creator: i32,
+    pub updater: i32,
     pub create_time: i64,
     pub update_time: i64,
     pub delete_time: i64,

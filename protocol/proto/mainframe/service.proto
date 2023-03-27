@@ -1,0 +1,12 @@
+syntax = "proto3";
+package mainframe_service;
+option go_package = "superserver/domain/mainframe_service";
+
+import "mainframe/computer.proto";
+
+service MainframeService {
+    rpc DealComputer(DealComputerParams) returns(DealComputerReply);
+    rpc ListComputer(ListComputerParams) returns(ListComputerReply);
+    rpc OperateComputer(OperateComputerParams) returns(OperateComputerReply);
+    rpc BatchOperateComputer(BatchOperateComputerParams) returns(BatchOperateComputerReply);
+}

@@ -2,48 +2,105 @@ syntax = "proto3";
 package mainframe_service;
 option go_package = "superserver/domain/mainframe_service";
 
+import "public/common.proto";
 
-enum MainframePowerStatus {
-    MAINFRAME_POWER_UNKNOWN = 0; // 未知状态
-    MAINFRAME_POWER_OFF = 1; // 关机状态
-    MAINFRAME_POWER_ON = 2;  // 开机状态
+enum ComputerPowerStatus {
+    COMPUTER_POWER_UNKNOWN = 0; // 未知状态
+    COMPUTER_POWER_OFF = 1; // 关机状态
+    COMPUTER_POWER_ON = 2;  // 开机状态
 }
 
-enum MainframeOperate {
-    MAINFRAME_CLOSE = 0; // 关机
-    MAINFRAME_OPEN = 1; // 开机
-    MAINFRAME_DETECT = 2; // 探测
+enum ComputerAction {
+    COMPUTER_CLOSE = 0; // 关机
+    COMPUTER_OPEN = 1; // 开机
+    COMPUTER_DETECT = 2; // 探测
 }
 
-enum MainframePortProtocol {
-    MAINFRAME_PORT_PROTOCOL_UNKNOWN = 0;
-    MAINFRAME_PORT_PROTOCOL_FTPDATA = 20;
-    MAINFRAME_PORT_PROTOCOL_FTPCTL = 21;
-    MAINFRAME_PORT_PROTOCOL_SSH = 22;
-    MAINFRAME_PORT_PROTOCOL_TELNET = 23;
-    MAINFRAME_PORT_PROTOCOL_SMTP = 25;
-    MAINFRAME_PORT_PROTOCOL_DNS = 53;
-    MAINFRAME_PORT_PROTOCOL_DHCP = 67;
-    MAINFRAME_PORT_PROTOCOL_HTTP = 80;
-    MAINFRAME_PORT_PROTOCOL_POP3 = 110;
-    MAINFRAME_PORT_PROTOCOL_NTP = 123;
-    MAINFRAME_PORT_PROTOCOL_IMAP = 143;
-    MAINFRAME_PORT_PROTOCOL_SNMP = 161;
-    MAINFRAME_PORT_PROTOCOL_HTTPS = 443;
-    MAINFRAME_PORT_PROTOCOL_IPSEC = 500;
-    MAINFRAME_PORT_PROTOCOL_RADIUS = 1645;
-    MAINFRAME_PORT_PROTOCOL_L2TP = 1701;
-    MAINFRAME_PORT_PROTOCOL_PPTP = 1723;
-    MAINFRAME_PORT_PROTOCOL_RDP = 3389;
+message Computer {
+    int32 id = 1;
+    string name = 2;
+    string username = 3;
+    string password = 4;
+    string mac_address = 5;
+    string lan_hostname = 6;
+    string wan_hostname = 7;
+    ComputerPowerStatus power_status = 8;
+    int64 scan_time = 9;
+    
+    int64 delete_time = 1001;
+    int64 create_time = 1002;
+    int64 update_time = 1003;
+    int32 creator = 1004;
+    int32 updater = 1005;
 }
 
-enum MainframePortTransport {
-    MAINFRAME_TRANSPORT_UNKNOWN = 0;
-    MAINFRAME_TRANSPORT_TCP = 1;
-    MAINFRAME_TRANSPORT_UDP = 2;
+message ComputerFilter {
+    repeated int32 ids = 1;
+    repeated string names = 2;
+    repeated string usernames = 3;
+    repeated string passwords = 4;
+    repeated string mac_address = 5;
+    repeated string lan_hostnames = 6;
+    repeated string wan_hostnames = 7;
+    repeated ComputerPowerStatus power_states = 8;
+    public.BetweenInt64 scan_time_range = 9;
+
+    ComputerKeywords keywords = 10;
+
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
+    repeated int32 creators = 104;
+    repeated int32 updaters = 105;
 }
 
-enum MainframePortUseType {
-    MAINFRAME_PORT_USETYPE_NONE = 0; // 空
-    MAINFRAME_PORT_USETYPE_DETECT = 1; // 网络探测
+message ComputerKeywords {
+    string keyword = 1;
+    string name_or_uname = 2;
+    string hostname = 3;
+    string name_or_uname_or_hostname = 4;
+}
+
+message ListComputerParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    ComputerFilter filter = 4;
+}
+
+message ListComputerReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated Computer data = 3;
+}
+
+message OperateComputerParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    Computer data = 3;
+}
+
+message OperateComputerReply {
+    public.ReplyHeader header = 1;
+    Computer data = 2;
+}
+
+message BatchOperateComputerParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    repeated Computer data = 3;
+}
+
+message BatchOperateComputerReply {
+    public.ReplyHeader header = 1;
+}
+
+message DealComputerParams {
+    public.Header header = 1;
+    ComputerAction action = 2;
+    int32 id = 3;
+}
+
+message DealComputerReply {
+    public.ReplyHeader header = 1;
 }

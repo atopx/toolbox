@@ -24,7 +24,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListUserParams>,
     ) -> Result<Response<auth_service::ListUserReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("list_user {}", header.trace_id);
         let dao = business::user::Dao::new(&self.db);
         let (data, pager) = dao.list(params).await.unwrap();
@@ -40,7 +40,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::OperateUserParams>,
     ) -> Result<Response<auth_service::OperateUserReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("operate_user {}", header.trace_id);
         let data = params.data.to_owned();
         return match data {
@@ -98,7 +98,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::BatchOperateUserParams>,
     ) -> Result<Response<auth_service::BatchOperateUserReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("batch_operate_user {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateUserReply {
@@ -133,7 +133,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListRoleParams>,
     ) -> Result<Response<auth_service::ListRoleReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("list_role {}", header.trace_id);
         let dao = business::role::Dao::new(&self.db, header.operator);
         let (data, pager) = dao.list(params).await.unwrap();
@@ -149,7 +149,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::OperateRoleParams>,
     ) -> Result<Response<auth_service::OperateRoleReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.as_ref().unwrap();
         info!("operate_role {}", header.trace_id);
         return match params.data.to_owned() {
             None => {
@@ -205,7 +205,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::BatchOperateRoleParams>,
     ) -> Result<Response<auth_service::BatchOperateRoleReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("batch_operate_role {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateRoleReply {
@@ -240,7 +240,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListAccessParams>,
     ) -> Result<Response<auth_service::ListAccessReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("list_access {}", header.trace_id);
         let dao = business::access::Dao::new(&self.db);
         let (data, pager) = dao.list(params).await.unwrap();
@@ -256,7 +256,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::OperateAccessParams>,
     ) -> Result<Response<auth_service::OperateAccessReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("operate_access {}", header.trace_id);
         return match params.data.to_owned() {
             None => {
@@ -307,7 +307,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::BatchOperateAccessParams>,
     ) -> Result<Response<auth_service::BatchOperateAccessReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("batch_operate_access {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateAccessReply {
@@ -342,7 +342,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListPermissionParams>,
     ) -> Result<Response<auth_service::ListPermissionReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("list_permission {}", header.trace_id);
         let dao = business::permission::Dao::new(&self.db, header.operator);
         let (data, pager) = dao.list(params).await.unwrap();
@@ -358,7 +358,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::OperatePermissionParams>,
     ) -> Result<Response<auth_service::OperatePermissionReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("operate_permission {}", header.trace_id);
         return match params.data.to_owned() {
             None => {
@@ -402,7 +402,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::BatchOperatePermissionParams>,
     ) -> Result<Response<auth_service::BatchOperatePermissionReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("batch_operate_permission {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperatePermissionReply {
@@ -437,7 +437,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListUserRoleRefParams>,
     ) -> Result<Response<auth_service::ListUserRoleRefReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("list_user_role_ref {}", header.trace_id);
         let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
         let (data, pager) = dao.list(params).await.unwrap();
@@ -453,7 +453,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::OperateUserRoleRefParams>,
     ) -> Result<Response<auth_service::OperateUserRoleRefReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("operate_user_role_ref {}", header.trace_id);
         return match params.data.to_owned() {
             None => {
@@ -497,7 +497,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::BatchOperateUserRoleRefParams>,
     ) -> Result<Response<auth_service::BatchOperateUserRoleRefReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("batch_operate_user_role_ref {}", header.trace_id);
         if params.data.is_empty() {
             return Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
@@ -532,7 +532,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::ListAuthTokenParams>,
     ) -> Result<Response<auth_service::ListAuthTokenReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("list_auth_token {}", header.trace_id);
         let dao = business::auth_token::Dao::new(&self.db);
         let (data, pager) = dao.list(params).await.unwrap();
@@ -548,7 +548,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         request: Request<auth_service::OperateAuthTokenParams>,
     ) -> Result<Response<auth_service::OperateAuthTokenReply>, Status> {
         let params = request.into_inner();
-        let header = params.header.as_ref().unwrap().to_owned();
+        let header = params.header.to_owned().unwrap();
         info!("operate_auth_token {}", header.trace_id);
         return match params.data.to_owned() {
             None => {
