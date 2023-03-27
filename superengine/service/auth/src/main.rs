@@ -1,7 +1,8 @@
 use domain::auth_service::auth_service_server::AuthServiceServer;
 
 pub mod business;
-pub mod server;
+
+mod server;
 
 #[tokio::main]
 async fn main() {

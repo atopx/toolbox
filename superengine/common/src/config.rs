@@ -22,4 +22,17 @@ mod tests {
         let cfg = Config::load();
         assert_eq!(cfg.auth_srv, "127.0.0.1:18001");
     }
+    #[test]
+    fn test_split() {
+        let addr = "D8BBC1DFBEFC";
+        for i in 0..6 {
+            println!(
+                "{}, {:?}",
+                i,
+                u8::from_str_radix(&addr[i*2..i + 2], 16).unwrap()
+            )
+        }
+    }
 }
+// 187 132
+// 216
