@@ -42,7 +42,8 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap().to_owned();
         info!("operate_user {}", header.trace_id);
-        return match params.data {
+        let data = params.data.to_owned();
+        return match data {
             None => {
                 let reply = auth_service::OperateUserReply {
                     header: common::header::reply(header.trace_id, public::ECode::BadRequest),
@@ -50,8 +51,9 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 };
                 Ok(Response::new(reply))
             }
+
             Some(dto) => {
-                return match public::Operation::from_i32(params.operate).unwrap() {
+                return match params.operate() {
                     public::Operation::Create => {
                         let dao = business::user::Dao::new(&self.db);
                         let result = dao.insert(dto).await.unwrap();
@@ -103,7 +105,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
-        return match public::Operation::from_i32(params.operate).unwrap() {
+        return match params.operate() {
             public::Operation::Upsert => {
                 let dao = business::user::Dao::new(&self.db);
                 match dao.save(params.data).await {
@@ -149,7 +151,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap().to_owned();
         info!("operate_role {}", header.trace_id);
-        return match params.data {
+        return match params.data.to_owned() {
             None => {
                 let reply = auth_service::OperateRoleReply {
                     header: common::header::reply(header.trace_id, public::ECode::BadRequest),
@@ -158,7 +160,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 Ok(Response::new(reply))
             }
             Some(dto) => {
-                return match public::Operation::from_i32(params.operate).unwrap() {
+                return match params.operate() {
                     public::Operation::Create => {
                         let dao = business::role::Dao::new(&self.db, header.operator);
                         let result = dao.insert(dto).await.unwrap();
@@ -210,7 +212,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
-        return match public::Operation::from_i32(params.operate).unwrap() {
+        return match params.operate() {
             public::Operation::Upsert => {
                 let dao = business::role::Dao::new(&self.db, header.operator);
                 match dao.save(params.data).await {
@@ -256,7 +258,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap().to_owned();
         info!("operate_access {}", header.trace_id);
-        return match params.data {
+        return match params.data.to_owned() {
             None => {
                 let reply = auth_service::OperateAccessReply {
                     header: common::header::reply(header.trace_id, public::ECode::BadRequest),
@@ -265,7 +267,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 Ok(Response::new(reply))
             }
             Some(dto) => {
-                return match public::Operation::from_i32(params.operate).unwrap() {
+                return match params.operate() {
                     public::Operation::Create => {
                         let dao = business::access::Dao::new(&self.db);
                         let result = dao.insert(dto).await.unwrap();
@@ -312,7 +314,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
-        return match public::Operation::from_i32(params.operate).unwrap() {
+        return match params.operate() {
             public::Operation::Upsert => {
                 let dao = business::access::Dao::new(&self.db);
                 match dao.save(params.data).await {
@@ -358,7 +360,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap().to_owned();
         info!("operate_permission {}", header.trace_id);
-        return match params.data {
+        return match params.data.to_owned() {
             None => {
                 let reply = auth_service::OperatePermissionReply {
                     header: common::header::reply(header.trace_id, public::ECode::BadRequest),
@@ -367,7 +369,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 Ok(Response::new(reply))
             }
             Some(dto) => {
-                return match public::Operation::from_i32(params.operate).unwrap() {
+                return match params.operate() {
                     public::Operation::Create => {
                         let dao = business::permission::Dao::new(&self.db, header.operator);
                         let result = dao.insert(dto).await.unwrap();
@@ -407,7 +409,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
-        return match public::Operation::from_i32(params.operate).unwrap() {
+        return match params.operate() {
             public::Operation::Upsert => {
                 let dao = business::permission::Dao::new(&self.db, header.operator);
                 match dao.save(params.data).await {
@@ -453,7 +455,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap().to_owned();
         info!("operate_user_role_ref {}", header.trace_id);
-        return match params.data {
+        return match params.data.to_owned() {
             None => {
                 let reply = auth_service::OperateUserRoleRefReply {
                     header: common::header::reply(header.trace_id, public::ECode::BadRequest),
@@ -462,7 +464,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 Ok(Response::new(reply))
             }
             Some(dto) => {
-                return match public::Operation::from_i32(params.operate).unwrap() {
+                return match params.operate() {
                     public::Operation::Create => {
                         let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
                         let result = dao.insert(dto).await.unwrap();
@@ -502,7 +504,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 header: common::header::reply(header.trace_id, public::ECode::Success),
             }));
         }
-        return match public::Operation::from_i32(params.operate).unwrap() {
+        return match params.operate() {
             public::Operation::Upsert => {
                 let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
                 match dao.save(params.data).await {
@@ -548,7 +550,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         let params = request.into_inner();
         let header = params.header.as_ref().unwrap().to_owned();
         info!("operate_auth_token {}", header.trace_id);
-        return match params.data {
+        return match params.data.to_owned() {
             None => {
                 let reply = auth_service::OperateAuthTokenReply {
                     header: common::header::reply(header.trace_id, public::ECode::BadRequest),
@@ -557,7 +559,7 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                 Ok(Response::new(reply))
             }
             Some(dto) => {
-                return match public::Operation::from_i32(params.operate).unwrap() {
+                return match params.operate() {
                     public::Operation::Create => {
                         let dao = business::auth_token::Dao::new(&self.db);
                         let result = dao.insert(dto).await.unwrap();

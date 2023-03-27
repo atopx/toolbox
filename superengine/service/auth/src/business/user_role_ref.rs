@@ -127,10 +127,9 @@ impl<'a> Dao<'a> {
         }
         for sort in sorts {
             if let Ok(col) = Column::from_str(sort.field.as_str()) {
-                query = match public::SortDirection::from_i32(sort.direction) {
-                    Some(public::SortDirection::SortAsc) => query.order_by_asc(col),
-                    Some(public::SortDirection::SortDesc) => query.order_by_desc(col),
-                    None => query,
+                query = match sort.direction() {
+                    public::SortDirection::SortAsc => query.order_by_asc(col),
+                    public::SortDirection::SortDesc => query.order_by_desc(col),
                 }
             }
         }
