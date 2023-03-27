@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -34,7 +35,10 @@ type Server struct {
 }
 
 func (srv *Server) InitData() {
-	// TODO 系统数据初始化
+	ctx := context.Background()
+	initAccess(ctx, srv.engine.Routes())
+	initSystemUser(ctx)
+	initInternalRoles(ctx)
 }
 
 // Start 启动api服务
