@@ -1,0 +1,18 @@
+syntax = "proto3";
+package public_service;
+option go_package = "superserver/domain/public_service";
+
+import "public/folder.proto";
+import "public/label.proto";
+
+service PublicService {
+    // 标签
+    rpc ListLabel(ListLabelParams) returns(ListLabelReply);
+    rpc OperateLabel(OperateLabelParams) returns(OperateLabelReply);
+    rpc BatchOperateLabel(BatchOperateLabelParams) returns(BatchOperateLabelReply);
+
+    // 文件夹
+    rpc ListFolder(ListFolderParams) returns(ListFolderReply);
+    rpc OperateFolder(OperateFolderParams) returns(OperateFolderReply);
+    rpc BatchOperateFolder(BatchOperateFolderParams) returns(BatchOperateFolderReply);
+}

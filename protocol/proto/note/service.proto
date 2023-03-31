@@ -1,0 +1,3 @@
+syntax = "proto3";
+package note_service;
+option go_package = "superserver/domain/note_service";

@@ -19,14 +19,19 @@ pub struct Computer {
     pub power_status: i32,
     #[prost(int64, tag = "9")]
     pub scan_time: i64,
+    /// 删除时间 时间戳：秒
     #[prost(int64, tag = "1001")]
     pub delete_time: i64,
+    /// 创建时间 时间戳：秒
     #[prost(int64, tag = "1002")]
     pub create_time: i64,
+    /// 最后更新时间 时间戳：秒
     #[prost(int64, tag = "1003")]
     pub update_time: i64,
+    /// 创建人
     #[prost(int32, tag = "1004")]
     pub creator: i32,
+    /// 更新人
     #[prost(int32, tag = "1005")]
     pub updater: i32,
 }

@@ -1,13 +1,17 @@
 syntax = "proto3";
-package auth_service;
-option go_package = "superserver/domain/auth_service";
+package note_service;
+option go_package = "superserver/domain/note_service";
 
 import "public/common.proto";
 
-message Permission {
-    int32 id = 1;
-    int32 access_id = 2;
-    int32 role_id = 3;
+message Note {
+    int32 id = 1; // 主键
+    int32 folder_id = 2; // 文件夹ID
+    int32 topic_id = 3; // 主题ID
+    string sign = 4; // 签名:内容+时间
+    string title = 5; // 标题
+    bool public = 6; // 公开的
+    string content = 7; // 笔记内容
 
     int64 delete_time = 1001; // 删除时间 时间戳：秒
     int64 create_time = 1002; // 创建时间 时间戳：秒
@@ -16,49 +20,55 @@ message Permission {
     int32 updater = 1005; // 更新人
 }
 
-message PermissionFilter {
+message NoteFilter {
     repeated int32 ids = 1;
-    repeated int32 access_ids = 2;
-    repeated int32 role_ids = 3;
+    repeated int32 folder_ids = 2;
+    repeated int32 topic_ids = 3;
+    public.BooleanScope public_select = 4;
 
     public.BetweenInt64 delete_time_range = 101;
     public.BetweenInt64 create_time_range = 102;
     public.BetweenInt64 update_time_range = 103;
     repeated int32 creators = 104;
     repeated int32 updaters = 105;
+
+    Keywords keywords = 201;
+    message Keywords {
+        string title = 1;
+        string title_and_content = 2;
+    }
 }
 
-
-message ListPermissionParams {
+message ListNoteParams {
     public.Header header = 1;
     public.Pager pager = 2;
     repeated public.Sort sorts = 3;
-    PermissionFilter filter = 4;
+    NoteFilter filter = 4;
 }
 
-message ListPermissionReply {
+message ListNoteReply {
     public.ReplyHeader header = 1;
     public.Pager pager = 2;
-    repeated Permission data = 3;
+    repeated Note data = 3;
 }
 
-message OperatePermissionParams {
+message OperateNoteParams {
     public.Header header = 1;
     public.Operation operate = 2;
-    Permission data = 3;
+    Note data = 3;
 }
 
-message OperatePermissionReply {
+message OperateNoteReply {
     public.ReplyHeader header = 1;
-    Permission data = 2;
+    Note data = 2;
 }
 
-message BatchOperatePermissionParams {
+message BatchOperateNoteParams {
     public.Header header = 1;
     public.Operation operate = 2;
-    repeated Permission data = 3;
+    repeated Note data = 3;
 }
 
-message BatchOperatePermissionReply {
+message BatchOperateNoteReply {
     public.ReplyHeader header = 1;
 }

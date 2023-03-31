@@ -9,6 +9,12 @@ enum RangeScope {
     RANGE_RIGHT = 2; // 含右
 }
 
+enum BooleanScope {
+    BOOL_ALL = 0;
+    BOOL_FALSE = 1;
+    BOOL_TRUE = 2;
+}
+
 message Pager {
     uint64 index = 1; // 页码
     uint64 size = 2; // 数量
@@ -24,7 +30,7 @@ message RangeI64 {
 
 message Header {
     int64 trace_id = 1;
-    string source = 2; 
+    string source = 2;
     int32 operator = 3;
 }
 
@@ -47,7 +53,7 @@ message BetweenInt64 {
 
 message Sort {
     string field = 1;
-    SortDirection direction = 2; 
+    SortDirection direction = 2;
 }
 
 enum Operation {

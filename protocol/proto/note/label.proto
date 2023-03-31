@@ -1,0 +1,57 @@
+syntax = "proto3";
+package note_service;
+option go_package = "superserver/domain/note_service";
+
+import "public/common.proto";
+
+message NoteLabel {
+    int32 id = 1; // 主键
+    int32 note_id = 2; // 笔记ID
+    int32 label_id = 3; // 标签ID
+
+    int64 delete_time = 1001; // 删除时间 时间戳：秒
+    int64 create_time = 1002; // 创建时间 时间戳：秒
+    int64 update_time = 1003; // 最后更新时间 时间戳：秒
+    int32 creator = 1004; // 创建人
+    int32 updater = 1005; // 更新人
+}
+
+message NoteLabelFilter {
+    repeated int32 ids = 1;
+    repeated int32 note_ids = 2;
+    repeated int32 label_ids = 3;
+}
+
+message ListNoteLabelParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    NoteLabelFilter filter = 4;
+}
+
+message ListNoteLabelReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated NoteLabel data = 3;
+}
+
+message OperateNoteLabelParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    NoteLabel data = 3;
+}
+
+message OperateNoteLabelReply {
+    public.ReplyHeader header = 1;
+    NoteLabel data = 2;
+}
+
+message BatchOperateNoteLabelParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    repeated NoteLabel data = 3;
+}
+
+message BatchOperateNoteLabelReply {
+    public.ReplyHeader header = 1;
+}

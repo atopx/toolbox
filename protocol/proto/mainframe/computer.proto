@@ -26,12 +26,12 @@ message Computer {
     string wan_hostname = 7;
     ComputerPowerStatus power_status = 8;
     int64 scan_time = 9;
-    
-    int64 delete_time = 1001;
-    int64 create_time = 1002;
-    int64 update_time = 1003;
-    int32 creator = 1004;
-    int32 updater = 1005;
+
+    int64 delete_time = 1001; // 删除时间 时间戳：秒
+    int64 create_time = 1002; // 创建时间 时间戳：秒
+    int64 update_time = 1003; // 最后更新时间 时间戳：秒
+    int32 creator = 1004; // 创建人
+    int32 updater = 1005; // 更新人
 }
 
 message ComputerFilter {

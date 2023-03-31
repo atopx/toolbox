@@ -67,6 +67,26 @@ pub enum ECode {
     AuthServiceErrorListPermission = 515001,
     AuthServiceErrorOperatePermission = 515002,
     AuthServiceErrorBatchOperatePermission = 515003,
+    /// public-service label error
+    PublicServiceErrorListLabel = 520001,
+    PublicServiceErrorOperateLabel = 520002,
+    PublicServiceErrorBatchOperateLabel = 520003,
+    /// public-service folder error
+    PublicServiceErrorListFolder = 521001,
+    PublicServiceErrorOperateFolder = 521002,
+    PublicServiceErrorBatchOperateFolder = 521003,
+    /// note-service note error
+    NoteServiceErrorListNote = 530001,
+    NoteServiceErrorOperateNote = 530002,
+    NoteServiceErrorBatchOperateNote = 530003,
+    /// note-service note-label error
+    NoteServiceErrorListNoteLabel = 531001,
+    NoteServiceErrorOperateNoteLabel = 531002,
+    NoteServiceErrorBatchOperateNoteLabel = 531003,
+    /// note-service note-topic error
+    NoteServiceErrorListNoteTopic = 532001,
+    NoteServiceErrorOperateNoteTopic = 532002,
+    NoteServiceErrorBatchOperateNoteTopic = 532003,
 }
 impl ECode {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -136,6 +156,37 @@ impl ECode {
             }
             ECode::AuthServiceErrorBatchOperatePermission => {
                 "AUTH_SERVICE_ERROR_BatchOperatePermission"
+            }
+            ECode::PublicServiceErrorListLabel => "PUBLIC_SERVICE_ERROR_ListLabel",
+            ECode::PublicServiceErrorOperateLabel => "PUBLIC_SERVICE_ERROR_OperateLabel",
+            ECode::PublicServiceErrorBatchOperateLabel => {
+                "PUBLIC_SERVICE_ERROR_BatchOperateLabel"
+            }
+            ECode::PublicServiceErrorListFolder => "PUBLIC_SERVICE_ERROR_ListFolder",
+            ECode::PublicServiceErrorOperateFolder => {
+                "PUBLIC_SERVICE_ERROR_OperateFolder"
+            }
+            ECode::PublicServiceErrorBatchOperateFolder => {
+                "PUBLIC_SERVICE_ERROR_BatchOperateFolder"
+            }
+            ECode::NoteServiceErrorListNote => "NOTE_SERVICE_ERROR_ListNote",
+            ECode::NoteServiceErrorOperateNote => "NOTE_SERVICE_ERROR_OperateNote",
+            ECode::NoteServiceErrorBatchOperateNote => {
+                "NOTE_SERVICE_ERROR_BatchOperateNote"
+            }
+            ECode::NoteServiceErrorListNoteLabel => "NOTE_SERVICE_ERROR_ListNoteLabel",
+            ECode::NoteServiceErrorOperateNoteLabel => {
+                "NOTE_SERVICE_ERROR_OperateNoteLabel"
+            }
+            ECode::NoteServiceErrorBatchOperateNoteLabel => {
+                "NOTE_SERVICE_ERROR_BatchOperateNoteLabel"
+            }
+            ECode::NoteServiceErrorListNoteTopic => "NOTE_SERVICE_ERROR_ListNoteTopic",
+            ECode::NoteServiceErrorOperateNoteTopic => {
+                "NOTE_SERVICE_ERROR_OperateNoteTopic"
+            }
+            ECode::NoteServiceErrorBatchOperateNoteTopic => {
+                "NOTE_SERVICE_ERROR_BatchOperateNoteTopic"
             }
         }
     }
@@ -213,6 +264,43 @@ impl ECode {
             }
             "AUTH_SERVICE_ERROR_BatchOperatePermission" => {
                 Some(Self::AuthServiceErrorBatchOperatePermission)
+            }
+            "PUBLIC_SERVICE_ERROR_ListLabel" => Some(Self::PublicServiceErrorListLabel),
+            "PUBLIC_SERVICE_ERROR_OperateLabel" => {
+                Some(Self::PublicServiceErrorOperateLabel)
+            }
+            "PUBLIC_SERVICE_ERROR_BatchOperateLabel" => {
+                Some(Self::PublicServiceErrorBatchOperateLabel)
+            }
+            "PUBLIC_SERVICE_ERROR_ListFolder" => Some(Self::PublicServiceErrorListFolder),
+            "PUBLIC_SERVICE_ERROR_OperateFolder" => {
+                Some(Self::PublicServiceErrorOperateFolder)
+            }
+            "PUBLIC_SERVICE_ERROR_BatchOperateFolder" => {
+                Some(Self::PublicServiceErrorBatchOperateFolder)
+            }
+            "NOTE_SERVICE_ERROR_ListNote" => Some(Self::NoteServiceErrorListNote),
+            "NOTE_SERVICE_ERROR_OperateNote" => Some(Self::NoteServiceErrorOperateNote),
+            "NOTE_SERVICE_ERROR_BatchOperateNote" => {
+                Some(Self::NoteServiceErrorBatchOperateNote)
+            }
+            "NOTE_SERVICE_ERROR_ListNoteLabel" => {
+                Some(Self::NoteServiceErrorListNoteLabel)
+            }
+            "NOTE_SERVICE_ERROR_OperateNoteLabel" => {
+                Some(Self::NoteServiceErrorOperateNoteLabel)
+            }
+            "NOTE_SERVICE_ERROR_BatchOperateNoteLabel" => {
+                Some(Self::NoteServiceErrorBatchOperateNoteLabel)
+            }
+            "NOTE_SERVICE_ERROR_ListNoteTopic" => {
+                Some(Self::NoteServiceErrorListNoteTopic)
+            }
+            "NOTE_SERVICE_ERROR_OperateNoteTopic" => {
+                Some(Self::NoteServiceErrorOperateNoteTopic)
+            }
+            "NOTE_SERVICE_ERROR_BatchOperateNoteTopic" => {
+                Some(Self::NoteServiceErrorBatchOperateNoteTopic)
             }
             _ => None,
         }
@@ -313,6 +401,35 @@ impl RangeScope {
             "RANGE_ALL" => Some(Self::RangeAll),
             "RANGE_LEFT" => Some(Self::RangeLeft),
             "RANGE_RIGHT" => Some(Self::RangeRight),
+            _ => None,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum BooleanScope {
+    BoolAll = 0,
+    BoolFalse = 1,
+    BoolTrue = 2,
+}
+impl BooleanScope {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            BooleanScope::BoolAll => "BOOL_ALL",
+            BooleanScope::BoolFalse => "BOOL_FALSE",
+            BooleanScope::BoolTrue => "BOOL_TRUE",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "BOOL_ALL" => Some(Self::BoolAll),
+            "BOOL_FALSE" => Some(Self::BoolFalse),
+            "BOOL_TRUE" => Some(Self::BoolTrue),
             _ => None,
         }
     }

@@ -74,4 +74,28 @@ enum ECode {
     AUTH_SERVICE_ERROR_OperatePermission = 515002;
     AUTH_SERVICE_ERROR_BatchOperatePermission = 515003;
 
+    // public-service label error
+    PUBLIC_SERVICE_ERROR_ListLabel = 520001;
+    PUBLIC_SERVICE_ERROR_OperateLabel = 520002;
+    PUBLIC_SERVICE_ERROR_BatchOperateLabel = 520003;
+
+    // public-service folder error
+    PUBLIC_SERVICE_ERROR_ListFolder = 521001;
+    PUBLIC_SERVICE_ERROR_OperateFolder = 521002;
+    PUBLIC_SERVICE_ERROR_BatchOperateFolder = 521003;
+
+    // note-service note error
+    NOTE_SERVICE_ERROR_ListNote = 530001;
+    NOTE_SERVICE_ERROR_OperateNote = 530002;
+    NOTE_SERVICE_ERROR_BatchOperateNote = 530003;
+
+    // note-service note-label error
+    NOTE_SERVICE_ERROR_ListNoteLabel = 531001;
+    NOTE_SERVICE_ERROR_OperateNoteLabel = 531002;
+    NOTE_SERVICE_ERROR_BatchOperateNoteLabel = 531003;
+
+    // note-service note-topic error
+    NOTE_SERVICE_ERROR_ListNoteTopic = 532001;
+    NOTE_SERVICE_ERROR_OperateNoteTopic = 532002;
+    NOTE_SERVICE_ERROR_BatchOperateNoteTopic = 532003;
 }

@@ -1,64 +1,71 @@
 syntax = "proto3";
-package auth_service;
-option go_package = "superserver/domain/auth_service";
+package public_service;
+option go_package = "superserver/domain/public_service";
 
 import "public/common.proto";
 
-message Permission {
-    int32 id = 1;
-    int32 access_id = 2;
-    int32 role_id = 3;
+message Folder {
+    int32 id = 1; // 主键
+    int32 parent_id = 2; // 父级ID
+    int32 source = 3; // 来源,枚举
+    string name = 4; // 名称
+    string path = 5; // 存储路径,虚拟文件夹为空
 
     int64 delete_time = 1001; // 删除时间 时间戳：秒
     int64 create_time = 1002; // 创建时间 时间戳：秒
     int64 update_time = 1003; // 最后更新时间 时间戳：秒
-    int32 creator = 1004; // 创建人
+    int32 creator = 1004;// 创建人
     int32 updater = 1005; // 更新人
 }
 
-message PermissionFilter {
+message FolderFilter {
     repeated int32 ids = 1;
-    repeated int32 access_ids = 2;
-    repeated int32 role_ids = 3;
+    repeated int32 parent_ids = 2;
+    repeated int32 sources = 3;
+    repeated string names = 4;
 
     public.BetweenInt64 delete_time_range = 101;
     public.BetweenInt64 create_time_range = 102;
     public.BetweenInt64 update_time_range = 103;
     repeated int32 creators = 104;
     repeated int32 updaters = 105;
+
+    Keywords keywords = 201;
+    message Keywords {
+        string name = 1;
+    }
 }
 
-
-message ListPermissionParams {
+message ListFolderParams {
     public.Header header = 1;
     public.Pager pager = 2;
     repeated public.Sort sorts = 3;
-    PermissionFilter filter = 4;
+    FolderFilter filter = 4;
 }
 
-message ListPermissionReply {
+message ListFolderReply {
     public.ReplyHeader header = 1;
     public.Pager pager = 2;
-    repeated Permission data = 3;
+    repeated Folder data = 3;
 }
 
-message OperatePermissionParams {
+message OperateFolderParams {
     public.Header header = 1;
     public.Operation operate = 2;
-    Permission data = 3;
+    Folder data = 3;
 }
 
-message OperatePermissionReply {
+message OperateFolderReply {
     public.ReplyHeader header = 1;
-    Permission data = 2;
+    Folder data = 2;
 }
 
-message BatchOperatePermissionParams {
+message BatchOperateFolderParams {
     public.Header header = 1;
     public.Operation operate = 2;
-    repeated Permission data = 3;
+    repeated Folder data = 3;
 }
 
-message BatchOperatePermissionReply {
+message BatchOperateFolderReply {
     public.ReplyHeader header = 1;
 }

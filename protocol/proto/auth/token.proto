@@ -12,9 +12,9 @@ message AuthToken {
     int64 issued_time = 5;
     int64 expire_time = 6;
 
-    int64 delete_time = 1001;
-    int64 create_time = 1002;
-    int64 update_time = 1003;
+    int64 delete_time = 1001; // 删除时间 时间戳：秒
+    int64 create_time = 1002; // 创建时间 时间戳：秒
+    int64 update_time = 1003; // 最后更新时间 时间戳：秒
 }
 
 message AuthTokenFilter {

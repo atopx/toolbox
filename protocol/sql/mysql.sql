@@ -96,7 +96,7 @@ create table folder
 (
     id          int primary key auto_increment comment '主键',
     parent_id   int          default 0  not null comment '父级ID',
-    scene       int          default 0  not null comment '应用场景,枚举',
+    source      int          default 0  not null comment '来源,枚举',
     name        varchar(128) default '' not null comment '名称',
     path        varchar(256) default '' not null comment '存储路径,虚拟文件夹为空',
     creator     int          default 0  not null comment '创建人',
@@ -104,11 +104,9 @@ create table folder
     create_time bigint                  not null comment '创建时间 时间戳：秒',
     update_time bigint                  not null comment '最后更新时间 时间戳：秒',
     delete_time bigint                  not null comment '删除时间 时间戳：秒',
-    constraint scene_name_idx
-        unique (name, scene)
-)
-    comment '文件夹';
-
+    constraint source_name_idx
+        unique (name, source)
+) comment '文件夹';
 
 create table label
 (
@@ -122,8 +120,7 @@ create table label
     delete_time bigint                  not null comment '删除时间 时间戳：秒',
     constraint source_name_idx
         unique (name, source)
-)
-    comment '标签';
+) comment '标签';
 
 create table note
 (
@@ -139,8 +136,7 @@ create table note
     create_time bigint                        not null comment '创建时间 时间戳：秒',
     update_time bigint                        not null comment '最后更新时间 时间戳：秒',
     delete_time bigint                        not null comment '删除时间 时间戳：秒'
-)
-    comment '笔记';
+) comment '笔记';
 
 create table note_topic
 (
@@ -182,7 +178,6 @@ create table file
     create_time bigint                        not null comment '创建时间 时间戳：秒',
     update_time bigint                        not null comment '最后更新时间 时间戳：秒',
     delete_time bigint                        not null comment '删除时间 时间戳：秒'
-
 ) comment '文件';
 create index file_folder_idx on file(folder_id);
 create index file_sign_idx on file(sign);
