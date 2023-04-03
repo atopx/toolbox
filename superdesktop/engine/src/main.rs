@@ -7,7 +7,6 @@ mod staru;
 mod system;
 mod novel;
 mod config;
-mod trans;
 
 use std::{thread, time};
 
