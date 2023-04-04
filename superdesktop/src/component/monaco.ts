@@ -1,29 +1,49 @@
-// @ts-ignore
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
+import * as monaco from 'monaco-editor';
+
 
 export default function useMonaco(language = 'json', readOnly = true) {
-    let monacoEditor: monaco.editor.IStandaloneCodeEditor | null = null
+    let editor: monaco.editor.IStandaloneCodeEditor | null;
     const updateVal = async (val: string) => {
-        monacoEditor?.setValue(val)
+        editor?.setValue(val)
         setTimeout(async () => {
-            readOnly && monacoEditor?.updateOptions({readOnly: false})
-            await monacoEditor?.getAction('editor.action.formatDocument').run()
-            readOnly && monacoEditor?.updateOptions({readOnly: true})
+            readOnly && editor?.updateOptions({readOnly: false})
+            await editor?.getAction('editor.action.formatDocument')?.run()
+            readOnly && editor?.updateOptions({readOnly: true})
         }, 100)
     }
 
+    self.MonacoEnvironment = {
+        getWorker: function (workerId, label) {
+            const getWorkerModule = (moduleUrl: string, label: string) => {
+                // @ts-ignore
+                return new Worker(self.MonacoEnvironment.getWorkerUrl(moduleUrl), {
+                    name: label,
+                    type: 'module'
+                });
+            };
+
+            switch (label) {
+                case 'json':
+                    return getWorkerModule('/monaco-editor/esm/vs/language/json/json.worker?worker', label);
+                default:
+                    return getWorkerModule('/monaco-editor/esm/vs/editor/editor.worker?worker', label);
+            }
+        }
+    };
+
     const createEditor = (el: HTMLElement | null, editorOption: monaco.editor.IStandaloneEditorConstructionOptions = {}) => {
-        if (monacoEditor) {
+        if (editor) {
             return
         }
-        monacoEditor = el && monaco.editor.create(el, {
+
+        editor = el && monaco.editor.create(el, {
             language,
             minimap: {enabled: false},
             theme: 'vs-light',
             multiCursorModifier: 'ctrlCmd',
             scrollbar: {
-                verticalScrollbarSize: 8,
-                horizontalScrollbarSize: 8,
+                verticalScrollbarSize: 2,
+                horizontalScrollbarSize: 2,
             },
             tabSize: 4,
             automaticLayout: true, // 自适应宽高
@@ -36,14 +56,15 @@ export default function useMonaco(language = 'json', readOnly = true) {
             folding: true,
             ...editorOption
         })
-        return monacoEditor
+        return editor
     }
     const onFormatDoc = () => {
-        monacoEditor?.getAction('editor.action.formatDocument').run()
+        console.log(editor);
+        editor?.getAction('editor.action.formatDocument')?.run()
     }
     return {
         updateVal,
-        getEditor: () => monacoEditor,
+        getEditor: () => editor,
         createEditor,
         onFormatDoc
     }

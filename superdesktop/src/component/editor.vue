@@ -94,35 +94,6 @@ export default defineComponent({
 
 <style lang="css" scoped>
 
-.editor-area .full {
-    position: fixed;
-    left: calc(10vw / 2);
-    top: calc(10vh / 2);
-    box-shadow: 0 0 22px 10px rgba(0, 0, 0, .3);
-    width: 90vw !important;
-    height: 90vh !important;
-    z-index: 9999;
-}
-
-.editor-area .tools {
-    z-index: 888;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 0 2px;
-    border-right: 1px solid rgba(0, 0, 0, .1);
-    left: 0;
-    bottom: 0;
-    top: 0;
-}
-
-.editor-area .tools .expand {
-    cursor: pointer;
-    line-height: 0;
-    margin-top: 5px;
-}
-
 .editor-area {
     position: relative;
     border: 1px solid #ddd;
