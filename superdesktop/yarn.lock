@@ -652,6 +652,11 @@ minimatch@^6.1.6:
   dependencies:
     brace-expansion "^2.0.1"
 
+monaco-editor@^0.36.1:
+  version "0.36.1"
+  resolved "https://registry.npmmirror.com/monaco-editor/-/monaco-editor-0.36.1.tgz#aad528c815605307473a1634612946921d8079b5"
+  integrity sha512-/CaclMHKQ3A6rnzBzOADfwdSJ25BFoFT0Emxsc4zYVyav5SkK9iA6lEtIeuN/oRYbwPgviJT+t3l+sjFa28jYg==
+
 muggle-string@^0.2.2:
   version "0.2.2"
   resolved "https://registry.npmjs.org/muggle-string/-/muggle-string-0.2.2.tgz"
