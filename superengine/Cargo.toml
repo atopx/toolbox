@@ -7,10 +7,11 @@ edition = "2021"
 
 [workspace]
 members = [
-   "domain",
-   "common",
-   "model",
-   "service/auth",
-   "service/mainframe",
+    "domain",
+    "common",
+    "model",
+    "service/auth",
+    "service/public",
+    "service/mainframe",
 ]
 

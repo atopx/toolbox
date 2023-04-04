@@ -1,8 +1,7 @@
 mod server;
 pub mod business;
 
-use domain::auth_service::auth_service_server::AuthServiceServer;
-
+use domain::public_service::public_service_server::PublicServiceServer;
 
 #[tokio::main]
 async fn main() {
@@ -15,9 +14,9 @@ async fn main() {
     let db = common::db::new_client(config.db_url.to_owned())
         .await
         .unwrap();
-    let service = server::AuthService::new(db);
+    let service = server::PublicService::new(db);
     tonic::transport::Server::builder()
-        .add_service(AuthServiceServer::new(service))
+        .add_service(PublicServiceServer::new(service))
         .serve(config.auth_srv.parse().unwrap())
         .await
         .unwrap();

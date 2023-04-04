@@ -75,6 +75,8 @@ pub enum ECode {
     PublicServiceErrorListFolder = 521001,
     PublicServiceErrorOperateFolder = 521002,
     PublicServiceErrorBatchOperateFolder = 521003,
+    /// public-service trans error
+    PublicServiceErrorTransCurl = 522001,
     /// note-service note error
     NoteServiceErrorListNote = 530001,
     NoteServiceErrorOperateNote = 530002,
@@ -169,6 +171,7 @@ impl ECode {
             ECode::PublicServiceErrorBatchOperateFolder => {
                 "PUBLIC_SERVICE_ERROR_BatchOperateFolder"
             }
+            ECode::PublicServiceErrorTransCurl => "PUBLIC_SERVICE_ERROR_TransCurl",
             ECode::NoteServiceErrorListNote => "NOTE_SERVICE_ERROR_ListNote",
             ECode::NoteServiceErrorOperateNote => "NOTE_SERVICE_ERROR_OperateNote",
             ECode::NoteServiceErrorBatchOperateNote => {
@@ -279,6 +282,7 @@ impl ECode {
             "PUBLIC_SERVICE_ERROR_BatchOperateFolder" => {
                 Some(Self::PublicServiceErrorBatchOperateFolder)
             }
+            "PUBLIC_SERVICE_ERROR_TransCurl" => Some(Self::PublicServiceErrorTransCurl),
             "NOTE_SERVICE_ERROR_ListNote" => Some(Self::NoteServiceErrorListNote),
             "NOTE_SERVICE_ERROR_OperateNote" => Some(Self::NoteServiceErrorOperateNote),
             "NOTE_SERVICE_ERROR_BatchOperateNote" => {

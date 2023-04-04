@@ -84,6 +84,9 @@ enum ECode {
     PUBLIC_SERVICE_ERROR_OperateFolder = 521002;
     PUBLIC_SERVICE_ERROR_BatchOperateFolder = 521003;
 
+    // public-service trans error
+    PUBLIC_SERVICE_ERROR_TransCurl = 522001;
+
     // note-service note error
     NOTE_SERVICE_ERROR_ListNote = 530001;
     NOTE_SERVICE_ERROR_OperateNote = 530002;
