@@ -373,6 +373,14 @@ pub struct Sort {
     #[prost(enumeration = "SortDirection", tag = "2")]
     pub direction: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct HttpHeader {
+    #[prost(string, tag = "1")]
+    pub key: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub value: ::prost::alloc::string::String,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum RangeScope {
@@ -493,6 +501,102 @@ impl Operation {
             "OPERATION_DELETE" => Some(Self::Delete),
             "OPERATION_REAL_DELETE" => Some(Self::RealDelete),
             "OPERATION_UPSERT" => Some(Self::Upsert),
+            _ => None,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum HttpMethod {
+    /// 方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据
+    Get = 0,
+    /// 方法请求一个与 GET 请求的响应相同的响应，但没有响应体
+    Head = 1,
+    /// 方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用
+    Post = 2,
+    /// 方法用请求有效载荷替换目标资源的所有当前表示
+    Put = 3,
+    /// 方法删除指定的资源
+    Delete = 4,
+    /// 方法建立一个到由目标资源标识的服务器的隧道
+    Connect = 5,
+    /// 方法用于描述目标资源的通信选项
+    Option = 6,
+    /// 方法用于对资源应用部分修改
+    Patch = 7,
+    /// 方法沿着到目标资源的路径执行一个消息环回测试
+    Trace = 8,
+}
+impl HttpMethod {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            HttpMethod::Get => "GET",
+            HttpMethod::Head => "HEAD",
+            HttpMethod::Post => "POST",
+            HttpMethod::Put => "PUT",
+            HttpMethod::Delete => "DELETE",
+            HttpMethod::Connect => "CONNECT",
+            HttpMethod::Option => "OPTION",
+            HttpMethod::Patch => "PATCH",
+            HttpMethod::Trace => "TRACE",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "GET" => Some(Self::Get),
+            "HEAD" => Some(Self::Head),
+            "POST" => Some(Self::Post),
+            "PUT" => Some(Self::Put),
+            "DELETE" => Some(Self::Delete),
+            "CONNECT" => Some(Self::Connect),
+            "OPTION" => Some(Self::Option),
+            "PATCH" => Some(Self::Patch),
+            "TRACE" => Some(Self::Trace),
+            _ => None,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum HttpProtocol {
+    /// http
+    Http = 0,
+    /// https
+    Https = 1,
+    /// http/2.0
+    Grpc = 2,
+    /// websocket
+    Ws = 3,
+    /// websockets
+    Wss = 4,
+}
+impl HttpProtocol {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            HttpProtocol::Http => "HTTP",
+            HttpProtocol::Https => "HTTPS",
+            HttpProtocol::Grpc => "GRPC",
+            HttpProtocol::Ws => "WS",
+            HttpProtocol::Wss => "WSS",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "HTTP" => Some(Self::Http),
+            "HTTPS" => Some(Self::Https),
+            "GRPC" => Some(Self::Grpc),
+            "WS" => Some(Self::Ws),
+            "WSS" => Some(Self::Wss),
             _ => None,
         }
     }

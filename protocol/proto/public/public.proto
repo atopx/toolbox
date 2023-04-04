@@ -1,0 +1,32 @@
+syntax = "proto3";
+package public_service;
+option go_package = "superserver/domain/public_service";
+
+import "public/common.proto";
+
+message URL {
+    public.HttpProtocol protocol = 1;
+    string host = 2;
+    uint32 port = 3;
+    string name = 4;
+    string pass = 5;
+    string uri = 6;
+    string query_string = 7;
+}
+
+message CurlInfo {
+    URL url = 1;
+    public.HttpMethod method = 2;
+    repeated public.HttpHeader headers = 3;
+    string body = 4;
+}
+
+message TransformCurlParams {
+    public.Header header = 1;
+    string src = 2;
+}
+
+message TransformCurlReply {
+    public.ReplyHeader header = 1;
+    CurlInfo data = 2;
+}

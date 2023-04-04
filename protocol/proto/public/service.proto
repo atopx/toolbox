@@ -4,6 +4,7 @@ option go_package = "superserver/domain/public_service";
 
 import "public/folder.proto";
 import "public/label.proto";
+import "public/public.proto";
 
 service PublicService {
     // 标签
@@ -15,4 +16,11 @@ service PublicService {
     rpc ListFolder(ListFolderParams) returns(ListFolderReply);
     rpc OperateFolder(OperateFolderParams) returns(OperateFolderReply);
     rpc BatchOperateFolder(BatchOperateFolderParams) returns(BatchOperateFolderReply);
+
+    // 工具类
+    rpc TransformCurl(TransformCurlParams) returns (TransformCurlReply);
 }
+
+
+
+
