@@ -235,6 +235,101 @@ impl auth_service::auth_service_server::AuthService for AuthService {
         };
     }
 
+    async fn list_user_role_ref(
+        &self,
+        request: Request<auth_service::ListUserRoleRefParams>,
+    ) -> Result<Response<auth_service::ListUserRoleRefReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.to_owned().unwrap();
+        info!("list_user_role_ref {}", header.trace_id);
+        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+        let (data, pager) = dao.list(params).await.unwrap();
+        return Ok(Response::new(auth_service::ListUserRoleRefReply {
+            header: common::header::reply(header.trace_id, public::ECode::Success),
+            pager,
+            data,
+        }));
+    }
+
+    async fn operate_user_role_ref(
+        &self,
+        request: Request<auth_service::OperateUserRoleRefParams>,
+    ) -> Result<Response<auth_service::OperateUserRoleRefReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.to_owned().unwrap();
+        info!("operate_user_role_ref {}", header.trace_id);
+        return match params.data.to_owned() {
+            None => {
+                let reply = auth_service::OperateUserRoleRefReply {
+                    header: common::header::reply(header.trace_id, public::ECode::BadRequest),
+                    data: None,
+                };
+                Ok(Response::new(reply))
+            }
+            Some(dto) => {
+                return match params.operate() {
+                    public::Operation::Create => {
+                        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+                        let result = dao.insert(dto).await.unwrap();
+                        Ok(Response::new(auth_service::OperateUserRoleRefReply {
+                            header: common::header::reply(header.trace_id, public::ECode::Success),
+                            data: Some(auth_service::UserRoleRef {
+                                id: result.id,
+                                ..Default::default()
+                            }),
+                        }))
+                    }
+                    public::Operation::Delete | public::Operation::RealDelete => {
+                        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+                        dao.delete(dto.id).await.unwrap();
+                        Ok(Response::new(
+                            auth_service::OperateUserRoleRefReply::default(),
+                        ))
+                    }
+                    public::Operation::Update | public::Operation::Upsert => {
+                        let code = tonic::Code::Unimplemented;
+                        Err(Status::new(code, code.description()))
+                    }
+                };
+            }
+        };
+    }
+
+    async fn batch_operate_user_role_ref(
+        &self,
+        request: Request<auth_service::BatchOperateUserRoleRefParams>,
+    ) -> Result<Response<auth_service::BatchOperateUserRoleRefReply>, Status> {
+        let params = request.into_inner();
+        let header = params.header.to_owned().unwrap();
+        info!("batch_operate_user_role_ref {}", header.trace_id);
+        if params.data.is_empty() {
+            return Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
+                header: common::header::reply(header.trace_id, public::ECode::Success),
+            }));
+        }
+        return match params.operate() {
+            public::Operation::Upsert => {
+                let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
+                match dao.save(params.data).await {
+                    Ok(_) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
+                        header: common::header::reply(header.trace_id, public::ECode::Success),
+                    })),
+                    Err(err) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
+                        header: common::header::err_reply(
+                            header.trace_id,
+                            public::ECode::SystemInternalError,
+                            err.to_string(),
+                        ),
+                    })),
+                }
+            }
+            _ => {
+                let code = tonic::Code::Unimplemented;
+                Err(Status::new(code, code.description()))
+            }
+        };
+    }
+
     async fn list_access(
         &self,
         request: Request<auth_service::ListAccessParams>,
@@ -417,101 +512,6 @@ impl auth_service::auth_service_server::AuthService for AuthService {
                         header: common::header::reply(header.trace_id, public::ECode::Success),
                     })),
                     Err(err) => Ok(Response::new(auth_service::BatchOperatePermissionReply {
-                        header: common::header::err_reply(
-                            header.trace_id,
-                            public::ECode::SystemInternalError,
-                            err.to_string(),
-                        ),
-                    })),
-                }
-            }
-            _ => {
-                let code = tonic::Code::Unimplemented;
-                Err(Status::new(code, code.description()))
-            }
-        };
-    }
-
-    async fn list_user_role_ref(
-        &self,
-        request: Request<auth_service::ListUserRoleRefParams>,
-    ) -> Result<Response<auth_service::ListUserRoleRefReply>, Status> {
-        let params = request.into_inner();
-        let header = params.header.to_owned().unwrap();
-        info!("list_user_role_ref {}", header.trace_id);
-        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
-        let (data, pager) = dao.list(params).await.unwrap();
-        return Ok(Response::new(auth_service::ListUserRoleRefReply {
-            header: common::header::reply(header.trace_id, public::ECode::Success),
-            pager,
-            data,
-        }));
-    }
-
-    async fn operate_user_role_ref(
-        &self,
-        request: Request<auth_service::OperateUserRoleRefParams>,
-    ) -> Result<Response<auth_service::OperateUserRoleRefReply>, Status> {
-        let params = request.into_inner();
-        let header = params.header.to_owned().unwrap();
-        info!("operate_user_role_ref {}", header.trace_id);
-        return match params.data.to_owned() {
-            None => {
-                let reply = auth_service::OperateUserRoleRefReply {
-                    header: common::header::reply(header.trace_id, public::ECode::BadRequest),
-                    data: None,
-                };
-                Ok(Response::new(reply))
-            }
-            Some(dto) => {
-                return match params.operate() {
-                    public::Operation::Create => {
-                        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
-                        let result = dao.insert(dto).await.unwrap();
-                        Ok(Response::new(auth_service::OperateUserRoleRefReply {
-                            header: common::header::reply(header.trace_id, public::ECode::Success),
-                            data: Some(auth_service::UserRoleRef {
-                                id: result.id,
-                                ..Default::default()
-                            }),
-                        }))
-                    }
-                    public::Operation::Delete | public::Operation::RealDelete => {
-                        let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
-                        dao.delete(dto.id).await.unwrap();
-                        Ok(Response::new(
-                            auth_service::OperateUserRoleRefReply::default(),
-                        ))
-                    }
-                    public::Operation::Update | public::Operation::Upsert => {
-                        let code = tonic::Code::Unimplemented;
-                        Err(Status::new(code, code.description()))
-                    }
-                };
-            }
-        };
-    }
-
-    async fn batch_operate_user_role_ref(
-        &self,
-        request: Request<auth_service::BatchOperateUserRoleRefParams>,
-    ) -> Result<Response<auth_service::BatchOperateUserRoleRefReply>, Status> {
-        let params = request.into_inner();
-        let header = params.header.to_owned().unwrap();
-        info!("batch_operate_user_role_ref {}", header.trace_id);
-        if params.data.is_empty() {
-            return Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
-                header: common::header::reply(header.trace_id, public::ECode::Success),
-            }));
-        }
-        return match params.operate() {
-            public::Operation::Upsert => {
-                let dao = business::user_role_ref::Dao::new(&self.db, header.operator);
-                match dao.save(params.data).await {
-                    Ok(_) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
-                        header: common::header::reply(header.trace_id, public::ECode::Success),
-                    })),
-                    Err(err) => Ok(Response::new(auth_service::BatchOperateUserRoleRefReply {
                         header: common::header::err_reply(
                             header.trace_id,
                             public::ECode::SystemInternalError,

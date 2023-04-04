@@ -19,10 +19,10 @@ impl MainframeService {
 
 #[tonic::async_trait]
 impl mainframe_service::mainframe_service_server::MainframeService for MainframeService {
-    async fn list_computer(
+    async fn deal_computer(
         &self,
-        request: Request<mainframe_service::ListComputerParams>,
-    ) -> Result<Response<mainframe_service::ListComputerReply>, Status> {
+        request: Request<mainframe_service::DealComputerParams>,
+    ) -> Result<Response<mainframe_service::DealComputerReply>, Status> {
         let params = request.into_inner();
         let header = params.header.to_owned().unwrap();
         info!("operate_user {}", header.trace_id);
@@ -31,10 +31,10 @@ impl mainframe_service::mainframe_service_server::MainframeService for Mainframe
         return Err(Status::new(code, code.description()));
     }
 
-    async fn deal_computer(
+    async fn list_computer(
         &self,
-        request: Request<mainframe_service::DealComputerParams>,
-    ) -> Result<Response<mainframe_service::DealComputerReply>, Status> {
+        request: Request<mainframe_service::ListComputerParams>,
+    ) -> Result<Response<mainframe_service::ListComputerReply>, Status> {
         let params = request.into_inner();
         let header = params.header.to_owned().unwrap();
         info!("operate_user {}", header.trace_id);

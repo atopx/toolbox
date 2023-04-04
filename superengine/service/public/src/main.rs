@@ -17,7 +17,7 @@ async fn main() {
     let service = server::PublicService::new(db);
     tonic::transport::Server::builder()
         .add_service(PublicServiceServer::new(service))
-        .serve(config.auth_srv.parse().unwrap())
+        .serve(config.public_srv.parse().unwrap())
         .await
         .unwrap();
 }

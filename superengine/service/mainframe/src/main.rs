@@ -1,4 +1,5 @@
 use domain::mainframe_service::mainframe_service_server::MainframeServiceServer;
+
 pub mod business;
 mod server;
 
@@ -16,7 +17,7 @@ async fn main() {
     let service = server::MainframeService::new(db);
     tonic::transport::Server::builder()
         .add_service(MainframeServiceServer::new(service))
-        .serve(config.auth_srv.parse().unwrap())
+        .serve(config.mainframe_srv.parse().unwrap())
         .await
         .unwrap();
 }
