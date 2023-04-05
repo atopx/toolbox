@@ -13,7 +13,7 @@ export default function useMonaco(language = 'json', readOnly = true) {
     }
 
     self.MonacoEnvironment = {
-        getWorker: function (workerId, label) {
+        getWorker: function (workerId: string, label: string) {
             const getWorkerModule = (moduleUrl: string, label: string) => {
                 // @ts-ignore
                 return new Worker(self.MonacoEnvironment.getWorkerUrl(moduleUrl), {
