@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {
     CarryOutOutlined,
+    CloudDownloadOutlined,
     CodepenOutlined,
     FileDoneOutlined,
     PieChartOutlined,
-    PlayCircleOutlined,
+    PlayCircleOutlined, SettingOutlined,
 } from '@ant-design/icons';
 import type {MenuProps} from 'antd';
 import {Layout, Menu} from 'antd';
@@ -31,7 +32,9 @@ const items: MenuItem[] = [
     getItem('待办', '/todo', <CarryOutOutlined/>),
     getItem('开发', '/develop', <CodepenOutlined/>),
     getItem('笔记', '/note', <FileDoneOutlined/>),
+    getItem('下载', '/download', <CloudDownloadOutlined/>),
     getItem('任务', '/task', <PlayCircleOutlined/>),
+    getItem('设置', '/setting', <SettingOutlined/>),
 ];
 
 

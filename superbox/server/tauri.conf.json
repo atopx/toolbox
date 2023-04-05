@@ -16,6 +16,11 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "clipboard": {
+        "all": true,
+        "readText": true,
+        "writeText": true
       }
     },
     "bundle": {
@@ -38,11 +43,13 @@
     },
     "windows": [
       {
+        "label": "main",
         "fullscreen": false,
         "resizable": true,
-        "title": "superbox",
+        "title": "超级工具箱",
         "width": 1300,
-        "height": 900
+        "height": 900,
+        "url": "index.html"
       }
     ]
   }

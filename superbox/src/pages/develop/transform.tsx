@@ -1,144 +1,60 @@
-import Editor, {BeforeMount, OnChange, OnMount} from "@monaco-editor/react";
-import {useState} from "react";
-import {Button, Col, Divider, Row, Select, Space} from "antd";
+import {OnChange, OnMount} from "@monaco-editor/react";
+import React, {useEffect, useState} from "react";
+import {Button, Col, Divider, Row, Select} from "antd";
 import {RightCircleOutlined} from "@ant-design/icons";
-
-const selectOptions = [
-    {
-        value: "0",
-        label: "json to yaml",
-    },
-    {
-        value: "1",
-        label: "json to go",
-    },
-    {
-        value: "2",
-        label: "json to rust",
-    },
-    {
-        value: "3",
-        label: "json to protobuf",
-    },
-    {
-        value: "3",
-        label: "json to mysql",
-    },
-    {
-        value: "4",
-        label: "go to json",
-    },
-    {
-        value: "5",
-        label: "rust to json",
-    },
-    {
-        value: "6",
-        label: "protobuf to json",
-    },
-    {
-        value: "7",
-        label: "yaml to json",
-    },
-    {
-        value: "3",
-        label: "mysql to json",
-    },
-]
-
-function LeftEditor() {
-    const options = {
-        fontSize: 14,
-        readOnly: false,
-        codeLens: false,
-        wordWrap: 'wordWrapColumn',
-        wordWrapColumn: 80,
-        accessibilitySupport: 'on',
-        fontFamily: "Menlo, Consolas, monospace, sans-serif",
-        minimap: {enabled: false},
-        quickSuggestions: false,
-        lineNumbers: "on",
-        renderValidationDecorations: "off",
-        renderLineHighlight: "none",
-        scrollbar: {
-            horizontal: 'hidden',
-            vertical: 'hidden',
-            useShadows: false,
-            verticalHasArrows: false,
-            verticalSliderSize: 0,
-            verticalScrollbarSize: 1
-        }
-    };
-
-    const [inputValue, setInputValue] = useState("{}");
-
-    const beforeMount: BeforeMount = (monaco) => {
-        monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-    }
-
-    const onMount: OnMount = (editor, monaco) => {
-        console.log("editor", editor);
-    }
-
-    const onChange: OnChange = (change, event) => {
-        typeof change === "string" ? setInputValue(change) : undefined;
-    }
-
-    return (
-        <Editor
-            height="70vh"
-            language="json"
-            value={inputValue}
-            defaultLanguage={"json"}
-            options={options}
-            beforeMount={beforeMount}
-            onMount={onMount}
-            onChange={onChange}
-        />
-    );
-}
-
-function RightEditor() {
-    const options = {
-        fontSize: 14,
-        readOnly: true,
-        codeLens: false,
-        wordWrap: 'wordWrapColumn',
-        wordWrapColumn: 80,
-        accessibilitySupport: 'on',
-        fontFamily: "Menlo, Consolas, monospace, sans-serif",
-        minimap: {enabled: false},
-        quickSuggestions: false,
-        lineNumbers: "on",
-        renderValidationDecorations: "off",
-        renderLineHighlight: "none",
-        scrollbar: {
-            horizontal: 'hidden',
-            vertical: 'hidden',
-            useShadows: false,
-            verticalHasArrows: false,
-            verticalSliderSize: 0,
-            verticalScrollbarSize: 0
-        }
-    };
-
-    const beforeMount: BeforeMount = (monaco) => {
-        monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-    }
-
-    return (
-        <Editor
-            height="70vh"
-            language="json"
-            value={"test"}
-            defaultLanguage={"json"}
-            options={options}
-            beforeMount={beforeMount}
-        />
-    );
-}
+import {invoke} from '@tauri-apps/api/tauri'
+import EditorBox from "../../components/editor";
+import Clipboard from "../../hooks/clipboard";
 
 function Transform() {
+    const [actions, setActions] = useState<string[]>([]);
+    const [action, setAction] = useState("");
+    const [inputValue, setInputValue] = useState("");
+    const [outputValue, setOutputValue] = useState("");
+
+    useEffect(() => {
+        // 初始化data
+        invoke("list_develop_action").then((data: any) => {
+            setActions(data)
+        })
+    }, [])
+
+    const onSelectAction = (value: string) => {
+        setAction(value)
+    }
+
+    const leftOnChange: OnChange = (change, event) => {
+        if (typeof change === "string") {
+            setInputValue(change)
+        }
+    }
+
+    const leftOnMount: OnMount = (editor, monaco) => {
+        setInputValue(editor.getValue())
+    }
+
+    const trans = async () => {
+        // call server
+        await invoke("exec_develop_action", {action: action, src: inputValue}).then((resp) => {
+            let data = resp as string;
+            // show
+            setOutputValue(data);
+            // copy
+            Clipboard.Set(data)
+
+        }).catch((err) => {
+            setOutputValue(err)
+        })
+    }
+
+    const trans_string = (v: string | number | null | undefined): string => {
+        if (v === null || v === undefined) {
+            return ""
+        }
+        return v.toString()
+    }
+
+
     return (
         <div>
             <Row>
@@ -148,20 +64,27 @@ function Transform() {
                         style={{width: 190}}
                         placeholder="选择动作"
                         optionFilterProp="children"
+                        onSelect={onSelectAction}
                         filterOption={(input, option) =>
-                            (option?.label ?? '').toLocaleString().toLowerCase().includes(input.toLowerCase())
+                            trans_string(option?.value).toLowerCase().includes(input.toLowerCase())
+                        }>
+                        {
+                            // 初始化select
+                            actions.map((action) => {
+                                return <Select.Option key={action} value={action} children={action}/>
+                            })
                         }
-                        options={selectOptions}
-                    />
+                    </Select>
                 </Col>
                 <Col span={3}>
-                    <Button type="primary" icon={<RightCircleOutlined/>}>运行</Button>
+                    <Button type="primary" icon={<RightCircleOutlined/>} onClick={trans}>运行</Button>
                 </Col>
             </Row>
             <Divider/>
             <Row>
-                <Col span={12}><LeftEditor/></Col>
-                <Col span={12}><RightEditor/></Col>
+                <Col span={12}><EditorBox readOnly={false} onChange={leftOnChange} onMount={leftOnMount}
+                                          defaultValue={"{}"} scrollbarSize={1}/></Col>
+                <Col span={12}><EditorBox readOnly={true} scrollbarSize={0} value={outputValue}/></Col>
             </Row>
         </div>
     );

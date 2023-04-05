@@ -1,19 +1,19 @@
 import React from 'react';
 import {Tabs} from "antd";
 import Transform from "./transform";
-import TimeTool from "./times";
+import Network from "./network";
 
 const tabs = [
     {
         label: "编码",
         key: "transform",
-        content: Transform,
+        Component: Transform,
     },
     {
-        label: "时间",
-        key: "/tool/json",
-        content: TimeTool,
-    }
+        label: "网络",
+        key: "network",
+        Component: Network,
+    },
 ]
 
 
@@ -22,8 +22,7 @@ export default function DevelopIndex() {
         defaultActiveKey={tabs[0].key}
         centered
         items={tabs.map((tab, i) => {
-            console.log(tab.key);
-            return {label: tab.label, key: tab.key, children: <tab.content/>};
+            return {label: tab.label, key: tab.key, children: <tab.Component/>};
         })}
     />
 };

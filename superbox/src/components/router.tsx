@@ -4,6 +4,10 @@ import {Route, Routes} from "react-router-dom";
 
 const routes = [
     {
+        path: "/",
+        component: Home,
+    },
+    {
         path: "/index",
         component: Home,
     },
@@ -22,7 +26,15 @@ const routes = [
     {
         path: "/task",
         component: Home,
-    }
+    },
+    {
+        path: "/download",
+        component: Home,
+    },
+    {
+        path: "/setting",
+        component: Home,
+    },
 ];
 
 export default function Router() {
@@ -30,7 +42,6 @@ export default function Router() {
         <Routes>
             {
                 routes.map((r) => {
-                    console.log(r.path)
                     return <Route path={r.path} key={r.path} element={<r.component/>}/>
                 })
             }
