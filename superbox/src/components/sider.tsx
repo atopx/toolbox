@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {DesktopOutlined, CodepenOutlined, PieChartOutlined, TeamOutlined, UserOutlined,} from '@ant-design/icons';
+import {
+    CarryOutOutlined,
+    CodepenOutlined,
+    FileDoneOutlined,
+    PieChartOutlined,
+    PlayCircleOutlined,
+} from '@ant-design/icons';
 import type {MenuProps} from 'antd';
 import {Layout, Menu} from 'antd';
 import {To, useNavigate} from "react-router-dom";
@@ -22,10 +28,10 @@ function getItem(
 
 const items: MenuItem[] = [
     getItem('首页', '/index', <PieChartOutlined/>),
-    getItem('Option 2', '/home', <DesktopOutlined/>),
-    getItem('User', 'sub1', <UserOutlined/>),
-    getItem('Team', 'sub2', <TeamOutlined/>),
-    getItem('工具', '/tool', <CodepenOutlined />),
+    getItem('待办', '/todo', <CarryOutOutlined/>),
+    getItem('开发', '/develop', <CodepenOutlined/>),
+    getItem('笔记', '/note', <FileDoneOutlined/>),
+    getItem('任务', '/task', <PlayCircleOutlined/>),
 ];
 
 
@@ -39,7 +45,7 @@ export default function Sidebar() {
 
     return (
         <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-            <Menu theme="dark" defaultSelectedKeys={["/", "/index"]} mode="inline" items={items} onClick={onClick}/>
+            <Menu theme="dark" defaultSelectedKeys={["/index"]} mode="inline" items={items} onClick={onClick}/>
         </Sider>
     )
 }

@@ -1,15 +1,27 @@
 import Home from '../views/home';
-import ToolIndex from "../pages/tool/index"
+import DevelopIndex from "../pages/develop/index"
 import {Route, Routes} from "react-router-dom";
 
 const routes = [
     {
-        path: "/home",
+        path: "/index",
         component: Home,
     },
     {
-        path: "/tool",
-        component: ToolIndex,
+        path: "/develop",
+        component: DevelopIndex,
+    },
+    {
+        path: "/todo",
+        component: Home,
+    },
+    {
+        path: "/note",
+        component: Home,
+    },
+    {
+        path: "/task",
+        component: Home,
     }
 ];
 

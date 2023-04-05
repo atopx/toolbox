@@ -1,23 +1,23 @@
 import React from 'react';
 import {Tabs} from "antd";
-import Editor from "./json";
-import CurlTool from "./curl";
+import Transform from "./transform";
+import TimeTool from "./times";
 
 const tabs = [
     {
-        label: "CURL",
-        key: "/tool/curl",
-        content: Editor,
+        label: "编码",
+        key: "transform",
+        content: Transform,
     },
     {
-        label: "JSON",
+        label: "时间",
         key: "/tool/json",
-        content: CurlTool,
+        content: TimeTool,
     }
 ]
 
 
-export default function ToolIndex() {
+export default function DevelopIndex() {
     return <Tabs
         defaultActiveKey={tabs[0].key}
         centered
