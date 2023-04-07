@@ -63,13 +63,13 @@ pub enum TransType {
     Toml = 2,
     Sql = 3,
     Xml = 4,
+    Protobuf = 5,
     /// 编程语言
     Golang = 101,
     Rust = 102,
     Java = 103,
     Python = 104,
-    Tsiface = 105,
-    Tstypes = 106,
+    Typescript = 105,
 }
 impl TransType {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -83,12 +83,12 @@ impl TransType {
             TransType::Toml => "TOML",
             TransType::Sql => "SQL",
             TransType::Xml => "XML",
+            TransType::Protobuf => "PROTOBUF",
             TransType::Golang => "GOLANG",
             TransType::Rust => "RUST",
             TransType::Java => "JAVA",
             TransType::Python => "PYTHON",
-            TransType::Tsiface => "TSIFACE",
-            TransType::Tstypes => "TSTYPES",
+            TransType::Typescript => "TYPESCRIPT",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -99,12 +99,12 @@ impl TransType {
             "TOML" => Some(Self::Toml),
             "SQL" => Some(Self::Sql),
             "XML" => Some(Self::Xml),
+            "PROTOBUF" => Some(Self::Protobuf),
             "GOLANG" => Some(Self::Golang),
             "RUST" => Some(Self::Rust),
             "JAVA" => Some(Self::Java),
             "PYTHON" => Some(Self::Python),
-            "TSIFACE" => Some(Self::Tsiface),
-            "TSTYPES" => Some(Self::Tstypes),
+            "TYPESCRIPT" => Some(Self::Typescript),
             _ => None,
         }
     }

@@ -28,14 +28,14 @@ enum TransType {
     TOML = 2;
     SQL = 3;
     XML = 4;
+    PROTOBUF = 5;
 
     // 编程语言
     GOLANG = 101;
     RUST = 102;
     JAVA = 103;
     PYTHON = 104;
-    TSIFACE = 105;
-    TSTYPES = 106;
+    TYPESCRIPT = 105;
 }
 
 message Transform {
