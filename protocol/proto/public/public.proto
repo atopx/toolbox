@@ -21,12 +21,35 @@ message CurlInfo {
     string body = 4;
 }
 
-message TransformCurlParams {
-    public.Header header = 1;
-    string src = 2;
+enum TransType {
+    // 结构语言
+    JSON = 0;
+    YAML = 1;
+    TOML = 2;
+    SQL = 3;
+    XML = 4;
+
+    // 编程语言
+    GOLANG = 101;
+    RUST = 102;
+    JAVA = 103;
+    PYTHON = 104;
+    TSIFACE = 105;
+    TSTYPES = 106;
 }
 
-message TransformCurlReply {
+message Transform {
+    string value = 1;
+    TransType from = 2;
+    TransType to = 3;
+}
+
+message TransferParams {
+    public.Header header = 1;
+    Transform data = 2;
+}
+
+message TransferReply {
     public.ReplyHeader header = 1;
-    CurlInfo data = 2;
+    string data = 2;
 }

@@ -227,25 +227,39 @@ pub mod mainframe_service_server {
         async fn deal_computer(
             &self,
             request: tonic::Request<super::DealComputerParams>,
-        ) -> Result<tonic::Response<super::DealComputerReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::DealComputerReply>,
+            tonic::Status,
+        >;
         async fn list_computer(
             &self,
             request: tonic::Request<super::ListComputerParams>,
-        ) -> Result<tonic::Response<super::ListComputerReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::ListComputerReply>,
+            tonic::Status,
+        >;
         async fn operate_computer(
             &self,
             request: tonic::Request<super::OperateComputerParams>,
-        ) -> Result<tonic::Response<super::OperateComputerReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateComputerReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_computer(
             &self,
             request: tonic::Request<super::BatchOperateComputerParams>,
-        ) -> Result<tonic::Response<super::BatchOperateComputerReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateComputerReply>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct MainframeServiceServer<T: MainframeService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
+        max_decoding_message_size: Option<usize>,
+        max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: MainframeService> MainframeServiceServer<T> {
@@ -258,6 +272,8 @@ pub mod mainframe_service_server {
                 inner,
                 accept_compression_encodings: Default::default(),
                 send_compression_encodings: Default::default(),
+                max_decoding_message_size: None,
+                max_encoding_message_size: None,
             }
         }
         pub fn with_interceptor<F>(
@@ -281,6 +297,22 @@ pub mod mainframe_service_server {
             self.send_compression_encodings.enable(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.max_decoding_message_size = Some(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.max_encoding_message_size = Some(limit);
+            self
+        }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>> for MainframeServiceServer<T>
     where
@@ -294,7 +326,7 @@ pub mod mainframe_service_server {
         fn poll_ready(
             &mut self,
             _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        ) -> Poll<std::result::Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -316,7 +348,7 @@ pub mod mainframe_service_server {
                             &mut self,
                             request: tonic::Request<super::DealComputerParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).deal_computer(request).await
                             };
@@ -325,6 +357,8 @@ pub mod mainframe_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -334,6 +368,10 @@ pub mod mainframe_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -356,7 +394,7 @@ pub mod mainframe_service_server {
                             &mut self,
                             request: tonic::Request<super::ListComputerParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).list_computer(request).await
                             };
@@ -365,6 +403,8 @@ pub mod mainframe_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -374,6 +414,10 @@ pub mod mainframe_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -396,7 +440,7 @@ pub mod mainframe_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateComputerParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_computer(request).await
                             };
@@ -405,6 +449,8 @@ pub mod mainframe_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -414,6 +460,10 @@ pub mod mainframe_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -436,7 +486,7 @@ pub mod mainframe_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateComputerParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_computer(request).await
                             };
@@ -445,6 +495,8 @@ pub mod mainframe_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -454,6 +506,10 @@ pub mod mainframe_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -482,12 +538,14 @@ pub mod mainframe_service_server {
                 inner,
                 accept_compression_encodings: self.accept_compression_encodings,
                 send_compression_encodings: self.send_compression_encodings,
+                max_decoding_message_size: self.max_decoding_message_size,
+                max_encoding_message_size: self.max_encoding_message_size,
             }
         }
     }
     impl<T: MainframeService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
-            Self(self.0.clone())
+            Self(Arc::clone(&self.0))
         }
     }
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {

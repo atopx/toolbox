@@ -18,7 +18,7 @@ service PublicService {
     rpc BatchOperateFolder(BatchOperateFolderParams) returns(BatchOperateFolderReply);
 
     // 工具类
-    rpc TransformCurl(TransformCurlParams) returns (TransformCurlReply);
+    rpc Transfer(TransferParams) returns (TransferReply);
 }
 
 

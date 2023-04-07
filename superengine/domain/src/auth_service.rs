@@ -690,86 +690,133 @@ pub mod auth_service_server {
         async fn list_user(
             &self,
             request: tonic::Request<super::ListUserParams>,
-        ) -> Result<tonic::Response<super::ListUserReply>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::ListUserReply>, tonic::Status>;
         async fn operate_user(
             &self,
             request: tonic::Request<super::OperateUserParams>,
-        ) -> Result<tonic::Response<super::OperateUserReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateUserReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_user(
             &self,
             request: tonic::Request<super::BatchOperateUserParams>,
-        ) -> Result<tonic::Response<super::BatchOperateUserReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateUserReply>,
+            tonic::Status,
+        >;
         /// 角色
         async fn list_role(
             &self,
             request: tonic::Request<super::ListRoleParams>,
-        ) -> Result<tonic::Response<super::ListRoleReply>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::ListRoleReply>, tonic::Status>;
         async fn operate_role(
             &self,
             request: tonic::Request<super::OperateRoleParams>,
-        ) -> Result<tonic::Response<super::OperateRoleReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateRoleReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_role(
             &self,
             request: tonic::Request<super::BatchOperateRoleParams>,
-        ) -> Result<tonic::Response<super::BatchOperateRoleReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateRoleReply>,
+            tonic::Status,
+        >;
         /// 用户&角色
         async fn list_user_role_ref(
             &self,
             request: tonic::Request<super::ListUserRoleRefParams>,
-        ) -> Result<tonic::Response<super::ListUserRoleRefReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::ListUserRoleRefReply>,
+            tonic::Status,
+        >;
         async fn operate_user_role_ref(
             &self,
             request: tonic::Request<super::OperateUserRoleRefParams>,
-        ) -> Result<tonic::Response<super::OperateUserRoleRefReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateUserRoleRefReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_user_role_ref(
             &self,
             request: tonic::Request<super::BatchOperateUserRoleRefParams>,
-        ) -> Result<tonic::Response<super::BatchOperateUserRoleRefReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateUserRoleRefReply>,
+            tonic::Status,
+        >;
         /// api接口
         async fn list_access(
             &self,
             request: tonic::Request<super::ListAccessParams>,
-        ) -> Result<tonic::Response<super::ListAccessReply>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::ListAccessReply>, tonic::Status>;
         async fn operate_access(
             &self,
             request: tonic::Request<super::OperateAccessParams>,
-        ) -> Result<tonic::Response<super::OperateAccessReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateAccessReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_access(
             &self,
             request: tonic::Request<super::BatchOperateAccessParams>,
-        ) -> Result<tonic::Response<super::BatchOperateAccessReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateAccessReply>,
+            tonic::Status,
+        >;
         /// api接口权限
         async fn list_permission(
             &self,
             request: tonic::Request<super::ListPermissionParams>,
-        ) -> Result<tonic::Response<super::ListPermissionReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::ListPermissionReply>,
+            tonic::Status,
+        >;
         async fn operate_permission(
             &self,
             request: tonic::Request<super::OperatePermissionParams>,
-        ) -> Result<tonic::Response<super::OperatePermissionReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperatePermissionReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_permission(
             &self,
             request: tonic::Request<super::BatchOperatePermissionParams>,
-        ) -> Result<tonic::Response<super::BatchOperatePermissionReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperatePermissionReply>,
+            tonic::Status,
+        >;
         /// 认证令牌
         async fn list_auth_token(
             &self,
             request: tonic::Request<super::ListAuthTokenParams>,
-        ) -> Result<tonic::Response<super::ListAuthTokenReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::ListAuthTokenReply>,
+            tonic::Status,
+        >;
         async fn operate_auth_token(
             &self,
             request: tonic::Request<super::OperateAuthTokenParams>,
-        ) -> Result<tonic::Response<super::OperateAuthTokenReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateAuthTokenReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_auth_token(
             &self,
             request: tonic::Request<super::BatchOperateAuthTokenParams>,
-        ) -> Result<tonic::Response<super::BatchOperateAuthTokenReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateAuthTokenReply>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct AuthServiceServer<T: AuthService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
+        max_decoding_message_size: Option<usize>,
+        max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: AuthService> AuthServiceServer<T> {
@@ -782,6 +829,8 @@ pub mod auth_service_server {
                 inner,
                 accept_compression_encodings: Default::default(),
                 send_compression_encodings: Default::default(),
+                max_decoding_message_size: None,
+                max_encoding_message_size: None,
             }
         }
         pub fn with_interceptor<F>(
@@ -805,6 +854,22 @@ pub mod auth_service_server {
             self.send_compression_encodings.enable(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.max_decoding_message_size = Some(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.max_encoding_message_size = Some(limit);
+            self
+        }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>> for AuthServiceServer<T>
     where
@@ -818,7 +883,7 @@ pub mod auth_service_server {
         fn poll_ready(
             &mut self,
             _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        ) -> Poll<std::result::Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -840,13 +905,15 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::ListUserParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move { (*inner).list_user(request).await };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -856,6 +923,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -878,7 +949,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateUserParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_user(request).await
                             };
@@ -887,6 +958,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -896,6 +969,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -918,7 +995,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateUserParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_user(request).await
                             };
@@ -927,6 +1004,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -936,6 +1015,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -958,13 +1041,15 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::ListRoleParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move { (*inner).list_role(request).await };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -974,6 +1059,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -996,7 +1085,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateRoleParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_role(request).await
                             };
@@ -1005,6 +1094,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1014,6 +1105,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1036,7 +1131,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateRoleParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_role(request).await
                             };
@@ -1045,6 +1140,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1054,6 +1151,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1076,7 +1177,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::ListUserRoleRefParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).list_user_role_ref(request).await
                             };
@@ -1085,6 +1186,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1094,6 +1197,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1116,7 +1223,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateUserRoleRefParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_user_role_ref(request).await
                             };
@@ -1125,6 +1232,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1134,6 +1243,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1156,7 +1269,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateUserRoleRefParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_user_role_ref(request).await
                             };
@@ -1165,6 +1278,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1174,6 +1289,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1196,13 +1315,15 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::ListAccessParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move { (*inner).list_access(request).await };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1212,6 +1333,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1234,7 +1359,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateAccessParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_access(request).await
                             };
@@ -1243,6 +1368,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1252,6 +1379,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1274,7 +1405,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateAccessParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_access(request).await
                             };
@@ -1283,6 +1414,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1292,6 +1425,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1314,7 +1451,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::ListPermissionParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).list_permission(request).await
                             };
@@ -1323,6 +1460,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1332,6 +1471,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1354,7 +1497,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::OperatePermissionParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_permission(request).await
                             };
@@ -1363,6 +1506,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1372,6 +1517,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1394,7 +1543,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperatePermissionParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_permission(request).await
                             };
@@ -1403,6 +1552,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1412,6 +1563,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1434,7 +1589,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::ListAuthTokenParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).list_auth_token(request).await
                             };
@@ -1443,6 +1598,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1452,6 +1609,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1474,7 +1635,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateAuthTokenParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_auth_token(request).await
                             };
@@ -1483,6 +1644,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1492,6 +1655,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1514,7 +1681,7 @@ pub mod auth_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateAuthTokenParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_auth_token(request).await
                             };
@@ -1523,6 +1690,8 @@ pub mod auth_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -1532,6 +1701,10 @@ pub mod auth_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -1560,12 +1733,14 @@ pub mod auth_service_server {
                 inner,
                 accept_compression_encodings: self.accept_compression_encodings,
                 send_compression_encodings: self.send_compression_encodings,
+                max_decoding_message_size: self.max_decoding_message_size,
+                max_encoding_message_size: self.max_encoding_message_size,
             }
         }
     }
     impl<T: AuthService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
-            Self(self.0.clone())
+            Self(Arc::clone(&self.0))
         }
     }
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {

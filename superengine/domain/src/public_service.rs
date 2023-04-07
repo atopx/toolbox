@@ -30,19 +30,84 @@ pub struct CurlInfo {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TransformCurlParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(string, tag = "2")]
-    pub src: ::prost::alloc::string::String,
+pub struct Transform {
+    #[prost(string, tag = "1")]
+    pub value: ::prost::alloc::string::String,
+    #[prost(enumeration = "TransType", tag = "2")]
+    pub from: i32,
+    #[prost(enumeration = "TransType", tag = "3")]
+    pub to: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TransformCurlReply {
+pub struct TransferParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(message, optional, tag = "2")]
+    pub data: ::core::option::Option<Transform>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TransferReply {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<CurlInfo>,
+    #[prost(string, tag = "2")]
+    pub data: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum TransType {
+    /// 结构语言
+    Json = 0,
+    Yaml = 1,
+    Toml = 2,
+    Sql = 3,
+    Xml = 4,
+    /// 编程语言
+    Golang = 101,
+    Rust = 102,
+    Java = 103,
+    Python = 104,
+    Tsiface = 105,
+    Tstypes = 106,
+}
+impl TransType {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            TransType::Json => "JSON",
+            TransType::Yaml => "YAML",
+            TransType::Toml => "TOML",
+            TransType::Sql => "SQL",
+            TransType::Xml => "XML",
+            TransType::Golang => "GOLANG",
+            TransType::Rust => "RUST",
+            TransType::Java => "JAVA",
+            TransType::Python => "PYTHON",
+            TransType::Tsiface => "TSIFACE",
+            TransType::Tstypes => "TSTYPES",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "JSON" => Some(Self::Json),
+            "YAML" => Some(Self::Yaml),
+            "TOML" => Some(Self::Toml),
+            "SQL" => Some(Self::Sql),
+            "XML" => Some(Self::Xml),
+            "GOLANG" => Some(Self::Golang),
+            "RUST" => Some(Self::Rust),
+            "JAVA" => Some(Self::Java),
+            "PYTHON" => Some(Self::Python),
+            "TSIFACE" => Some(Self::Tsiface),
+            "TSTYPES" => Some(Self::Tstypes),
+            _ => None,
+        }
+    }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -293,39 +358,53 @@ pub mod public_service_server {
         async fn list_label(
             &self,
             request: tonic::Request<super::ListLabelParams>,
-        ) -> Result<tonic::Response<super::ListLabelReply>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::ListLabelReply>, tonic::Status>;
         async fn operate_label(
             &self,
             request: tonic::Request<super::OperateLabelParams>,
-        ) -> Result<tonic::Response<super::OperateLabelReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateLabelReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_label(
             &self,
             request: tonic::Request<super::BatchOperateLabelParams>,
-        ) -> Result<tonic::Response<super::BatchOperateLabelReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateLabelReply>,
+            tonic::Status,
+        >;
         /// 文件夹
         async fn list_folder(
             &self,
             request: tonic::Request<super::ListFolderParams>,
-        ) -> Result<tonic::Response<super::ListFolderReply>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::ListFolderReply>, tonic::Status>;
         async fn operate_folder(
             &self,
             request: tonic::Request<super::OperateFolderParams>,
-        ) -> Result<tonic::Response<super::OperateFolderReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OperateFolderReply>,
+            tonic::Status,
+        >;
         async fn batch_operate_folder(
             &self,
             request: tonic::Request<super::BatchOperateFolderParams>,
-        ) -> Result<tonic::Response<super::BatchOperateFolderReply>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::BatchOperateFolderReply>,
+            tonic::Status,
+        >;
         /// 工具类
-        async fn transform_curl(
+        async fn transfer(
             &self,
-            request: tonic::Request<super::TransformCurlParams>,
-        ) -> Result<tonic::Response<super::TransformCurlReply>, tonic::Status>;
+            request: tonic::Request<super::TransferParams>,
+        ) -> std::result::Result<tonic::Response<super::TransferReply>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct PublicServiceServer<T: PublicService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
+        max_decoding_message_size: Option<usize>,
+        max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: PublicService> PublicServiceServer<T> {
@@ -338,6 +417,8 @@ pub mod public_service_server {
                 inner,
                 accept_compression_encodings: Default::default(),
                 send_compression_encodings: Default::default(),
+                max_decoding_message_size: None,
+                max_encoding_message_size: None,
             }
         }
         pub fn with_interceptor<F>(
@@ -361,6 +442,22 @@ pub mod public_service_server {
             self.send_compression_encodings.enable(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.max_decoding_message_size = Some(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.max_encoding_message_size = Some(limit);
+            self
+        }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>> for PublicServiceServer<T>
     where
@@ -374,7 +471,7 @@ pub mod public_service_server {
         fn poll_ready(
             &mut self,
             _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        ) -> Poll<std::result::Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -396,13 +493,15 @@ pub mod public_service_server {
                             &mut self,
                             request: tonic::Request<super::ListLabelParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move { (*inner).list_label(request).await };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -412,6 +511,10 @@ pub mod public_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -434,7 +537,7 @@ pub mod public_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateLabelParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_label(request).await
                             };
@@ -443,6 +546,8 @@ pub mod public_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -452,6 +557,10 @@ pub mod public_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -474,7 +583,7 @@ pub mod public_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateLabelParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_label(request).await
                             };
@@ -483,6 +592,8 @@ pub mod public_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -492,6 +603,10 @@ pub mod public_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -514,13 +629,15 @@ pub mod public_service_server {
                             &mut self,
                             request: tonic::Request<super::ListFolderParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move { (*inner).list_folder(request).await };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -530,6 +647,10 @@ pub mod public_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -552,7 +673,7 @@ pub mod public_service_server {
                             &mut self,
                             request: tonic::Request<super::OperateFolderParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).operate_folder(request).await
                             };
@@ -561,6 +682,8 @@ pub mod public_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -570,6 +693,10 @@ pub mod public_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -592,7 +719,7 @@ pub mod public_service_server {
                             &mut self,
                             request: tonic::Request<super::BatchOperateFolderParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
+                            let inner = Arc::clone(&self.0);
                             let fut = async move {
                                 (*inner).batch_operate_folder(request).await
                             };
@@ -601,6 +728,8 @@ pub mod public_service_server {
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
@@ -610,46 +739,54 @@ pub mod public_service_server {
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)
                 }
-                "/public_service.PublicService/TransformCurl" => {
+                "/public_service.PublicService/Transfer" => {
                     #[allow(non_camel_case_types)]
-                    struct TransformCurlSvc<T: PublicService>(pub Arc<T>);
+                    struct TransferSvc<T: PublicService>(pub Arc<T>);
                     impl<
                         T: PublicService,
-                    > tonic::server::UnaryService<super::TransformCurlParams>
-                    for TransformCurlSvc<T> {
-                        type Response = super::TransformCurlReply;
+                    > tonic::server::UnaryService<super::TransferParams>
+                    for TransferSvc<T> {
+                        type Response = super::TransferReply;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::TransformCurlParams>,
+                            request: tonic::Request<super::TransferParams>,
                         ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move {
-                                (*inner).transform_curl(request).await
-                            };
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move { (*inner).transfer(request).await };
                             Box::pin(fut)
                         }
                     }
                     let accept_compression_encodings = self.accept_compression_encodings;
                     let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = TransformCurlSvc(inner);
+                        let method = TransferSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
                                 send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
                             );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
@@ -678,12 +815,14 @@ pub mod public_service_server {
                 inner,
                 accept_compression_encodings: self.accept_compression_encodings,
                 send_compression_encodings: self.send_compression_encodings,
+                max_decoding_message_size: self.max_decoding_message_size,
+                max_encoding_message_size: self.max_encoding_message_size,
             }
         }
     }
     impl<T: PublicService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
-            Self(self.0.clone())
+            Self(Arc::clone(&self.0))
         }
     }
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
