@@ -1,41 +1,26 @@
 import React, {useState} from 'react';
-import {
-    CarryOutOutlined,
-    CloudDownloadOutlined,
-    CodepenOutlined,
-    FileDoneOutlined,
-    PieChartOutlined,
-    PlayCircleOutlined, SettingOutlined,
-} from '@ant-design/icons';
 import type {MenuProps} from 'antd';
 import {Layout, Menu} from 'antd';
 import {To, useNavigate} from "react-router-dom";
+import routes, {IRoute} from "../router";
+
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
-): MenuItem {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    } as MenuItem;
+
+function trans(route: IRoute): MenuItem {
+    let key = route.path;
+    let icon = route.icon;
+    let label = route.label;
+    let children = route.children?.map((c) => {
+        return trans(c)
+    })
+    return {key, label, icon, children} as MenuItem;
 }
 
-const items: MenuItem[] = [
-    getItem('首页', '/index', <PieChartOutlined/>),
-    getItem('待办', '/todo', <CarryOutOutlined/>),
-    getItem('开发', '/develop', <CodepenOutlined/>),
-    getItem('笔记', '/note', <FileDoneOutlined/>),
-    getItem('下载', '/download', <CloudDownloadOutlined/>),
-    getItem('任务', '/task', <PlayCircleOutlined/>),
-    getItem('设置', '/setting', <SettingOutlined/>),
-];
+const items: MenuItem[] = routes.map((route) => {
+    return trans(route)
+})
 
 
 export default function Sidebar() {
@@ -47,8 +32,8 @@ export default function Sidebar() {
     }
 
     return (
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-            <Menu theme="dark" defaultSelectedKeys={["/index"]} mode="inline" items={items} onClick={onClick}/>
+        <Sider collapsible width={160} collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+            <Menu theme="dark" defaultSelectedKeys={["/"]} mode="inline" items={items} onClick={onClick}/>
         </Sider>
     )
 }

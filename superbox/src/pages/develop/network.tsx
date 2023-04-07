@@ -1,4 +1,4 @@
 type IProps = {}
-const Network = (props: IProps) => <div>todo</div>
+const Network: React.FC = (props: IProps) => <div>todo</div>
 
 export default Network;
