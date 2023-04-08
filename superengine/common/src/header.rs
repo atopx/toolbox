@@ -1,18 +1,18 @@
 use domain::public::{ECode, ReplyHeader};
 
-pub fn reply(id: i64, code: ECode) -> Option<ReplyHeader> {
-    return Some(ReplyHeader {
+pub fn reply(id: i64) -> Option<ReplyHeader> {
+    Some(ReplyHeader {
         trace_id: id,
-        code: code.into(),
-        message: code.as_str_name().parse().unwrap(),
-    });
+        code: ECode::Success.into(),
+        message: Default::default(),
+    })
 }
 
 pub fn err_reply(id: i64, code: ECode, msg: String) -> Option<ReplyHeader> {
-    return Some(ReplyHeader {
+    Some(ReplyHeader {
         trace_id: id,
         code: code.into(),
         message: msg,
-    });
+    })
 }
 

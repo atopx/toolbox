@@ -14,7 +14,7 @@ type Client struct {
 }
 
 func initClient() {
-	authClient, err := pkg.NewGrpcClient(viper.GetStringSlice("service.auth"))
+	authClient, err := pkg.NewGrpcClient(viper.GetStringSlice("service"))
 	if err != nil {
 		panic(err)
 	}

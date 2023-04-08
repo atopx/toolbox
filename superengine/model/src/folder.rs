@@ -8,7 +8,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub parent_id: i32,
-    pub scene: i32,
+    pub source: i32,
     pub name: String,
     pub path: String,
     pub creator: i32,
