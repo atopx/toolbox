@@ -77,12 +77,4 @@ impl public_service::public_service_server::PublicService for PublicService {
         let reply = bis.batch_operate(params.operate(), params.data).await;
         Ok(Response::new(reply))
     }
-
-    async fn transfer(
-        &self,
-        _: Request<public_service::TransferParams>,
-    ) -> Result<Response<public_service::TransferReply>, Status> {
-        let code = tonic::Code::Unimplemented;
-        return Err(Status::new(code, code.description()));
-    }
 }

@@ -1,7 +1,7 @@
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ECode {
-    /// 默认无错误
+    /// 请求成功
     Success = 0,
     /// ######### 客户端错误 #########
     ///
@@ -18,6 +18,8 @@ pub enum ECode {
     /// token过期
     AuthTokenExpired = 400004,
     /// access error
+    ///
+    /// 请求资源不存在
     AccessNotFound = 401001,
     /// 没有访问权限
     AccessForbidden = 401002,
@@ -28,15 +30,43 @@ pub enum ECode {
     /// 参数异常
     InvalidParams = 431000,
     /// user params error
+    ///
+    /// 参数缺少昵称
     UserParamsErrorNameRequired = 431001,
+    /// 参数缺少用户名
     UserParamsErrorUsernameRequired = 431002,
+    /// 参数缺少密码
     UserParamsErrorPasswordRequired = 431003,
+    /// 用户名已存在
     UserParamsErrorUsernameExist = 431004,
+    /// 用户不存在
     UserParamsErrorUserNotFound = 431005,
     /// user login
+    ///
+    /// 无效的用户昵称
     UserParamsErrorNameInvalid = 431006,
+    /// 无效的用户名
     UserParamsErrorUsernameInvalid = 431007,
+    /// 无效的密码
     UserParamsErrorPasswordInvalid = 431008,
+    /// public source
+    ///
+    /// 无效的实体来源
+    SourceParamsErrorSourceInvalid = 432001,
+    /// public folder
+    ///
+    /// 参数缺少文件夹名称
+    FolderParamsErrorNameRequired = 433001,
+    /// public label
+    ///
+    /// 参数缺少文件夹名称
+    LabelParamsErrorNameRequired = 434001,
+    /// note
+    ///
+    /// 参数缺少标题
+    NoteParamsErrorTitleRequired = 435001,
+    /// 标题无效
+    NoteParamsErrorTitleInvalid = 435002,
     /// ######### 服务端错误 #########
     ///
     /// 服务异常
@@ -44,50 +74,96 @@ pub enum ECode {
     /// 功能未实现
     SystemErrorUnimplemented = 500001,
     /// auth-service access error
+    ///
+    /// AUTH_SERVICE_ERROR_ListAccess
     AuthServiceErrorListAccess = 510001,
+    /// AUTH_SERVICE_ERROR_OperateAccess
     AuthServiceErrorOperateAccess = 510002,
+    /// AUTH_SERVICE_ERROR_BatchOperateAccess
     AuthServiceErrorBatchOperateAccess = 510003,
     /// auth-service token error
+    ///
+    /// AUTH_SERVICE_ERROR_ListAuthToken
     AuthServiceErrorListAuthToken = 511001,
+    /// AUTH_SERVICE_ERROR_OperateAuthToken
     AuthServiceErrorOperateAuthToken = 511002,
+    /// AUTH_SERVICE_ERROR_BatchOperateAuthToken
     AuthServiceErrorBatchOperateAuthToken = 511003,
     /// auth-service user error
+    ///
+    /// AUTH_SERVICE_ERROR_ListUser
     AuthServiceErrorListUser = 512001,
+    /// AUTH_SERVICE_ERROR_OperateUser
     AuthServiceErrorOperateUser = 512002,
+    /// AUTH_SERVICE_ERROR_BatchOperateUser
     AuthServiceErrorBatchOperateUser = 512003,
     /// auth-service role error
+    ///
+    /// AUTH_SERVICE_ERROR_ListRole
     AuthServiceErrorListRole = 513001,
+    /// AUTH_SERVICE_ERROR_OperateRole
     AuthServiceErrorOperateRole = 513002,
+    /// AUTH_SERVICE_ERROR_BatchOperateRole
     AuthServiceErrorBatchOperateRole = 513003,
     /// auth-service permission error
+    ///
+    /// AUTH_SERVICE_ERROR_ListUserRoleRef
     AuthServiceErrorListUserRoleRef = 514001,
+    /// AUTH_SERVICE_ERROR_OperateUserRoleRef
     AuthServiceErrorOperateUserRoleRef = 514002,
+    /// AUTH_SERVICE_ERROR_BatchOperateUserRoleRef
     AuthServiceErrorBatchOperateUserRoleRef = 514003,
     /// auth-service permission error
+    ///
+    /// AUTH_SERVICE_ERROR_ListPermission
     AuthServiceErrorListPermission = 515001,
+    /// AUTH_SERVICE_ERROR_OperatePermission
     AuthServiceErrorOperatePermission = 515002,
+    /// AUTH_SERVICE_ERROR_BatchOperatePermission
     AuthServiceErrorBatchOperatePermission = 515003,
     /// public-service label error
+    ///
+    /// PUBLIC_SERVICE_ERROR_ListLabel
     PublicServiceErrorListLabel = 520001,
+    /// PUBLIC_SERVICE_ERROR_OperateLabel
     PublicServiceErrorOperateLabel = 520002,
+    /// PUBLIC_SERVICE_ERROR_BatchOperateLabel
     PublicServiceErrorBatchOperateLabel = 520003,
     /// public-service folder error
+    ///
+    /// PUBLIC_SERVICE_ERROR_ListFolder
     PublicServiceErrorListFolder = 521001,
+    /// PUBLIC_SERVICE_ERROR_OperateFolder
     PublicServiceErrorOperateFolder = 521002,
+    /// PUBLIC_SERVICE_ERROR_BatchOperateFolder
     PublicServiceErrorBatchOperateFolder = 521003,
     /// public-service trans error
+    ///
+    /// PUBLIC_SERVICE_ERROR_TransCurl
     PublicServiceErrorTransCurl = 522001,
     /// note-service note error
+    ///
+    /// NOTE_SERVICE_ERROR_ListNote
     NoteServiceErrorListNote = 530001,
+    /// NOTE_SERVICE_ERROR_OperateNote
     NoteServiceErrorOperateNote = 530002,
+    /// NOTE_SERVICE_ERROR_BatchOperateNote
     NoteServiceErrorBatchOperateNote = 530003,
     /// note-service note-label error
+    ///
+    /// NOTE_SERVICE_ERROR_ListNoteLabel
     NoteServiceErrorListNoteLabel = 531001,
+    /// NOTE_SERVICE_ERROR_OperateNoteLabel
     NoteServiceErrorOperateNoteLabel = 531002,
+    /// NOTE_SERVICE_ERROR_BatchOperateNoteLabel
     NoteServiceErrorBatchOperateNoteLabel = 531003,
     /// note-service note-topic error
+    ///
+    /// NOTE_SERVICE_ERROR_ListNoteTopic
     NoteServiceErrorListNoteTopic = 532001,
+    /// NOTE_SERVICE_ERROR_OperateNoteTopic
     NoteServiceErrorOperateNoteTopic = 532002,
+    /// NOTE_SERVICE_ERROR_BatchOperateNoteTopic
     NoteServiceErrorBatchOperateNoteTopic = 532003,
 }
 impl ECode {
@@ -119,6 +195,11 @@ impl ECode {
             ECode::UserParamsErrorNameInvalid => "USER_PARAMS_ERROR_NameInvalid",
             ECode::UserParamsErrorUsernameInvalid => "USER_PARAMS_ERROR_UsernameInvalid",
             ECode::UserParamsErrorPasswordInvalid => "USER_PARAMS_ERROR_PasswordInvalid",
+            ECode::SourceParamsErrorSourceInvalid => "SOURCE_PARAMS_ERROR_SourceInvalid",
+            ECode::FolderParamsErrorNameRequired => "FOLDER_PARAMS_ERROR_NameRequired",
+            ECode::LabelParamsErrorNameRequired => "LABEL_PARAMS_ERROR_NameRequired",
+            ECode::NoteParamsErrorTitleRequired => "NOTE_PARAMS_ERROR_TitleRequired",
+            ECode::NoteParamsErrorTitleInvalid => "NOTE_PARAMS_ERROR_TitleInvalid",
             ECode::SystemInternalError => "SYSTEM_INTERNAL_ERROR",
             ECode::SystemErrorUnimplemented => "SYSTEM_ERROR_Unimplemented",
             ECode::AuthServiceErrorListAccess => "AUTH_SERVICE_ERROR_ListAccess",
@@ -222,6 +303,15 @@ impl ECode {
             "USER_PARAMS_ERROR_PasswordInvalid" => {
                 Some(Self::UserParamsErrorPasswordInvalid)
             }
+            "SOURCE_PARAMS_ERROR_SourceInvalid" => {
+                Some(Self::SourceParamsErrorSourceInvalid)
+            }
+            "FOLDER_PARAMS_ERROR_NameRequired" => {
+                Some(Self::FolderParamsErrorNameRequired)
+            }
+            "LABEL_PARAMS_ERROR_NameRequired" => Some(Self::LabelParamsErrorNameRequired),
+            "NOTE_PARAMS_ERROR_TitleRequired" => Some(Self::NoteParamsErrorTitleRequired),
+            "NOTE_PARAMS_ERROR_TitleInvalid" => Some(Self::NoteParamsErrorTitleInvalid),
             "SYSTEM_INTERNAL_ERROR" => Some(Self::SystemInternalError),
             "SYSTEM_ERROR_Unimplemented" => Some(Self::SystemErrorUnimplemented),
             "AUTH_SERVICE_ERROR_ListAccess" => Some(Self::AuthServiceErrorListAccess),
@@ -377,18 +467,10 @@ pub struct Sort {
     #[prost(enumeration = "SortDirection", tag = "2")]
     pub direction: i32,
 }
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct HttpHeader {
-    #[prost(string, tag = "1")]
-    pub key: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub value: ::prost::alloc::string::String,
-}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum RangeScope {
-    /// 含左右
+    /// 默认
     RangeAll = 0,
     /// 含左
     RangeLeft = 1,
@@ -420,8 +502,11 @@ impl RangeScope {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum BooleanScope {
+    /// 默认
     BoolAll = 0,
+    /// FALSE
     BoolFalse = 1,
+    /// TRUE
     BoolTrue = 2,
 }
 impl BooleanScope {
@@ -511,96 +596,36 @@ impl Operation {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
-pub enum HttpMethod {
-    /// 方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据
-    Get = 0,
-    /// 方法请求一个与 GET 请求的响应相同的响应，但没有响应体
-    Head = 1,
-    /// 方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用
-    Post = 2,
-    /// 方法用请求有效载荷替换目标资源的所有当前表示
-    Put = 3,
-    /// 方法删除指定的资源
-    Delete = 4,
-    /// 方法建立一个到由目标资源标识的服务器的隧道
-    Connect = 5,
-    /// 方法用于描述目标资源的通信选项
-    Option = 6,
-    /// 方法用于对资源应用部分修改
-    Patch = 7,
-    /// 方法沿着到目标资源的路径执行一个消息环回测试
-    Trace = 8,
+pub enum Source {
+    /// 公共
+    Public = 0,
+    /// 用户
+    User = 1,
+    /// 笔记
+    Note = 2,
+    /// 文件
+    File = 3,
 }
-impl HttpMethod {
+impl Source {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            HttpMethod::Get => "GET",
-            HttpMethod::Head => "HEAD",
-            HttpMethod::Post => "POST",
-            HttpMethod::Put => "PUT",
-            HttpMethod::Delete => "DELETE",
-            HttpMethod::Connect => "CONNECT",
-            HttpMethod::Option => "OPTION",
-            HttpMethod::Patch => "PATCH",
-            HttpMethod::Trace => "TRACE",
+            Source::Public => "Public",
+            Source::User => "User",
+            Source::Note => "Note",
+            Source::File => "File",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
-            "GET" => Some(Self::Get),
-            "HEAD" => Some(Self::Head),
-            "POST" => Some(Self::Post),
-            "PUT" => Some(Self::Put),
-            "DELETE" => Some(Self::Delete),
-            "CONNECT" => Some(Self::Connect),
-            "OPTION" => Some(Self::Option),
-            "PATCH" => Some(Self::Patch),
-            "TRACE" => Some(Self::Trace),
-            _ => None,
-        }
-    }
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum HttpProtocol {
-    /// http
-    Http = 0,
-    /// https
-    Https = 1,
-    /// http/2.0
-    Grpc = 2,
-    /// websocket
-    Ws = 3,
-    /// websockets
-    Wss = 4,
-}
-impl HttpProtocol {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            HttpProtocol::Http => "HTTP",
-            HttpProtocol::Https => "HTTPS",
-            HttpProtocol::Grpc => "GRPC",
-            HttpProtocol::Ws => "WS",
-            HttpProtocol::Wss => "WSS",
-        }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "HTTP" => Some(Self::Http),
-            "HTTPS" => Some(Self::Https),
-            "GRPC" => Some(Self::Grpc),
-            "WS" => Some(Self::Ws),
-            "WSS" => Some(Self::Wss),
+            "Public" => Some(Self::Public),
+            "User" => Some(Self::User),
+            "Note" => Some(Self::Note),
+            "File" => Some(Self::File),
             _ => None,
         }
     }

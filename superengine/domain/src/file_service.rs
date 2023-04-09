@@ -54,6 +54,8 @@ pub struct FileFilter {
     pub creators: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "105")]
     pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
     #[prost(message, optional, tag = "201")]
     pub keywords: ::core::option::Option<file_filter::Keywords>,
 }

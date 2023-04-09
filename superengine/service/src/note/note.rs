@@ -65,6 +65,12 @@ impl<'a> Business<'a> {
 
         // 筛选
         if let Some(filter) = filter {
+            query = match filter.deleted() {
+                BooleanScope::BoolAll => query,
+                BooleanScope::BoolFalse => query.filter(Column::DeleteTime.gt(0)),
+                BooleanScope::BoolTrue => query.filter(Column::DeleteTime.eq(0)),
+            };
+            
             query = match filter.public_select() {
                 BooleanScope::BoolAll => query,
                 BooleanScope::BoolFalse => query.filter(Column::Public.eq(false)),

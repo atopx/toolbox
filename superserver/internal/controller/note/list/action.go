@@ -1,8 +1,8 @@
 package list
 
 import (
-	"superserver/common/system"
 	"superserver/domain/note_service"
+	"superserver/domain/public/common"
 	"superserver/domain/public/ecode"
 	"superserver/service/note_client"
 )
@@ -14,8 +14,8 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		// TODO 查笔记-标签关系 note_label
 	}
 
-	listNoteReply, code := note_client.ListNote(c.Context, &note_service.ListNoteParams{
-		Header: system.NewServiceHeader(c.Header),
+	listNoteReply, code := note_client.ListNote(c.Context(), &note_service.ListNoteParams{
+		Header: c.NewServiceHeader(),
 		Pager:  params.Pager,
 		Sorts:  params.Sorts,
 		Filter: &note_service.NoteFilter{
@@ -23,6 +23,7 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 			TopicIds:     params.Filter.TopicIds,
 			PublicSelect: params.Filter.PublicSelect,
 			Keywords:     &note_service.NoteFilter_Keywords{Keyword: params.Filter.Keyword},
+			Deleted:      common.BooleanScope_BOOL_FALSE,
 		},
 	})
 	if code != ecode.ECode_SUCCESS {
@@ -31,7 +32,10 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 
 	reply := Reply{
 		Pager: listNoteReply.Pager,
-		Notes: listNoteReply.Data,
+		List:  []*note_service.Note{},
+	}
+	if listNoteReply.Data != nil {
+		reply.List = listNoteReply.Data
 	}
 	return reply, ecode.ECode_SUCCESS
 }

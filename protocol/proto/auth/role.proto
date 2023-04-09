@@ -33,6 +33,8 @@ message RoleFilter {
     repeated int32 creators = 104;
     repeated int32 updaters = 105;
 
+    public.BooleanScope deleted = 500;
+
     Keywords keywords = 201;
     message Keywords {
         string name = 1;

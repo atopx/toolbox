@@ -29,6 +29,8 @@ message UserFilter {
     public.BetweenInt64 delete_time_range = 101;
     public.BetweenInt64 create_time_range = 102;
     public.BetweenInt64 update_time_range = 103;
+
+    public.BooleanScope deleted = 500;
 }
 
 message ListUserParams {

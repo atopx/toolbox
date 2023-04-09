@@ -52,6 +52,8 @@ message ComputerFilter {
     public.BetweenInt64 update_time_range = 103;
     repeated int32 creators = 104;
     repeated int32 updaters = 105;
+
+    public.BooleanScope deleted = 500;
 }
 
 message ComputerKeywords {

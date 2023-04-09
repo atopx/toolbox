@@ -1,7 +1,6 @@
 package create
 
 import (
-	"superserver/common/system"
 	"superserver/common/utils"
 	"superserver/domain/auth_service"
 	"superserver/domain/public/common"
@@ -21,8 +20,8 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		return nil, ecode.ECode_USER_PARAMS_ERROR_PasswordRequired
 	}
 
-	listReply, code := auth_client.ListUser(c.Context, &auth_service.ListUserParams{
-		Header: system.NewServiceHeader(c.Header),
+	listReply, code := auth_client.ListUser(c.Context(), &auth_service.ListUserParams{
+		Header: c.NewServiceHeader(),
 		Pager:  &common.Pager{Index: 1, Size: 1},
 		Filter: &auth_service.UserFilter{Usernames: []string{params.Username}},
 	})
@@ -33,8 +32,8 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		return nil, ecode.ECode_USER_PARAMS_ERROR_UsernameExist
 	}
 
-	operateReply, code := auth_client.OperateUser(c.Context, &auth_service.OperateUserParams{
-		Header:  system.NewServiceHeader(c.Header),
+	operateReply, code := auth_client.OperateUser(c.Context(), &auth_service.OperateUserParams{
+		Header:  c.NewServiceHeader(),
 		Operate: common.Operation_OPERATION_CREATE,
 		Data: &auth_service.User{
 			Username: params.Username,

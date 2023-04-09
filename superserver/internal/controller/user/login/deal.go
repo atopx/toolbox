@@ -1,7 +1,6 @@
 package login
 
 import (
-	"superserver/common/system"
 	"superserver/common/utils"
 	"superserver/domain/auth_service"
 	"superserver/domain/public/common"
@@ -18,10 +17,13 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	if params.Password == "" {
 		return nil, ecode.ECode_USER_PARAMS_ERROR_PasswordRequired
 	}
-	listUserReply, code := auth_client.ListUser(c.Context, &auth_service.ListUserParams{
-		Header: system.NewServiceHeader(c.Header),
+	listUserReply, code := auth_client.ListUser(c.Context(), &auth_service.ListUserParams{
+		Header: c.NewServiceHeader(),
 		Pager:  &common.Pager{Index: 1, Size: 1},
-		Filter: &auth_service.UserFilter{Usernames: []string{params.Username}},
+		Filter: &auth_service.UserFilter{
+			Usernames: []string{params.Username},
+			Deleted:   common.BooleanScope_BOOL_FALSE,
+		},
 	})
 	if code != ecode.ECode_SUCCESS {
 		return nil, code
@@ -35,10 +37,13 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		return nil, ecode.ECode_USER_PARAMS_ERROR_PasswordInvalid
 	}
 
-	listTokenReply, code := auth_client.ListAuthToken(c.Context, &auth_service.ListAuthTokenParams{
-		Header: system.NewServiceHeader(c.Header),
+	listTokenReply, code := auth_client.ListAuthToken(c.Context(), &auth_service.ListAuthTokenParams{
+		Header: c.NewServiceHeader(),
 		Pager:  &common.Pager{Index: 1, Size: 1},
-		Filter: &auth_service.AuthTokenFilter{UserIds: []int32{user.Id}},
+		Filter: &auth_service.AuthTokenFilter{
+			UserIds: []int32{user.Id},
+			Deleted: common.BooleanScope_BOOL_FALSE,
+		},
 	})
 	if code != ecode.ECode_SUCCESS {
 		return nil, code
@@ -67,8 +72,8 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	token.AccessToken = utils.SignToken(current, expires, token.ExpireTime)
 	// 使用AccessToken的过期时间加密
 	token.RefreshToken = utils.SignToken(current, current.Add(7*24*time.Hour), token.ExpireTime)
-	_, code = auth_client.OperateAuthToken(c.Context, &auth_service.OperateAuthTokenParams{
-		Header:  system.NewServiceHeader(c.Header),
+	_, code = auth_client.OperateAuthToken(c.Context(), &auth_service.OperateAuthTokenParams{
+		Header:  c.NewServiceHeader(),
 		Operate: common.Operation_OPERATION_UPSERT,
 		Data:    token,
 	})

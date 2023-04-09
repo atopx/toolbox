@@ -2,20 +2,20 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"superserver/internal/controller/note/info"
+	"superserver/internal/controller/note/create"
 	"superserver/internal/controller/note/list"
 )
 
-// NoteInfo
-// @summary 笔记详情
+// NoteCreate
+// @summary 新建笔记
 // @Tags 笔记
 // @Accept json
 // @Produce json
-// @Param param body info.Params true "请求参数"
-// @Response 200 object system.Response{data=info.Reply} "调用成功"
-// @Router /api/note/info [get]
-func (a *Api) NoteInfo(ctx *gin.Context) {
-	a.Scheduler(info.NewController(ctx))
+// @Param param body create.Params true "请求参数"
+// @Response 200 object system.Response{data=create.Reply} "调用成功"
+// @Router /api/note/create [post]
+func (a *Api) NoteCreate(ctx *gin.Context) {
+	a.Scheduler(create.NewController(ctx))
 }
 
 // NoteList

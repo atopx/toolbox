@@ -3,7 +3,7 @@ package public;
 option go_package = "superserver/domain/public/ecode";
 
 enum ECode {
-    SUCCESS = 0; // 默认无错误
+    SUCCESS = 0; // 请求成功
 
 
 
@@ -18,7 +18,7 @@ enum ECode {
 
 
     // access error
-    ACCESS_NotFound = 401001;
+    ACCESS_NotFound = 401001; // 请求资源不存在
     ACCESS_Forbidden = 401002; // 没有访问权限
     ACCESS_Disabled = 401003; // 接口已禁用
 
@@ -28,77 +28,89 @@ enum ECode {
     INVALID_PARAMS = 431000; // 参数异常
 
     // user params error
-    USER_PARAMS_ERROR_NameRequired = 431001;
-    USER_PARAMS_ERROR_UsernameRequired = 431002;
-    USER_PARAMS_ERROR_PasswordRequired = 431003;
-    USER_PARAMS_ERROR_UsernameExist = 431004;
-    USER_PARAMS_ERROR_UserNotFound = 431005;
-    
-    // user login
-    USER_PARAMS_ERROR_NameInvalid = 431006;
-    USER_PARAMS_ERROR_UsernameInvalid = 431007;
-    USER_PARAMS_ERROR_PasswordInvalid = 431008;
+    USER_PARAMS_ERROR_NameRequired = 431001; // 参数缺少昵称
+    USER_PARAMS_ERROR_UsernameRequired = 431002; // 参数缺少用户名
+    USER_PARAMS_ERROR_PasswordRequired = 431003; // 参数缺少密码
+    USER_PARAMS_ERROR_UsernameExist = 431004; // 用户名已存在
+    USER_PARAMS_ERROR_UserNotFound = 431005; // 用户不存在
 
+    // user login
+    USER_PARAMS_ERROR_NameInvalid = 431006; // 无效的用户昵称
+    USER_PARAMS_ERROR_UsernameInvalid = 431007; // 无效的用户名
+    USER_PARAMS_ERROR_PasswordInvalid = 431008; // 无效的密码
+
+    // public source
+    SOURCE_PARAMS_ERROR_SourceInvalid = 432001; // 无效的实体来源
+
+    // public folder
+    FOLDER_PARAMS_ERROR_NameRequired = 433001; // 参数缺少文件夹名称
+
+    // public label
+    LABEL_PARAMS_ERROR_NameRequired = 434001; // 参数缺少文件夹名称
+
+    // note
+    NOTE_PARAMS_ERROR_TitleRequired = 435001; // 参数缺少标题
+    NOTE_PARAMS_ERROR_TitleInvalid = 435002; // 标题无效
 
     // ######### 服务端错误 #########
     SYSTEM_INTERNAL_ERROR = 500000; // 服务异常
     SYSTEM_ERROR_Unimplemented = 500001; // 功能未实现
 
     // auth-service access error
-    AUTH_SERVICE_ERROR_ListAccess = 510001;
-    AUTH_SERVICE_ERROR_OperateAccess = 510002;
-    AUTH_SERVICE_ERROR_BatchOperateAccess = 510003;
+    AUTH_SERVICE_ERROR_ListAccess = 510001; // AUTH_SERVICE_ERROR_ListAccess
+    AUTH_SERVICE_ERROR_OperateAccess = 510002; // AUTH_SERVICE_ERROR_OperateAccess
+    AUTH_SERVICE_ERROR_BatchOperateAccess = 510003; // AUTH_SERVICE_ERROR_BatchOperateAccess
 
     // auth-service token error
-    AUTH_SERVICE_ERROR_ListAuthToken = 511001;
-    AUTH_SERVICE_ERROR_OperateAuthToken = 511002;
-    AUTH_SERVICE_ERROR_BatchOperateAuthToken = 511003;
+    AUTH_SERVICE_ERROR_ListAuthToken = 511001; // AUTH_SERVICE_ERROR_ListAuthToken
+    AUTH_SERVICE_ERROR_OperateAuthToken = 511002; // AUTH_SERVICE_ERROR_OperateAuthToken
+    AUTH_SERVICE_ERROR_BatchOperateAuthToken = 511003; // AUTH_SERVICE_ERROR_BatchOperateAuthToken
 
     // auth-service user error
-    AUTH_SERVICE_ERROR_ListUser = 512001;
-    AUTH_SERVICE_ERROR_OperateUser = 512002;
-    AUTH_SERVICE_ERROR_BatchOperateUser = 512003;
+    AUTH_SERVICE_ERROR_ListUser = 512001; // AUTH_SERVICE_ERROR_ListUser
+    AUTH_SERVICE_ERROR_OperateUser = 512002; // AUTH_SERVICE_ERROR_OperateUser
+    AUTH_SERVICE_ERROR_BatchOperateUser = 512003; // AUTH_SERVICE_ERROR_BatchOperateUser
 
     // auth-service role error
-    AUTH_SERVICE_ERROR_ListRole = 513001;
-    AUTH_SERVICE_ERROR_OperateRole = 513002;
-    AUTH_SERVICE_ERROR_BatchOperateRole = 513003;
+    AUTH_SERVICE_ERROR_ListRole = 513001; // AUTH_SERVICE_ERROR_ListRole
+    AUTH_SERVICE_ERROR_OperateRole = 513002; // AUTH_SERVICE_ERROR_OperateRole
+    AUTH_SERVICE_ERROR_BatchOperateRole = 513003; // AUTH_SERVICE_ERROR_BatchOperateRole
 
     // auth-service permission error
-    AUTH_SERVICE_ERROR_ListUserRoleRef = 514001;
-    AUTH_SERVICE_ERROR_OperateUserRoleRef = 514002;
-    AUTH_SERVICE_ERROR_BatchOperateUserRoleRef = 514003;
+    AUTH_SERVICE_ERROR_ListUserRoleRef = 514001; // AUTH_SERVICE_ERROR_ListUserRoleRef
+    AUTH_SERVICE_ERROR_OperateUserRoleRef = 514002; // AUTH_SERVICE_ERROR_OperateUserRoleRef
+    AUTH_SERVICE_ERROR_BatchOperateUserRoleRef = 514003; // AUTH_SERVICE_ERROR_BatchOperateUserRoleRef
 
     // auth-service permission error
-    AUTH_SERVICE_ERROR_ListPermission = 515001;
-    AUTH_SERVICE_ERROR_OperatePermission = 515002;
-    AUTH_SERVICE_ERROR_BatchOperatePermission = 515003;
+    AUTH_SERVICE_ERROR_ListPermission = 515001; // AUTH_SERVICE_ERROR_ListPermission
+    AUTH_SERVICE_ERROR_OperatePermission = 515002; // AUTH_SERVICE_ERROR_OperatePermission
+    AUTH_SERVICE_ERROR_BatchOperatePermission = 515003; // AUTH_SERVICE_ERROR_BatchOperatePermission
 
     // public-service label error
-    PUBLIC_SERVICE_ERROR_ListLabel = 520001;
-    PUBLIC_SERVICE_ERROR_OperateLabel = 520002;
-    PUBLIC_SERVICE_ERROR_BatchOperateLabel = 520003;
+    PUBLIC_SERVICE_ERROR_ListLabel = 520001; // PUBLIC_SERVICE_ERROR_ListLabel
+    PUBLIC_SERVICE_ERROR_OperateLabel = 520002; // PUBLIC_SERVICE_ERROR_OperateLabel
+    PUBLIC_SERVICE_ERROR_BatchOperateLabel = 520003; // PUBLIC_SERVICE_ERROR_BatchOperateLabel
 
     // public-service folder error
-    PUBLIC_SERVICE_ERROR_ListFolder = 521001;
-    PUBLIC_SERVICE_ERROR_OperateFolder = 521002;
-    PUBLIC_SERVICE_ERROR_BatchOperateFolder = 521003;
+    PUBLIC_SERVICE_ERROR_ListFolder = 521001; // PUBLIC_SERVICE_ERROR_ListFolder
+    PUBLIC_SERVICE_ERROR_OperateFolder = 521002; // PUBLIC_SERVICE_ERROR_OperateFolder
+    PUBLIC_SERVICE_ERROR_BatchOperateFolder = 521003; // PUBLIC_SERVICE_ERROR_BatchOperateFolder
 
     // public-service trans error
-    PUBLIC_SERVICE_ERROR_TransCurl = 522001;
+    PUBLIC_SERVICE_ERROR_TransCurl = 522001; // PUBLIC_SERVICE_ERROR_TransCurl
 
     // note-service note error
-    NOTE_SERVICE_ERROR_ListNote = 530001;
-    NOTE_SERVICE_ERROR_OperateNote = 530002;
-    NOTE_SERVICE_ERROR_BatchOperateNote = 530003;
+    NOTE_SERVICE_ERROR_ListNote = 530001; // NOTE_SERVICE_ERROR_ListNote
+    NOTE_SERVICE_ERROR_OperateNote = 530002; // NOTE_SERVICE_ERROR_OperateNote
+    NOTE_SERVICE_ERROR_BatchOperateNote = 530003; // NOTE_SERVICE_ERROR_BatchOperateNote
 
     // note-service note-label error
-    NOTE_SERVICE_ERROR_ListNoteLabel = 531001;
-    NOTE_SERVICE_ERROR_OperateNoteLabel = 531002;
-    NOTE_SERVICE_ERROR_BatchOperateNoteLabel = 531003;
+    NOTE_SERVICE_ERROR_ListNoteLabel = 531001; // NOTE_SERVICE_ERROR_ListNoteLabel
+    NOTE_SERVICE_ERROR_OperateNoteLabel = 531002; // NOTE_SERVICE_ERROR_OperateNoteLabel
+    NOTE_SERVICE_ERROR_BatchOperateNoteLabel = 531003; // NOTE_SERVICE_ERROR_BatchOperateNoteLabel
 
     // note-service note-topic error
-    NOTE_SERVICE_ERROR_ListNoteTopic = 532001;
-    NOTE_SERVICE_ERROR_OperateNoteTopic = 532002;
-    NOTE_SERVICE_ERROR_BatchOperateNoteTopic = 532003;
+    NOTE_SERVICE_ERROR_ListNoteTopic = 532001; // NOTE_SERVICE_ERROR_ListNoteTopic
+    NOTE_SERVICE_ERROR_OperateNoteTopic = 532002; // NOTE_SERVICE_ERROR_OperateNoteTopic
+    NOTE_SERVICE_ERROR_BatchOperateNoteTopic = 532003; // NOTE_SERVICE_ERROR_BatchOperateNoteTopic
 }

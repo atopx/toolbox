@@ -45,6 +45,8 @@ pub struct NoteLabelFilter {
     pub creators: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "105")]
     pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -163,6 +165,8 @@ pub struct NoteFilter {
     pub creators: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "105")]
     pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
     #[prost(message, optional, tag = "201")]
     pub keywords: ::core::option::Option<note_filter::Keywords>,
 }
@@ -273,6 +277,8 @@ pub struct NoteTopicFilter {
     pub creators: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "105")]
     pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
     #[prost(message, optional, tag = "201")]
     pub keywords: ::core::option::Option<note_topic_filter::Keywords>,
 }

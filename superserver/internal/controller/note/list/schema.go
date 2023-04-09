@@ -30,5 +30,5 @@ type Params struct {
 
 type Reply struct {
 	Pager *common.Pager        `json:"pager"`
-	Notes []*note_service.Note `json:"notes"`
+	List  []*note_service.Note `json:"list"`
 }

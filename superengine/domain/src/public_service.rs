@@ -53,6 +53,8 @@ pub struct FolderFilter {
     pub creators: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "105")]
     pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
     #[prost(message, optional, tag = "201")]
     pub keywords: ::core::option::Option<folder_filter::Keywords>,
 }
@@ -168,6 +170,8 @@ pub struct LabelFilter {
     pub creators: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "105")]
     pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
     #[prost(message, optional, tag = "201")]
     pub keywords: ::core::option::Option<label_filter::Keywords>,
 }
@@ -236,117 +240,6 @@ pub struct BatchOperateLabelReply {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::ReplyHeader>,
 }
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Url {
-    #[prost(enumeration = "super::public::HttpProtocol", tag = "1")]
-    pub protocol: i32,
-    #[prost(string, tag = "2")]
-    pub host: ::prost::alloc::string::String,
-    #[prost(uint32, tag = "3")]
-    pub port: u32,
-    #[prost(string, tag = "4")]
-    pub name: ::prost::alloc::string::String,
-    #[prost(string, tag = "5")]
-    pub pass: ::prost::alloc::string::String,
-    #[prost(string, tag = "6")]
-    pub uri: ::prost::alloc::string::String,
-    #[prost(string, tag = "7")]
-    pub query_string: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CurlInfo {
-    #[prost(message, optional, tag = "1")]
-    pub url: ::core::option::Option<Url>,
-    #[prost(enumeration = "super::public::HttpMethod", tag = "2")]
-    pub method: i32,
-    #[prost(message, repeated, tag = "3")]
-    pub headers: ::prost::alloc::vec::Vec<super::public::HttpHeader>,
-    #[prost(string, tag = "4")]
-    pub body: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Transform {
-    #[prost(string, tag = "1")]
-    pub value: ::prost::alloc::string::String,
-    #[prost(enumeration = "TransType", tag = "2")]
-    pub from: i32,
-    #[prost(enumeration = "TransType", tag = "3")]
-    pub to: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TransferParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<Transform>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TransferReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(string, tag = "2")]
-    pub data: ::prost::alloc::string::String,
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum TransType {
-    /// 结构语言
-    Json = 0,
-    Yaml = 1,
-    Toml = 2,
-    Sql = 3,
-    Xml = 4,
-    Protobuf = 5,
-    /// 编程语言
-    Golang = 101,
-    Rust = 102,
-    Java = 103,
-    Python = 104,
-    Typescript = 105,
-}
-impl TransType {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            TransType::Json => "JSON",
-            TransType::Yaml => "YAML",
-            TransType::Toml => "TOML",
-            TransType::Sql => "SQL",
-            TransType::Xml => "XML",
-            TransType::Protobuf => "PROTOBUF",
-            TransType::Golang => "GOLANG",
-            TransType::Rust => "RUST",
-            TransType::Java => "JAVA",
-            TransType::Python => "PYTHON",
-            TransType::Typescript => "TYPESCRIPT",
-        }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "JSON" => Some(Self::Json),
-            "YAML" => Some(Self::Yaml),
-            "TOML" => Some(Self::Toml),
-            "SQL" => Some(Self::Sql),
-            "XML" => Some(Self::Xml),
-            "PROTOBUF" => Some(Self::Protobuf),
-            "GOLANG" => Some(Self::Golang),
-            "RUST" => Some(Self::Rust),
-            "JAVA" => Some(Self::Java),
-            "PYTHON" => Some(Self::Python),
-            "TYPESCRIPT" => Some(Self::Typescript),
-            _ => None,
-        }
-    }
-}
 /// Generated server implementations.
 pub mod public_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
@@ -392,11 +285,6 @@ pub mod public_service_server {
             tonic::Response<super::BatchOperateFolderReply>,
             tonic::Status,
         >;
-        /// 工具类
-        async fn transfer(
-            &self,
-            request: tonic::Request<super::TransferParams>,
-        ) -> std::result::Result<tonic::Response<super::TransferReply>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct PublicServiceServer<T: PublicService> {
@@ -734,50 +622,6 @@ pub mod public_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = BatchOperateFolderSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/public_service.PublicService/Transfer" => {
-                    #[allow(non_camel_case_types)]
-                    struct TransferSvc<T: PublicService>(pub Arc<T>);
-                    impl<
-                        T: PublicService,
-                    > tonic::server::UnaryService<super::TransferParams>
-                    for TransferSvc<T> {
-                        type Response = super::TransferReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::TransferParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).transfer(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = TransferSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

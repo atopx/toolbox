@@ -1,10 +1,9 @@
-use axum::{
-    routing::{get, post},
-    http::StatusCode,
-    Json, Router,
-};
-use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
+use std::str::FromStr;
+
+use axum::{Router, routing::get};
+
+mod meta;
 
 #[tokio::main]
 async fn main() {
@@ -16,13 +15,12 @@ async fn main() {
 
     // build our application with a route
     let app = Router::new()
-        // `GET /` goes to `root`
         .route("/ping", get(ping))
-        // `POST /users` goes to `create_user`
-        .route("/users", post(create_user));
+        .route("/enum/:name", get(meta::meta_handler));
 
     // run our app with hyper
-    let addr = SocketAddr::from(([127, 0, 0, 1], 18050));
+    let config = common::config::Config::load();
+    let addr = SocketAddr::from_str(config.api_addr.as_str()).unwrap();
     tracing::info!("listening on {}", addr);
 
     axum::Server::bind(&addr)
@@ -31,29 +29,8 @@ async fn main() {
         .unwrap();
 }
 
+
 // basic handler that responds with a static string
 async fn ping() -> &'static str {
-    return "pong";
-}
-
-async fn create_user(
-    Json(payload): Json<CreateUser>,
-) -> (StatusCode, Json<User>) {
-    return (StatusCode::CREATED, Json(User {
-        id: 1337,
-        username: payload.username,
-    }));
-}
-
-// the input to our `create_user` handler
-#[derive(Deserialize)]
-struct CreateUser {
-    username: String,
-}
-
-// the output to our `create_user` handler
-#[derive(Serialize)]
-struct User {
-    id: u64,
-    username: String,
+    "pong"
 }

@@ -1,6 +1,7 @@
 pub struct Config {
     pub db_url: String,
     pub srv_addr: String,
+    pub api_addr: String,
 }
 
 impl Config {
@@ -9,6 +10,7 @@ impl Config {
         Self {
             db_url: std::env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file"),
             srv_addr: std::env::var("SERVICE_ADDR").expect("SERVICE_ADDR is not set in .env file"),
+            api_addr: std::env::var("OPENAPI_ADDR").expect("OPENAPI_ADDR is not set in .env file"),
         }
     }
 }

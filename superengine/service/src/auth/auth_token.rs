@@ -5,7 +5,7 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTr
 use sea_orm::ActiveValue::Set;
 
 use domain::{public, auth_service};
-use domain::public::{ECode, Operation};
+use domain::public::{BooleanScope, ECode, Operation};
 use model::auth_token::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {
@@ -59,6 +59,11 @@ impl<'a> Business<'a> {
 
         // 筛选
         if let Some(filter) = filter {
+            query = match filter.deleted() {
+                BooleanScope::BoolAll => query,
+                BooleanScope::BoolFalse => query.filter(Column::DeleteTime.gt(0)),
+                BooleanScope::BoolTrue => query.filter(Column::DeleteTime.eq(0)),
+            };
             if filter.ids.is_empty().not() {
                 query = query.filter(Column::Id.is_in(filter.ids));
             }

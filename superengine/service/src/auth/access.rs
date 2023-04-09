@@ -4,7 +4,7 @@ use std::str::FromStr;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, sea_query};
 use sea_orm::ActiveValue::Set;
 
-use domain::{public, auth_service};
+use domain::{auth_service, public};
 use domain::public::{ECode, Operation};
 use model::access::{ActiveModel, Column, Entity, Model};
 
