@@ -19,12 +19,16 @@ func Register(engine *gin.Engine) *Api {
 
 func (a *Api) RouteUser() {
 	group := a.router.Group("/user")
-	{
-		group.POST("/create", a.UserCreate)
-		group.POST("/login", a.UserLogin)
-		group.POST("/refresh", a.UserRefresh)
-		group.GET("/info", a.UserInfo)
-	}
+	group.POST("/create", a.UserCreate)
+	group.POST("/login", a.UserLogin)
+	group.POST("/refresh", a.UserRefresh)
+	group.GET("/info", a.UserInfo)
+}
+
+func (a *Api) RouteNote() {
+	group := a.router.Group("/note")
+	group.GET("/info", a.NoteInfo)
+	group.GET("/list", a.NoteList)
 }
 
 func (a *Api) Scheduler(ctl controller.Iface) { ctl.About(ctl.Deal()) }

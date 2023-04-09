@@ -1,4 +1,63 @@
 definitions:
+  auth_service.User:
+    properties:
+      create_time:
+        description: 创建时间 时间戳：秒
+        type: integer
+      delete_time:
+        description: 删除时间 时间戳：秒
+        type: integer
+      id:
+        type: integer
+      password:
+        type: string
+      status:
+        $ref: '#/definitions/auth_service.UserStatus'
+      update_time:
+        description: 最后更新时间 时间戳：秒
+        type: integer
+      username:
+        type: string
+    type: object
+  auth_service.UserStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      UserStatus_USER_NORMAL: 正常
+      UserStatus_USER_STATUS_BLACK: 黑名单
+      UserStatus_USER_STATUS_DISABLED: 禁用
+    x-enum-varnames:
+    - UserStatus_USER_NORMAL
+    - UserStatus_USER_STATUS_DISABLED
+    - UserStatus_USER_STATUS_BLACK
+  common.BooleanScope:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - BooleanScope_BOOL_ALL
+    - BooleanScope_BOOL_FALSE
+    - BooleanScope_BOOL_TRUE
+  common.Pager:
+    properties:
+      count:
+        description: 总数量
+        type: integer
+      disabled:
+        description: 禁用分页
+        type: boolean
+      index:
+        description: 页码
+        type: integer
+      size:
+        description: 数量
+        type: integer
+    type: object
   common.ReplyHeader:
     properties:
       code:
@@ -8,6 +67,21 @@ definitions:
       trace_id:
         type: integer
     type: object
+  common.Sort:
+    properties:
+      direction:
+        $ref: '#/definitions/common.SortDirection'
+      field:
+        type: string
+    type: object
+  common.SortDirection:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - SortDirection_SORT_ASC
+    - SortDirection_SORT_DESC
   create.Params:
     properties:
       name:
@@ -57,6 +131,22 @@ definitions:
     - 515001
     - 515002
     - 515003
+    - 520001
+    - 520002
+    - 520003
+    - 521001
+    - 521002
+    - 521003
+    - 522001
+    - 530001
+    - 530002
+    - 530003
+    - 531001
+    - 531002
+    - 531003
+    - 532001
+    - 532002
+    - 532003
     type: integer
     x-enum-comments:
       ECode_ACCESS_Disabled: 接口已禁用
@@ -109,7 +199,65 @@ definitions:
     - ECode_AUTH_SERVICE_ERROR_ListPermission
     - ECode_AUTH_SERVICE_ERROR_OperatePermission
     - ECode_AUTH_SERVICE_ERROR_BatchOperatePermission
-  info.Params:
+    - ECode_PUBLIC_SERVICE_ERROR_ListLabel
+    - ECode_PUBLIC_SERVICE_ERROR_OperateLabel
+    - ECode_PUBLIC_SERVICE_ERROR_BatchOperateLabel
+    - ECode_PUBLIC_SERVICE_ERROR_ListFolder
+    - ECode_PUBLIC_SERVICE_ERROR_OperateFolder
+    - ECode_PUBLIC_SERVICE_ERROR_BatchOperateFolder
+    - ECode_PUBLIC_SERVICE_ERROR_TransCurl
+    - ECode_NOTE_SERVICE_ERROR_ListNote
+    - ECode_NOTE_SERVICE_ERROR_OperateNote
+    - ECode_NOTE_SERVICE_ERROR_BatchOperateNote
+    - ECode_NOTE_SERVICE_ERROR_ListNoteLabel
+    - ECode_NOTE_SERVICE_ERROR_OperateNoteLabel
+    - ECode_NOTE_SERVICE_ERROR_BatchOperateNoteLabel
+    - ECode_NOTE_SERVICE_ERROR_ListNoteTopic
+    - ECode_NOTE_SERVICE_ERROR_OperateNoteTopic
+    - ECode_NOTE_SERVICE_ERROR_BatchOperateNoteTopic
+  info.Role:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  list.Params:
+    properties:
+      filter:
+        properties:
+          folder_ids:
+            items:
+              type: integer
+            type: array
+          keyword:
+            type: string
+          label_ids:
+            items:
+              type: integer
+            type: array
+          public_elect:
+            $ref: '#/definitions/common.BooleanScope'
+          topic_ids:
+            items:
+              type: integer
+            type: array
+        type: object
+      pager:
+        $ref: '#/definitions/common.Pager'
+      sorts:
+        items:
+          $ref: '#/definitions/common.Sort'
+        type: array
+    type: object
+  list.Reply:
+    properties:
+      notes:
+        items:
+          $ref: '#/definitions/note_service.Note'
+        type: array
+      pager:
+        $ref: '#/definitions/common.Pager'
     type: object
   login.Params:
     properties:
@@ -118,9 +266,160 @@ definitions:
       username:
         type: string
     type: object
+  login.Reply:
+    properties:
+      access_token:
+        type: string
+      expires:
+        type: integer
+      name:
+        type: string
+      refresh_token:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  note_service.Note:
+    properties:
+      content:
+        description: 笔记内容
+        type: string
+      create_time:
+        description: 创建时间 时间戳：秒
+        type: integer
+      creator:
+        description: 创建人
+        type: integer
+      delete_time:
+        description: 删除时间 时间戳：秒
+        type: integer
+      folder_id:
+        description: 文件夹ID
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      public:
+        description: 公开的
+        type: boolean
+      sign:
+        description: 签名:内容+时间
+        type: string
+      title:
+        description: 标题
+        type: string
+      topic_id:
+        description: 主题ID
+        type: integer
+      update_time:
+        description: 最后更新时间 时间戳：秒
+        type: integer
+      updater:
+        description: 更新人
+        type: integer
+    type: object
+  note_service.NoteTopic:
+    properties:
+      create_time:
+        description: 创建时间 时间戳：秒
+        type: integer
+      creator:
+        description: 创建人
+        type: integer
+      delete_time:
+        description: 删除时间 时间戳：秒
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      name:
+        description: 名称
+        type: string
+      update_time:
+        description: 最后更新时间 时间戳：秒
+        type: integer
+      updater:
+        description: 更新人
+        type: integer
+    type: object
+  public_service.Label:
+    properties:
+      create_time:
+        description: 创建时间 时间戳：秒
+        type: integer
+      creator:
+        description: 创建人
+        type: integer
+      delete_time:
+        description: 删除时间 时间戳：秒
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      name:
+        description: 名称
+        type: string
+      source:
+        description: 来源,枚举
+        type: integer
+      update_time:
+        description: 最后更新时间 时间戳：秒
+        type: integer
+      updater:
+        description: 更新人
+        type: integer
+    type: object
   refresh.Params:
     properties:
       refresh_token:
+        type: string
+    type: object
+  refresh.Reply:
+    properties:
+      access_token:
+        type: string
+      expires:
+        type: integer
+      refresh_token:
+        type: string
+    type: object
+  superserver_internal_controller_note_info.Params:
+    properties:
+      noteId:
+        type: integer
+    type: object
+  superserver_internal_controller_note_info.Reply:
+    properties:
+      labels:
+        items:
+          $ref: '#/definitions/public_service.Label'
+        type: array
+      note:
+        $ref: '#/definitions/note_service.Note'
+      topic:
+        $ref: '#/definitions/note_service.NoteTopic'
+    type: object
+  superserver_internal_controller_user_info.Params:
+    type: object
+  superserver_internal_controller_user_info.Reply:
+    properties:
+      create_time:
+        type: integer
+      id:
+        type: integer
+      login_time:
+        type: integer
+      name:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/info.Role'
+        type: array
+      update_time:
+        type: integer
+      username:
         type: string
     type: object
   system.Response:
@@ -153,6 +452,58 @@ paths:
       summary: ping
       tags:
       - Basic
+  /api/note/info:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_note_info.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_note_info.Reply'
+              type: object
+      summary: 笔记详情
+      tags:
+      - 笔记
+  /api/note/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/list.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/list.Reply'
+              type: object
+      summary: 笔记列表
+      tags:
+      - 笔记
   /api/user/create:
     post:
       consumes:
@@ -170,7 +521,12 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/system.Response'
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth_service.User'
+              type: object
       summary: 用户注册
       tags:
       - 用户
@@ -184,14 +540,19 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/info.Params'
+          $ref: '#/definitions/superserver_internal_controller_user_info.Params'
       produces:
       - application/json
       responses:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/system.Response'
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_user_info.Reply'
+              type: object
       summary: 用户详情
       tags:
       - 用户
@@ -212,7 +573,12 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/system.Response'
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/login.Reply'
+              type: object
       summary: 用户登录
       tags:
       - 用户
@@ -233,7 +599,12 @@ paths:
         "200":
           description: 调用成功
           schema:
-            $ref: '#/definitions/system.Response'
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/refresh.Reply'
+              type: object
       summary: 用户刷新AccessToken
       tags:
       - 用户

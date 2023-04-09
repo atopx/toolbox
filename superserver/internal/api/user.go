@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param param body create.Params true "请求参数"
-// @Response 200 object system.Response "调用成功"
+// @Response 200 object system.Response{data=auth_service.User} "调用成功"
 // @Router /api/user/create [post]
 func (a *Api) UserCreate(ctx *gin.Context) {
 	a.Scheduler(create.NewController(ctx))
@@ -26,7 +26,7 @@ func (a *Api) UserCreate(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param param body login.Params true "请求参数"
-// @Response 200 object system.Response "调用成功"
+// @Response 200 object system.Response{data=login.Reply} "调用成功"
 // @Router /api/user/login [post]
 func (a *Api) UserLogin(ctx *gin.Context) {
 	a.Scheduler(login.NewController(ctx))
@@ -38,7 +38,7 @@ func (a *Api) UserLogin(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param param body refresh.Params true "请求参数"
-// @Response 200 object system.Response "调用成功"
+// @Response 200 object system.Response{data=refresh.Reply} "调用成功"
 // @Router /api/user/refresh [post]
 func (a *Api) UserRefresh(ctx *gin.Context) {
 	a.Scheduler(refresh.NewController(ctx))
@@ -50,7 +50,7 @@ func (a *Api) UserRefresh(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param param body info.Params true "请求参数"
-// @Response 200 object system.Response "调用成功"
+// @Response 200 object system.Response{data=info.Reply} "调用成功"
 // @Router /api/user/info [get]
 func (a *Api) UserInfo(ctx *gin.Context) {
 	a.Scheduler(info.NewController(ctx))
