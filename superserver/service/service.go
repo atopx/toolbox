@@ -2,6 +2,7 @@ package service
 
 import (
 	"superserver/domain/auth_service"
+	"superserver/domain/public_service"
 	"superserver/pkg"
 
 	"github.com/spf13/viper"
@@ -10,16 +11,18 @@ import (
 var client *Client
 
 type Client struct {
-	Auth auth_service.AuthServiceClient
+	Auth   auth_service.AuthServiceClient
+	Public public_service.PublicServiceClient
 }
 
 func initClient() {
-	authClient, err := pkg.NewGrpcClient(viper.GetStringSlice("service"))
+	grpcClient, err := pkg.NewGrpcClient(viper.GetStringSlice("service"))
 	if err != nil {
 		panic(err)
 	}
 	client = &Client{
-		Auth: auth_service.NewAuthServiceClient(authClient),
+		Auth:   auth_service.NewAuthServiceClient(grpcClient),
+		Public: public_service.NewPublicServiceClient(grpcClient),
 	}
 }
 
