@@ -128,15 +128,19 @@ create table note
     folder_id   int                           not null comment '文件夹ID',
     topic_id    int          default 0        not null comment '主题ID',
     sign        varchar(64)  default ''       not null comment '签名:内容+时间',
-    title       varchar(128) default '未命名' not null comment '标题',
-    public      bool         default false    not null comment '公开的',
-    content     text                          not null comment '笔记内容',
+    title       varchar(128) default '未命名'  not null comment '标题',
+    public      tinyint(1)   default '0'      not null comment '公开的',
+    content     mediumtext                    not null comment '笔记内容',
     creator     int          default 0        not null comment '创建人',
     updater     int          default 0        not null comment '更新人',
     create_time bigint                        not null comment '创建时间 时间戳：秒',
     update_time bigint                        not null comment '最后更新时间 时间戳：秒',
     delete_time bigint                        not null comment '删除时间 时间戳：秒'
 ) comment '笔记';
+create index folder_idx on note(folder_id);
+create index topic_idx on note(topic_id);
+create fulltext index note_full
+    on note(title, content);
 
 create table note_topic
 (
@@ -170,8 +174,8 @@ create table file
     id          int primary key auto_increment comment '主键',
     folder_id   int                           not null comment '文件夹ID',
     sign        varchar(64)  default ''       not null comment '内容签名',
-    name        varchar(128) default '未命名' not null comment '文件名',
-    public      bool         default false    not null comment '公开的',
+    name        varchar(128) default '未命名'  not null comment '文件名',
+    public      tinyint(1)   default '0'      not null comment '公开的',
     share_url   varchar(128) default ''       not null comment '共享链接',
     creator     int          default 0        not null comment '创建人',
     updater     int          default 0        not null comment '更新人',

@@ -41,7 +41,7 @@ func (srv *Server) InitData() {
 	initInternalRoles(ctx)
 }
 
-// Start 启动api服务
+// Start api服务入口
 func (srv *Server) Start() error {
 	api.Register(srv.engine)
 	srv.InitData()
@@ -53,11 +53,10 @@ func (srv *Server) Start() error {
 		MaxHeaderBytes: 1 << 20,
 	}
 	logger.System("server listen: http://%s", srv.server.Addr)
-	return srv.loop()
+	return srv.listen()
 }
 
-// start 优雅启停
-func (srv *Server) loop() (err error) {
+func (srv *Server) listen() (err error) {
 	errs := make(chan error, 1)
 	go func() {
 		if err = srv.server.ListenAndServe(); err != nil {

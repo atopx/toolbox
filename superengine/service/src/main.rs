@@ -3,6 +3,7 @@ use domain::public_service::public_service_server::PublicServiceServer;
 
 mod auth;
 mod public;
+mod note;
 
 #[tokio::main]
 async fn main() {

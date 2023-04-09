@@ -34,8 +34,8 @@ message NoteFilter {
 
     Keywords keywords = 201;
     message Keywords {
-        string title = 1;
-        string title_and_content = 2;
+        string keyword = 1;
+        string title = 2;
     }
 }
 
