@@ -1,8 +1,11 @@
 # Super - toolbox
 
+如果该项目对您有所帮助，或者您对该项目感兴趣，请点击右上角`star`, 谢谢。
+
 > a developer's super toolbox, and micro service templates.
 >
 > warn: currently in a fast iteration state
+
 
 ![super-draft](./super-draft.png)
 
