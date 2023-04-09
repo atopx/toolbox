@@ -18,6 +18,12 @@ message NoteTopic {
 message NoteTopicFilter {
     repeated int32 ids = 1;
 
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
+    repeated int32 creators = 104;
+    repeated int32 updaters = 105;
+
     Keywords keywords = 201;
     message Keywords {
         string name = 1;

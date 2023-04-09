@@ -1,3 +1,25 @@
 syntax = "proto3";
 package note_service;
 option go_package = "superserver/domain/note_service";
+
+import "note/note.proto";
+import "note/label.proto";
+import "note/topic.proto";
+
+
+service NoteService {
+    // 笔记
+    rpc ListNote(ListNoteParams) returns(ListNoteReply);
+    rpc OperateNote(OperateNoteParams) returns(OperateNoteReply);
+    rpc BatchOperateNote(BatchOperateNoteParams) returns(BatchOperateNoteReply);
+
+    // 笔记主题
+    rpc ListNoteTopic(ListNoteTopicParams) returns(ListNoteTopicReply);
+    rpc OperateNoteTopic(OperateNoteTopicParams) returns(OperateNoteTopicReply);
+    rpc BatchOperateNoteTopic(BatchOperateNoteTopicParams) returns(BatchOperateNoteTopicReply);
+
+    // 笔记标签
+    rpc ListNoteLabel(ListNoteLabelParams) returns(ListNoteLabelReply);
+    rpc OperateNoteLabel(OperateNoteLabelParams) returns(OperateNoteLabelReply);
+    rpc BatchOperateNoteLabel(BatchOperateNoteLabelParams) returns(BatchOperateNoteLabelReply);
+}

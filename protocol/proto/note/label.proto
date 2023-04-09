@@ -20,6 +20,12 @@ message NoteLabelFilter {
     repeated int32 ids = 1;
     repeated int32 note_ids = 2;
     repeated int32 label_ids = 3;
+
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
+    repeated int32 creators = 104;
+    repeated int32 updaters = 105;
 }
 
 message ListNoteLabelParams {

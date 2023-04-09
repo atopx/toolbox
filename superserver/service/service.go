@@ -2,6 +2,7 @@ package service
 
 import (
 	"superserver/domain/auth_service"
+	"superserver/domain/note_service"
 	"superserver/domain/public_service"
 	"superserver/pkg"
 
@@ -11,8 +12,9 @@ import (
 var client *Client
 
 type Client struct {
-	Auth   auth_service.AuthServiceClient
 	Public public_service.PublicServiceClient
+	Auth   auth_service.AuthServiceClient
+	Note   note_service.NoteServiceClient
 }
 
 func initClient() {
@@ -21,8 +23,9 @@ func initClient() {
 		panic(err)
 	}
 	client = &Client{
-		Auth:   auth_service.NewAuthServiceClient(grpcClient),
 		Public: public_service.NewPublicServiceClient(grpcClient),
+		Auth:   auth_service.NewAuthServiceClient(grpcClient),
+		Note:   note_service.NewNoteServiceClient(grpcClient),
 	}
 }
 

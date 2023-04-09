@@ -5,8 +5,8 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTr
 use sea_orm::ActiveValue::Set;
 
 use domain::{note_service, public};
-use domain::public::{BooleanScope, ECode, Operation};
-use model::note::{ActiveModel, Column, Entity, Model};
+use domain::public::{ECode, Operation};
+use model::note_label::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {
     db: &'a DatabaseConnection,
@@ -19,16 +19,12 @@ impl<'a> Business<'a> {
     }
 
 
-    fn decode(&self, dto: note_service::Note) -> Model {
+    fn decode(&self, dto: note_service::NoteLabel) -> Model {
         let current_time = common::utils::current_timestamp();
         Model {
             id: 0,
-            folder_id: dto.folder_id,
-            topic_id: dto.topic_id,
-            sign: dto.sign,
-            title: dto.title,
-            content: dto.content,
-            public: i8::from(dto.public),
+            note_id: dto.note_id,
+            label_id: dto.label_id,
             creator: self.header.operator,
             updater: self.header.operator,
             create_time: current_time,
@@ -37,15 +33,11 @@ impl<'a> Business<'a> {
         }
     }
 
-    fn encode(&self, model: Model) -> note_service::Note {
-        note_service::Note {
+    fn encode(&self, model: Model) -> note_service::NoteLabel {
+        note_service::NoteLabel {
             id: model.id,
-            folder_id: model.folder_id,
-            topic_id: model.topic_id,
-            sign: model.sign,
-            title: model.title,
-            content: model.content,
-            public: model.public != 0,
+            note_id: model.note_id,
+            label_id: model.label_id,
             creator: self.header.operator,
             updater: self.header.operator,
             delete_time: model.delete_time,
@@ -57,28 +49,22 @@ impl<'a> Business<'a> {
     // 列表筛选
     pub async fn list(
         &self,
-        filter: Option<note_service::NoteFilter>,
+        filter: Option<note_service::NoteLabelFilter>,
         mut sorts: Vec<public::Sort>,
         pager: Option<public::Pager>,
-    ) -> note_service::ListNoteReply {
+    ) -> note_service::ListNoteLabelReply {
         let mut query = Entity::find();
 
         // 筛选
         if let Some(filter) = filter {
-            query = match filter.public_select() {
-                BooleanScope::BoolAll => query,
-                BooleanScope::BoolFalse => query.filter(Column::Public.eq(false)),
-                BooleanScope::BoolTrue => query.filter(Column::Public.eq(true))
-            };
-
             if filter.ids.is_empty().not() {
                 query = query.filter(Column::Id.is_in(filter.ids));
             }
-            if filter.folder_ids.is_empty().not() {
-                query = query.filter(Column::FolderId.is_in(filter.folder_ids))
+            if filter.label_ids.is_empty().not() {
+                query = query.filter(Column::LabelId.is_in(filter.label_ids))
             }
-            if filter.topic_ids.is_empty().not() {
-                query = query.filter(Column::TopicId.is_in(filter.topic_ids))
+            if filter.note_ids.is_empty().not() {
+                query = query.filter(Column::NoteId.is_in(filter.note_ids))
             }
             if filter.creators.is_empty().not() {
                 query = query.filter(Column::Creator.is_in(filter.creators));
@@ -86,7 +72,6 @@ impl<'a> Business<'a> {
             if filter.updaters.is_empty().not() {
                 query = query.filter(Column::Updater.is_in(filter.updaters));
             }
-
             if let Some(range) = filter.create_time_range {
                 query = query.filter(Column::CreateTime.between(range.left, range.right))
             }
@@ -95,19 +80,6 @@ impl<'a> Business<'a> {
             }
             if let Some(range) = filter.delete_time_range {
                 query = query.filter(Column::DeleteTime.between(range.left, range.right))
-            }
-
-            if let Some(keywords) = filter.keywords {
-                if keywords.keyword.is_empty().not() {
-                    query = query.filter(
-                        Column::Title.contains(&keywords.keyword).or(
-                            Column::Content.contains(&keywords.keyword)
-                        )
-                    )
-                }
-                if keywords.title.is_empty().not() {
-                    query = query.filter(Column::Title.contains(&keywords.title))
-                }
             }
         }
 
@@ -143,8 +115,8 @@ impl<'a> Business<'a> {
                 }
                 Err(e) => common::header::err_reply(
                     self.header.trace_id,
-                    ECode::NoteServiceErrorListNote,
-                    format!("list note failed: {}", e),
+                    ECode::NoteServiceErrorListNoteLabel,
+                    format!("list note_label failed: {}", e),
                 ),
             }
         } else {
@@ -157,15 +129,15 @@ impl<'a> Business<'a> {
             common::header::reply(self.header.trace_id)
         };
 
-        note_service::ListNoteReply { header, pager: Some(pager), data: dtos }
+        note_service::ListNoteLabelReply { header, pager: Some(pager), data: dtos }
     }
 
-    pub async fn operate(&self, operate: Operation, data: Option<note_service::Note>) -> note_service::OperateNoteReply {
+    pub async fn operate(&self, operate: Operation, data: Option<note_service::NoteLabel>) -> note_service::OperateNoteLabelReply {
         let (header, data) = match data {
             None => {
                 (common::header::err_reply(
                     self.header.trace_id,
-                    ECode::NoteServiceErrorOperateNote,
+                    ECode::NoteServiceErrorOperateNoteLabel,
                     "missing operate data".to_string(),
                 ), None)
             }
@@ -185,7 +157,7 @@ impl<'a> Business<'a> {
                     Err(e) => {
                         let header = common::header::err_reply(
                             self.header.trace_id,
-                            ECode::NoteServiceErrorOperateNote,
+                            ECode::NoteServiceErrorOperateNoteLabel,
                             format!("{} access failed: {}", operate.as_str_name(), e),
                         );
                         (header, None)
@@ -193,14 +165,14 @@ impl<'a> Business<'a> {
                 }
             }
         };
-        note_service::OperateNoteReply { header, data }
+        note_service::OperateNoteLabelReply { header, data }
     }
 
-    pub async fn batch_operate(&self, operate: Operation, data: Vec<note_service::Note>) -> note_service::BatchOperateNoteReply {
+    pub async fn batch_operate(&self, operate: Operation, data: Vec<note_service::NoteLabel>) -> note_service::BatchOperateNoteLabelReply {
         let header = if data.is_empty() {
             common::header::err_reply(
                 self.header.trace_id,
-                ECode::NoteServiceErrorOperateNote,
+                ECode::NoteServiceErrorOperateNoteLabel,
                 "missing operate data".to_string(),
             )
         } else {
@@ -213,32 +185,28 @@ impl<'a> Business<'a> {
                 Ok(_) => common::header::reply(self.header.trace_id),
                 Err(e) => common::header::err_reply(
                     self.header.trace_id,
-                    ECode::NoteServiceErrorBatchOperateNote,
+                    ECode::NoteServiceErrorBatchOperateNoteLabel,
                     format!("batch {} access failed: {}", operate.as_str_name(), e),
                 )
             }
         };
-        note_service::BatchOperateNoteReply { header }
+        note_service::BatchOperateNoteLabelReply { header }
     }
 
 
     // 插入
-    async fn insert(&self, dto: note_service::Note) -> Result<Option<note_service::Note>, DbErr> {
+    async fn insert(&self, dto: note_service::NoteLabel) -> Result<Option<note_service::NoteLabel>, DbErr> {
         let active: ActiveModel = self.decode(dto).into();
         let model = active.insert(self.db).await?;
         Ok(Some(self.encode(model)))
     }
 
     // 更新
-    async fn update(&self, dto: note_service::Note) -> Result<Option<note_service::Note>, DbErr> {
+    async fn update(&self, dto: note_service::NoteLabel) -> Result<Option<note_service::NoteLabel>, DbErr> {
         let value: Option<Model> = Entity::find_by_id(dto.id).one(self.db).await?;
         let mut active: ActiveModel = value.unwrap().into();
-        active.title = Set(dto.title);
-        active.public = Set(i8::from(dto.public));
-        active.sign = Set(dto.sign);
-        active.topic_id = Set(dto.topic_id);
-        active.folder_id = Set(dto.folder_id);
-        active.content = Set(dto.content);
+        active.note_id = Set(dto.note_id);
+        active.label_id = Set(dto.label_id);
         active.updater = Set(self.header.operator);
         active.update_time = Set(common::utils::current_timestamp());
         let model = active.update(self.db).await?;
@@ -246,7 +214,7 @@ impl<'a> Business<'a> {
     }
 
     // 逻辑删除
-    async fn delete(&self, id: i32) -> Result<Option<note_service::Note>, DbErr> {
+    async fn delete(&self, id: i32) -> Result<Option<note_service::NoteLabel>, DbErr> {
         let value: Option<Model> = Entity::find_by_id(id).one(self.db).await?;
         let mut active: ActiveModel = value.unwrap().into();
         active.delete_time = Set(common::utils::current_timestamp());
@@ -255,28 +223,17 @@ impl<'a> Business<'a> {
     }
 
     // 物理删除
-    async fn delete_real(&self, id: i32) -> Result<Option<note_service::Note>, DbErr> {
+    async fn delete_real(&self, id: i32) -> Result<Option<note_service::NoteLabel>, DbErr> {
         Entity::delete_by_id(id).exec(self.db).await?;
         Ok(None)
     }
 
     // 保存并更新
-    async fn save(&self, mut data: note_service::Note) -> Result<Option<note_service::Note>, DbErr> {
+    async fn save(&self, mut data: note_service::NoteLabel) -> Result<Option<note_service::NoteLabel>, DbErr> {
         let active: ActiveModel = self.decode(data.clone()).into();
         let result = Entity::insert(active).on_conflict(
-            sea_query::OnConflict::column(Column::Sign)
-                .update_columns(
-                    [
-                        Column::Title,
-                        Column::Public,
-                        Column::FolderId,
-                        Column::TopicId,
-                        Column::Content,
-                        Column::Updater,
-                        Column::UpdateTime
-                    ],
-                )
-                .to_owned()
+            sea_query::OnConflict::columns([Column::LabelId, Column::NoteId])
+                .do_nothing().to_owned()
         ).exec(self.db).await?;
         data.id = result.last_insert_id;
         Ok(Some(data))
@@ -285,7 +242,7 @@ impl<'a> Business<'a> {
     // 批量写入，有冲突则更新
     async fn batch_save(
         &self,
-        dtos: Vec<note_service::Note>,
+        dtos: Vec<note_service::NoteLabel>,
     ) -> Result<Option<i32>, DbErr> {
         let mut actives = vec![];
         for dto in dtos {
@@ -293,25 +250,14 @@ impl<'a> Business<'a> {
             actives.push(active);
         }
         Entity::insert_many(actives).on_conflict(
-            sea_query::OnConflict::column(Column::Sign)
-                .update_columns(
-                    [
-                        Column::Title,
-                        Column::Public,
-                        Column::FolderId,
-                        Column::TopicId,
-                        Column::Content,
-                        Column::Updater,
-                        Column::UpdateTime
-                    ],
-                )
-                .to_owned()
+            sea_query::OnConflict::columns([Column::LabelId, Column::NoteId])
+                .do_nothing().to_owned()
         ).exec(self.db).await?;
         Ok(None)
     }
 
     // 批量删除
-    async fn batch_delete(&self, dtos: Vec<note_service::Note>) -> Result<Option<i32>, DbErr> {
+    async fn batch_delete(&self, dtos: Vec<note_service::NoteLabel>) -> Result<Option<i32>, DbErr> {
         let mut ids = vec![];
         for dto in dtos {
             ids.push(dto.id);
