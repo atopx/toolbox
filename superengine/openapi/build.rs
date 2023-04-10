@@ -25,6 +25,9 @@ pub struct EnumMate {
 
 
 fn main() {
+    // 一般不编译
+    println!("cargo:rerun-if-changed=build.rs");
+
     let enum_proto = vec![
         ("../../protocol/proto/public/common.proto", "Source"),
         ("../../protocol/proto/public/common.proto", "RangeScope"),

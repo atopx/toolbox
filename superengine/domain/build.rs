@@ -1,6 +1,9 @@
 use std::{env, fs, path::Path, vec};
 
 fn main() {
+        // 一般不编译
+    println!("cargo:rerun-if-changed=build.rs");
+    
     let current_dir = env::current_dir().unwrap();
     let base_path = Path::new(&current_dir).join("../../protocol/proto");
 
