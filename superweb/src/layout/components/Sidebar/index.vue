@@ -16,12 +16,9 @@ const v3SidebarMenuActiveTextColor = getCssVariableValue("--v3-sidebar-menu-acti
 
 const route = useRoute()
 const appStore = useAppStore()
-// const permissionStore = usePermissionStore()
 const settingsStore = useSettingsStore()
 
 const { showSidebarLogo } = storeToRefs(settingsStore)
-
-// console.log(permissionStore.routes)
 
 const activeMenu = computed(() => {
     const { meta, path } = route

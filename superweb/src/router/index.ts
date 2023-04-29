@@ -57,173 +57,9 @@ export const constantRoutes: RouteRecordRaw[] = [
         ]
     },
     {
-        path: "/unocss",
-        component: Layout,
-        redirect: "/unocss/index",
-        children: [
-            {
-                path: "index",
-                component: () => import("@/views/unocss/index.vue"),
-                name: "UnoCSS",
-                meta: {
-                    title: "unocss",
-                    svgIcon: "unocss"
-                }
-            }
-        ]
-    },
-    {
-        path: "/link",
-        component: Layout,
-        children: [
-            {
-                path: "https://juejin.cn/post/7089377403717287972",
-                component: () => {},
-                name: "Link",
-                meta: {
-                    title: "外链",
-                    svgIcon: "link"
-                }
-            }
-        ]
-    },
-    {
-        path: "/computer",
-        component: Layout,
-        redirect: "/computer/computerManage",
-        name: "computer",
-        meta: {
-            title: "主机管理",
-            elIcon: "Grid"
-        },
-        children: [
-            {
-                path: "computerManage",
-                component: () => import("@/views/computer/computerManage/index.vue"),
-                name: "computerManage",
-                meta: {
-                    title: "设备管理",
-                    keepAlive: true
-                }
-            },
-            {
-                path: "portManage",
-                component: () => import("@/views/computer/computerManage/index.vue"),
-                name: "portManage",
-                meta: {
-                    title: "端口管理",
-                    keepAlive: true
-                }
-            }
-        ]
-    },
-    {
-        path: "/menu",
-        component: Layout,
-        redirect: "/menu/menu1",
-        name: "Menu",
-        meta: {
-            title: "多级菜单",
-            svgIcon: "menu"
-        },
-        children: [
-            {
-                path: "menu1",
-                component: () => import("@/views/menu/menu1/index.vue"),
-                redirect: "/menu/menu1/menu1-1",
-                name: "Menu1",
-                meta: {
-                    title: "menu1"
-                },
-                children: [
-                    {
-                        path: "menu1-1",
-                        component: () => import("@/views/menu/menu1/menu1-1/index.vue"),
-                        name: "Menu1-1",
-                        meta: {
-                            title: "menu1-1"
-                        }
-                    },
-                    {
-                        path: "menu1-2",
-                        component: () => import("@/views/menu/menu1/menu1-2/index.vue"),
-                        redirect: "/menu/menu1/menu1-2/menu1-2-1",
-                        name: "Menu1-2",
-                        meta: {
-                            title: "menu1-2"
-                        },
-                        children: [
-                            {
-                                path: "menu1-2-1",
-                                component: () => import("@/views/menu/menu1/menu1-2/menu1-2-1/index.vue"),
-                                name: "Menu1-2-1",
-                                meta: {
-                                    title: "menu1-2-1"
-                                }
-                            },
-                            {
-                                path: "menu1-2-2",
-                                component: () => import("@/views/menu/menu1/menu1-2/menu1-2-2/index.vue"),
-                                name: "Menu1-2-2",
-                                meta: {
-                                    title: "menu1-2-2"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        path: "menu1-3",
-                        component: () => import("@/views/menu/menu1/menu1-3/index.vue"),
-                        name: "Menu1-3",
-                        meta: {
-                            title: "menu1-3"
-                        }
-                    }
-                ]
-            },
-            {
-                path: "menu2",
-                component: () => import("@/views/menu/menu2/index.vue"),
-                name: "Menu2",
-                meta: {
-                    title: "menu2"
-                }
-            }
-        ]
-    },
-    {
-        path: "/hook-demo",
-        component: Layout,
-        redirect: "/hook-demo/use-fetch-select",
-        name: "HookDemo",
-        meta: {
-            title: "hook 示例",
-            elIcon: "Menu",
-            alwaysShow: true
-        },
-        children: [
-            {
-                path: "use-fetch-select",
-                component: () => import("@/views/hook-demo/use-fetch-select.vue"),
-                name: "UseFetchSelect",
-                meta: {
-                    title: "useFetchSelect"
-                }
-            },
-            {
-                path: "use-fullscreen-loading",
-                component: () => import("@/views/hook-demo/use-fullscreen-loading.vue"),
-                name: "UseFullscreenLoading",
-                meta: {
-                    title: "useFullscreenLoading"
-                }
-            }
-        ]
-    },
-    {
         path: "/permission",
         component: Layout,
-        redirect: "/permission/page",
+        redirect: "/permission/roles",
         name: "Permission",
         meta: {
             title: "权限管理",
@@ -232,11 +68,11 @@ export const constantRoutes: RouteRecordRaw[] = [
         },
         children: [
             {
-                path: "page",
-                component: () => import("@/views/permission/page.vue"),
-                name: "PagePermission",
+                path: "roles",
+                component: () => import("@/views/permission/role.vue"),
+                name: "RoleManage",
                 meta: {
-                    title: "页面权限"
+                    title: "角色管理"
                 }
             },
             {

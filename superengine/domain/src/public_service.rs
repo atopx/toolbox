@@ -1,119 +1,34 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Label {
-    /// 主键
-    #[prost(int32, tag = "1")]
-    pub id: i32,
-    /// 来源,枚举
+pub struct Enum {
+    #[prost(string, tag = "1")]
+    pub code: ::prost::alloc::string::String,
     #[prost(int32, tag = "2")]
-    pub source: i32,
-    /// 名称
+    pub value: i32,
     #[prost(string, tag = "3")]
-    pub name: ::prost::alloc::string::String,
-    /// 删除时间 时间戳：秒
-    #[prost(int64, tag = "1001")]
-    pub delete_time: i64,
-    /// 创建时间 时间戳：秒
-    #[prost(int64, tag = "1002")]
-    pub create_time: i64,
-    /// 最后更新时间 时间戳：秒
-    #[prost(int64, tag = "1003")]
-    pub update_time: i64,
-    /// 创建人
-    #[prost(int32, tag = "1004")]
-    pub creator: i32,
-    /// 更新人
-    #[prost(int32, tag = "1005")]
-    pub updater: i32,
+    pub desc: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LabelFilter {
-    #[prost(int32, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "2")]
-    pub sources: ::prost::alloc::vec::Vec<i32>,
-    #[prost(string, repeated, tag = "3")]
-    pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    #[prost(message, optional, tag = "101")]
-    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "102")]
-    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "103")]
-    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(int32, repeated, tag = "104")]
-    pub creators: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "105")]
-    pub updaters: ::prost::alloc::vec::Vec<i32>,
-    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
-    pub deleted: i32,
-    #[prost(message, optional, tag = "201")]
-    pub keywords: ::core::option::Option<label_filter::Keywords>,
-}
-/// Nested message and enum types in `LabelFilter`.
-pub mod label_filter {
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Keywords {
-        #[prost(string, tag = "1")]
-        pub name: ::prost::alloc::string::String,
-    }
+pub struct Enums {
+    #[prost(string, tag = "1")]
+    pub key: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag = "2")]
+    pub data: ::prost::alloc::vec::Vec<Enum>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListLabelParams {
+pub struct ListEnumParams {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::Header>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
-    #[prost(message, optional, tag = "4")]
-    pub filter: ::core::option::Option<LabelFilter>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListLabelReply {
+pub struct ListEnumReply {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<Label>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateLabelParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, optional, tag = "3")]
-    pub data: ::core::option::Option<Label>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateLabelReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<Label>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateLabelParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<Label>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateLabelReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, repeated, tag = "2")]
+    pub data: ::prost::alloc::vec::Vec<Enums>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -240,6 +155,123 @@ pub struct BatchOperateFolderReply {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::ReplyHeader>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Label {
+    /// 主键
+    #[prost(int32, tag = "1")]
+    pub id: i32,
+    /// 来源,枚举
+    #[prost(int32, tag = "2")]
+    pub source: i32,
+    /// 名称
+    #[prost(string, tag = "3")]
+    pub name: ::prost::alloc::string::String,
+    /// 删除时间 时间戳：秒
+    #[prost(int64, tag = "1001")]
+    pub delete_time: i64,
+    /// 创建时间 时间戳：秒
+    #[prost(int64, tag = "1002")]
+    pub create_time: i64,
+    /// 最后更新时间 时间戳：秒
+    #[prost(int64, tag = "1003")]
+    pub update_time: i64,
+    /// 创建人
+    #[prost(int32, tag = "1004")]
+    pub creator: i32,
+    /// 更新人
+    #[prost(int32, tag = "1005")]
+    pub updater: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LabelFilter {
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "2")]
+    pub sources: ::prost::alloc::vec::Vec<i32>,
+    #[prost(string, repeated, tag = "3")]
+    pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(message, optional, tag = "101")]
+    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "102")]
+    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "103")]
+    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(int32, repeated, tag = "104")]
+    pub creators: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "105")]
+    pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
+    #[prost(message, optional, tag = "201")]
+    pub keywords: ::core::option::Option<label_filter::Keywords>,
+}
+/// Nested message and enum types in `LabelFilter`.
+pub mod label_filter {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Keywords {
+        #[prost(string, tag = "1")]
+        pub name: ::prost::alloc::string::String,
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListLabelParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
+    #[prost(message, optional, tag = "4")]
+    pub filter: ::core::option::Option<LabelFilter>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListLabelReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<Label>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateLabelParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, optional, tag = "3")]
+    pub data: ::core::option::Option<Label>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateLabelReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub data: ::core::option::Option<Label>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateLabelParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<Label>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateLabelReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+}
 /// Generated server implementations.
 pub mod public_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
@@ -285,6 +317,11 @@ pub mod public_service_server {
             tonic::Response<super::BatchOperateFolderReply>,
             tonic::Status,
         >;
+        /// Enums
+        async fn list_enum(
+            &self,
+            request: tonic::Request<super::ListEnumParams>,
+        ) -> std::result::Result<tonic::Response<super::ListEnumReply>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct PublicServiceServer<T: PublicService> {
@@ -622,6 +659,50 @@ pub mod public_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = BatchOperateFolderSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/public_service.PublicService/ListEnum" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListEnumSvc<T: PublicService>(pub Arc<T>);
+                    impl<
+                        T: PublicService,
+                    > tonic::server::UnaryService<super::ListEnumParams>
+                    for ListEnumSvc<T> {
+                        type Response = super::ListEnumReply;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListEnumParams>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move { (*inner).list_enum(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListEnumSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

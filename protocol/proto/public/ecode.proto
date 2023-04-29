@@ -52,6 +52,10 @@ enum ECode {
     NOTE_PARAMS_ERROR_TitleRequired = 435001; // 参数缺少标题
     NOTE_PARAMS_ERROR_TitleInvalid = 435002; // 标题无效
 
+    // role
+    ROLE_PARAMS_ERROR_NameInvalid = 436001; // 无效的角色名
+    ROLE_PARAMS_ERROR_NameExist = 436002; // 角色名已存在
+
     // ######### 服务端错误 #########
     SYSTEM_INTERNAL_ERROR = 500000; // 服务异常
     SYSTEM_ERROR_Unimplemented = 500001; // 功能未实现
@@ -96,8 +100,8 @@ enum ECode {
     PUBLIC_SERVICE_ERROR_OperateFolder = 521002; // PUBLIC_SERVICE_ERROR_OperateFolder
     PUBLIC_SERVICE_ERROR_BatchOperateFolder = 521003; // PUBLIC_SERVICE_ERROR_BatchOperateFolder
 
-    // public-service trans error
-    PUBLIC_SERVICE_ERROR_TransCurl = 522001; // PUBLIC_SERVICE_ERROR_TransCurl
+    // public-service list enum error
+    PUBLIC_SERVICE_ERROR_ListEnum = 522001; // PUBLIC_SERVICE_ERROR_ListEnum
 
     // note-service note error
     NOTE_SERVICE_ERROR_ListNote = 530001; // NOTE_SERVICE_ERROR_ListNote

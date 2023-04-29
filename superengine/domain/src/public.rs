@@ -67,6 +67,12 @@ pub enum ECode {
     NoteParamsErrorTitleRequired = 435001,
     /// 标题无效
     NoteParamsErrorTitleInvalid = 435002,
+    /// role
+    ///
+    /// 无效的角色名
+    RoleParamsErrorNameInvalid = 436001,
+    /// 角色名已存在
+    RoleParamsErrorNameExist = 436002,
     /// ######### 服务端错误 #########
     ///
     /// 服务异常
@@ -137,10 +143,10 @@ pub enum ECode {
     PublicServiceErrorOperateFolder = 521002,
     /// PUBLIC_SERVICE_ERROR_BatchOperateFolder
     PublicServiceErrorBatchOperateFolder = 521003,
-    /// public-service trans error
+    /// public-service list enum error
     ///
-    /// PUBLIC_SERVICE_ERROR_TransCurl
-    PublicServiceErrorTransCurl = 522001,
+    /// PUBLIC_SERVICE_ERROR_ListEnum
+    PublicServiceErrorListEnum = 522001,
     /// note-service note error
     ///
     /// NOTE_SERVICE_ERROR_ListNote
@@ -200,6 +206,8 @@ impl ECode {
             ECode::LabelParamsErrorNameRequired => "LABEL_PARAMS_ERROR_NameRequired",
             ECode::NoteParamsErrorTitleRequired => "NOTE_PARAMS_ERROR_TitleRequired",
             ECode::NoteParamsErrorTitleInvalid => "NOTE_PARAMS_ERROR_TitleInvalid",
+            ECode::RoleParamsErrorNameInvalid => "ROLE_PARAMS_ERROR_NameInvalid",
+            ECode::RoleParamsErrorNameExist => "ROLE_PARAMS_ERROR_NameExist",
             ECode::SystemInternalError => "SYSTEM_INTERNAL_ERROR",
             ECode::SystemErrorUnimplemented => "SYSTEM_ERROR_Unimplemented",
             ECode::AuthServiceErrorListAccess => "AUTH_SERVICE_ERROR_ListAccess",
@@ -252,7 +260,7 @@ impl ECode {
             ECode::PublicServiceErrorBatchOperateFolder => {
                 "PUBLIC_SERVICE_ERROR_BatchOperateFolder"
             }
-            ECode::PublicServiceErrorTransCurl => "PUBLIC_SERVICE_ERROR_TransCurl",
+            ECode::PublicServiceErrorListEnum => "PUBLIC_SERVICE_ERROR_ListEnum",
             ECode::NoteServiceErrorListNote => "NOTE_SERVICE_ERROR_ListNote",
             ECode::NoteServiceErrorOperateNote => "NOTE_SERVICE_ERROR_OperateNote",
             ECode::NoteServiceErrorBatchOperateNote => {
@@ -312,6 +320,8 @@ impl ECode {
             "LABEL_PARAMS_ERROR_NameRequired" => Some(Self::LabelParamsErrorNameRequired),
             "NOTE_PARAMS_ERROR_TitleRequired" => Some(Self::NoteParamsErrorTitleRequired),
             "NOTE_PARAMS_ERROR_TitleInvalid" => Some(Self::NoteParamsErrorTitleInvalid),
+            "ROLE_PARAMS_ERROR_NameInvalid" => Some(Self::RoleParamsErrorNameInvalid),
+            "ROLE_PARAMS_ERROR_NameExist" => Some(Self::RoleParamsErrorNameExist),
             "SYSTEM_INTERNAL_ERROR" => Some(Self::SystemInternalError),
             "SYSTEM_ERROR_Unimplemented" => Some(Self::SystemErrorUnimplemented),
             "AUTH_SERVICE_ERROR_ListAccess" => Some(Self::AuthServiceErrorListAccess),
@@ -372,7 +382,7 @@ impl ECode {
             "PUBLIC_SERVICE_ERROR_BatchOperateFolder" => {
                 Some(Self::PublicServiceErrorBatchOperateFolder)
             }
-            "PUBLIC_SERVICE_ERROR_TransCurl" => Some(Self::PublicServiceErrorTransCurl),
+            "PUBLIC_SERVICE_ERROR_ListEnum" => Some(Self::PublicServiceErrorListEnum),
             "NOTE_SERVICE_ERROR_ListNote" => Some(Self::NoteServiceErrorListNote),
             "NOTE_SERVICE_ERROR_OperateNote" => Some(Self::NoteServiceErrorOperateNote),
             "NOTE_SERVICE_ERROR_BatchOperateNote" => {

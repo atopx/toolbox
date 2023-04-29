@@ -87,6 +87,13 @@ impl<'a> Business<'a> {
             if let Some(range) = filter.delete_time_range {
                 query = query.filter(Column::DeleteTime.between(range.left, range.right))
             }
+            if let Some(keywords) = filter.keywords {
+                if keywords.name.is_empty().not() {
+                    query = query.filter(
+                        Column::Name.contains(&keywords.name),
+                    )
+                }
+            }
         }
 
         // 排序
@@ -222,10 +229,15 @@ impl<'a> Business<'a> {
     // 逻辑删除
     async fn delete(&self, id: i32) -> Result<Option<auth_service::Role>, DbErr> {
         let value: Option<Model> = Entity::find_by_id(id).one(self.db).await?;
-        let mut active: ActiveModel = value.unwrap().into();
-        active.delete_time = Set(common::utils::current_timestamp());
-        active.update(self.db).await?;
-        Ok(None)
+        match value {
+            Some(value) => {
+                let mut active: ActiveModel = value.into();
+                active.delete_time = Set(common::utils::current_timestamp());
+                active.update(self.db).await?;
+                Ok(None)
+            }
+            None => Ok(None)
+        }
     }
 
     // 物理删除

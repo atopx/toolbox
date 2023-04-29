@@ -3,6 +3,7 @@ package api
 import (
 	"go.uber.org/zap"
 	"superserver/common/logger"
+	"superserver/common/middleware"
 	"superserver/domain/public/ecode"
 	"superserver/internal/controller"
 
@@ -43,15 +44,46 @@ func (a *Api) Route() *Api {
 		folderGroup.DELETE("/delete", a.FolderDelete)
 	}
 
+	// 角色
+	roleGroup := a.router.Group("/role", a.middle.OwnerMiddleware())
+	{
+		roleGroup.POST("/create", a.RoleCreate)
+		roleGroup.POST("/list", a.RoleList)
+		roleGroup.DELETE("/delete", a.RoleDelete)
+	}
+
+	// 资源
+	//accessGroup := a.router.Group("/access", a.middle.OwnerMiddleware())
+	//{
+	//	accessGroup.POST("/create", a.AccessCreate)
+	//	accessGroup.POST("/list", a.AccessList)
+	//	accessGroup.DELETE("/delete", a.AccessDelete)
+	//}
+
+	// 权限
+	//permissionGroup := a.router.Group("/permission", a.middle.OwnerMiddleware())
+	//{
+	//	permissionGroup.POST("/create", a.PermissionCreate)
+	//	permissionGroup.POST("/list", a.PermissionList)
+	//	permissionGroup.DELETE("/delete", a.PermissionDelete)
+	//}
+
 	return a
 }
 
 type Api struct {
 	router *gin.RouterGroup
+	middle *middleware.Middleware
 }
 
 func Register(engine *gin.Engine) *Api {
-	api := &Api{router: engine.Group("/api")}
+	api := &Api{router: engine.Group("/api"), middle: middleware.New()}
+	api.router.Use(
+		api.middle.CorsMiddleware(),
+		api.middle.RecoverMiddleware(),
+		api.middle.ContextMiddleware(),
+		api.middle.AuthMiddleware(),
+	)
 	api.router.GET("/basic/ping", api.Ping)
 	return api.Route()
 }

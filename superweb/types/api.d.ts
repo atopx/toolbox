@@ -16,4 +16,3 @@ export interface PageIface {
   index: number
   size: number
 }
-

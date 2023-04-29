@@ -1,0 +1,26 @@
+syntax = "proto3";
+package public_service;
+option go_package = "superserver/domain/public_service";
+
+import "public/common.proto";
+
+message Enum {
+    string code = 1;
+    int32 value = 2;
+    string desc = 3;
+}
+
+message Enums {
+    string key = 1;
+    repeated Enum data = 2;
+}
+
+
+message ListEnumParams {
+    public.Header header = 1;
+}
+
+message ListEnumReply {
+    public.ReplyHeader header = 1;
+    repeated Enums data = 2;
+}

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
 	"superserver/common/system"
@@ -9,8 +10,6 @@ import (
 	"superserver/domain/public/ecode"
 	"superserver/service/auth_client"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
@@ -21,9 +20,17 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 		serviceHeader := system.NewServiceHeader(header)
 		servicePager := &common.Pager{Index: 1, Size: 1}
 
+		defer func() {
+			if responseHeader.Code != ecode.ECode_SUCCESS {
+				ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
+			} else {
+				ctx.Next()
+			}
+		}()
+
 		// 查询access是否是游客权限
 		listAccessReply, code := auth_client.ListAccess(ctx, &auth_service.ListAccessParams{
-			Header: serviceHeader,
+			Header: system.NewServiceHeader(header),
 			Pager:  servicePager,
 			Filter: &auth_service.AccessFilter{
 				Methods: []string{ctx.Request.Method},
@@ -32,29 +39,29 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 		})
 		if code != ecode.ECode_SUCCESS {
 			responseHeader.Code = code
-			ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 			return
 		}
 
 		if len(listAccessReply.Data) == 0 {
 			responseHeader.Code = ecode.ECode_ACCESS_NotFound
-			ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 			return
 		}
 
 		accessPo := listAccessReply.Data[0]
-		if accessPo.Status == auth_service.AccessStatus_ACCESS_DISABLED {
+
+		switch accessPo.Status {
+
+		case auth_service.AccessStatus_ACCESS_ANONYMOUS: // 不处理, 直接放行
+
+		case auth_service.AccessStatus_ACCESS_DISABLED:
+			// 禁止访问
 			responseHeader.Code = ecode.ECode_ACCESS_Disabled
-			ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 			return
-		}
 
-		if accessPo.Status != auth_service.AccessStatus_ACCESS_ANONYMOUS {
-
-			// 不是游客权限, 进行认证
+		default: // 默认权限控制
+			// 获取token
 			if token == "" || !strings.HasPrefix(token, "Bearer ") {
 				responseHeader.Code = ecode.ECode_AUTH_TOKEN_Required
-				ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 				return
 			}
 
@@ -62,28 +69,30 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 			tokenStr := token[strings.Index(token, " ")+1:]
 			listAuthTokenReply, code := auth_client.ListAuthToken(ctx, &auth_service.ListAuthTokenParams{
 				Header: serviceHeader,
-				Pager:  servicePager,
+				Pager:  &common.Pager{Index: 1, Size: 1},
 				Filter: &auth_service.AuthTokenFilter{AccessTokens: []string{tokenStr}},
 			})
 			if code != ecode.ECode_SUCCESS {
-				ctx.AbortWithStatusJSON(http.StatusOK, code)
+				responseHeader.Code = code
 				return
 			}
+
 			if len(listAuthTokenReply.Data) == 0 {
 				responseHeader.Code = ecode.ECode_AUTH_TOKEN_NotFound
-				ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 				return
 			}
 
 			authToken := listAuthTokenReply.Data[0]
-			header.Operator = authToken.UserId
 
 			if authToken.ExpireTime < time.Now().Local().Unix() {
 				responseHeader.Code = ecode.ECode_AUTH_TOKEN_Expired
-				ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 				return
 			}
 
+			// set operator
+			header.Operator = authToken.UserId
+
+			// is admin user?
 			if authToken.UserId != system.User.Id {
 				listUserRoleRefReply, code := auth_client.ListUserRoleRef(ctx, &auth_service.ListUserRoleRefParams{
 					Header: serviceHeader,
@@ -93,7 +102,7 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 					},
 				})
 				if code != ecode.ECode_SUCCESS {
-					ctx.AbortWithStatusJSON(http.StatusOK, code)
+					responseHeader.Code = code
 					return
 				}
 				role := listUserRoleRefReply.Data[0]
@@ -107,16 +116,14 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 					},
 				})
 				if code != ecode.ECode_SUCCESS {
-					ctx.AbortWithStatusJSON(http.StatusOK, code)
+					responseHeader.Code = code
 					return
 				}
 				if len(listPermissionReply.Data) == 0 {
 					responseHeader.Code = ecode.ECode_ACCESS_Forbidden
-					ctx.AbortWithStatusJSON(http.StatusOK, system.NewErrorResponse(responseHeader))
 					return
 				}
 			}
 		}
-		ctx.Next()
 	}
 }

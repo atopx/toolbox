@@ -2,9 +2,11 @@ use sea_orm::DatabaseConnection;
 use tonic::{Request, Response, Status};
 
 use domain::public_service;
+use domain::public_service::{ListEnumParams, ListEnumReply};
 
 mod label;
 mod folder;
+mod enums;
 
 pub struct PublicService {
     db: DatabaseConnection,
@@ -76,5 +78,10 @@ impl public_service::public_service_server::PublicService for PublicService {
         let bis = folder::Business::new(&self.db, params.header.to_owned().unwrap());
         let reply = bis.batch_operate(params.operate(), params.data).await;
         Ok(Response::new(reply))
+    }
+
+    async fn list_enum(&self, request: Request<ListEnumParams>) -> Result<Response<ListEnumReply>, Status> {
+        let params = request.into_inner();
+        Ok(Response::new(enums::list_enum(params.header.unwrap().trace_id)))
     }
 }

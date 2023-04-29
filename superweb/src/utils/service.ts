@@ -4,6 +4,8 @@ import { ElMessage } from "element-plus"
 import { get } from "lodash-es"
 import { ignore_apis } from "@/api/ignore"
 
+// ecodeMap = ref<Map>()
+
 /** 创建请求实例 */
 function createService() {
     // 创建一个 Axios 实例
@@ -31,7 +33,7 @@ function createService() {
         (response) => {
             if (response.data.header.code > 0) {
                 ElMessage.error(response.data.header.message)
-                return Promise.reject(new Error("Error"))
+                return Promise.reject()
             }
             return response.data
         },
@@ -88,7 +90,7 @@ function createService() {
 function createRequestFunction(service: AxiosInstance) {
     return function <T>(config: AxiosRequestConfig): Promise<T> {
         const configDefault = {
-            headers: { "Content-Type": get(config, "headers.Content-Type", "application/json") },
+            headers: { "Content-Type": get(config, "headers.Content-Type", "application/json"), "source": "super-web" },
             timeout: 60000,
             baseURL: import.meta.env.VITE_BASE_API,
             data: {}
@@ -96,6 +98,7 @@ function createRequestFunction(service: AxiosInstance) {
         return service(Object.assign(configDefault, config))
     }
 }
+
 
 /** 用于网络请求的实例 */
 export const service = createService()

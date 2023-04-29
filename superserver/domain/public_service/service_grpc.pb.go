@@ -25,6 +25,7 @@ const (
 	PublicService_ListFolder_FullMethodName         = "/public_service.PublicService/ListFolder"
 	PublicService_OperateFolder_FullMethodName      = "/public_service.PublicService/OperateFolder"
 	PublicService_BatchOperateFolder_FullMethodName = "/public_service.PublicService/BatchOperateFolder"
+	PublicService_ListEnum_FullMethodName           = "/public_service.PublicService/ListEnum"
 )
 
 // PublicServiceClient is the client API for PublicService service.
@@ -39,6 +40,8 @@ type PublicServiceClient interface {
 	ListFolder(ctx context.Context, in *ListFolderParams, opts ...grpc.CallOption) (*ListFolderReply, error)
 	OperateFolder(ctx context.Context, in *OperateFolderParams, opts ...grpc.CallOption) (*OperateFolderReply, error)
 	BatchOperateFolder(ctx context.Context, in *BatchOperateFolderParams, opts ...grpc.CallOption) (*BatchOperateFolderReply, error)
+	// Enums
+	ListEnum(ctx context.Context, in *ListEnumParams, opts ...grpc.CallOption) (*ListEnumReply, error)
 }
 
 type publicServiceClient struct {
@@ -103,6 +106,15 @@ func (c *publicServiceClient) BatchOperateFolder(ctx context.Context, in *BatchO
 	return out, nil
 }
 
+func (c *publicServiceClient) ListEnum(ctx context.Context, in *ListEnumParams, opts ...grpc.CallOption) (*ListEnumReply, error) {
+	out := new(ListEnumReply)
+	err := c.cc.Invoke(ctx, PublicService_ListEnum_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PublicServiceServer is the server API for PublicService service.
 // All implementations must embed UnimplementedPublicServiceServer
 // for forward compatibility
@@ -115,6 +127,8 @@ type PublicServiceServer interface {
 	ListFolder(context.Context, *ListFolderParams) (*ListFolderReply, error)
 	OperateFolder(context.Context, *OperateFolderParams) (*OperateFolderReply, error)
 	BatchOperateFolder(context.Context, *BatchOperateFolderParams) (*BatchOperateFolderReply, error)
+	// Enums
+	ListEnum(context.Context, *ListEnumParams) (*ListEnumReply, error)
 	mustEmbedUnimplementedPublicServiceServer()
 }
 
@@ -139,6 +153,9 @@ func (UnimplementedPublicServiceServer) OperateFolder(context.Context, *OperateF
 }
 func (UnimplementedPublicServiceServer) BatchOperateFolder(context.Context, *BatchOperateFolderParams) (*BatchOperateFolderReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateFolder not implemented")
+}
+func (UnimplementedPublicServiceServer) ListEnum(context.Context, *ListEnumParams) (*ListEnumReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListEnum not implemented")
 }
 func (UnimplementedPublicServiceServer) mustEmbedUnimplementedPublicServiceServer() {}
 
@@ -261,6 +278,24 @@ func _PublicService_BatchOperateFolder_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PublicService_ListEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListEnumParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PublicServiceServer).ListEnum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PublicService_ListEnum_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PublicServiceServer).ListEnum(ctx, req.(*ListEnumParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PublicService_ServiceDesc is the grpc.ServiceDesc for PublicService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -291,6 +326,10 @@ var PublicService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BatchOperateFolder",
 			Handler:    _PublicService_BatchOperateFolder_Handler,
+		},
+		{
+			MethodName: "ListEnum",
+			Handler:    _PublicService_ListEnum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -104,7 +104,7 @@ const getTableData = () => {
         filter: {}
     })
         .then((resp) => {
-            paginationData.total = resp.data.page.count
+            paginationData.total = resp.data.pager.count
             tableData.value = resp.data.search
         })
         .catch(() => {

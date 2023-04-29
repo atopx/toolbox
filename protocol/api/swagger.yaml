@@ -111,6 +111,8 @@ definitions:
     - 434001
     - 435001
     - 435002
+    - 436001
+    - 436002
     - 500000
     - 500001
     - 510001
@@ -191,11 +193,13 @@ definitions:
       ECode_NOTE_SERVICE_ERROR_OperateNoteTopic: NOTE_SERVICE_ERROR_OperateNoteTopic
       ECode_PUBLIC_SERVICE_ERROR_BatchOperateFolder: PUBLIC_SERVICE_ERROR_BatchOperateFolder
       ECode_PUBLIC_SERVICE_ERROR_BatchOperateLabel: PUBLIC_SERVICE_ERROR_BatchOperateLabel
+      ECode_PUBLIC_SERVICE_ERROR_ListEnum: PUBLIC_SERVICE_ERROR_ListEnum
       ECode_PUBLIC_SERVICE_ERROR_ListFolder: PUBLIC_SERVICE_ERROR_ListFolder
       ECode_PUBLIC_SERVICE_ERROR_ListLabel: PUBLIC_SERVICE_ERROR_ListLabel
       ECode_PUBLIC_SERVICE_ERROR_OperateFolder: PUBLIC_SERVICE_ERROR_OperateFolder
       ECode_PUBLIC_SERVICE_ERROR_OperateLabel: PUBLIC_SERVICE_ERROR_OperateLabel
-      ECode_PUBLIC_SERVICE_ERROR_TransCurl: PUBLIC_SERVICE_ERROR_TransCurl
+      ECode_ROLE_PARAMS_ERROR_NameExist: 角色名已存在
+      ECode_ROLE_PARAMS_ERROR_NameInvalid: 无效的角色名
       ECode_SOURCE_PARAMS_ERROR_SourceInvalid: 无效的实体来源
       ECode_SUCCESS: 请求成功
       ECode_SYSTEM_ERROR_Unimplemented: 功能未实现
@@ -232,6 +236,8 @@ definitions:
     - ECode_LABEL_PARAMS_ERROR_NameRequired
     - ECode_NOTE_PARAMS_ERROR_TitleRequired
     - ECode_NOTE_PARAMS_ERROR_TitleInvalid
+    - ECode_ROLE_PARAMS_ERROR_NameInvalid
+    - ECode_ROLE_PARAMS_ERROR_NameExist
     - ECode_SYSTEM_INTERNAL_ERROR
     - ECode_SYSTEM_ERROR_Unimplemented
     - ECode_AUTH_SERVICE_ERROR_ListAccess
@@ -258,7 +264,7 @@ definitions:
     - ECode_PUBLIC_SERVICE_ERROR_ListFolder
     - ECode_PUBLIC_SERVICE_ERROR_OperateFolder
     - ECode_PUBLIC_SERVICE_ERROR_BatchOperateFolder
-    - ECode_PUBLIC_SERVICE_ERROR_TransCurl
+    - ECode_PUBLIC_SERVICE_ERROR_ListEnum
     - ECode_NOTE_SERVICE_ERROR_ListNote
     - ECode_NOTE_SERVICE_ERROR_OperateNote
     - ECode_NOTE_SERVICE_ERROR_BatchOperateNote
@@ -316,6 +322,19 @@ definitions:
       user_id:
         type: integer
       username:
+        type: string
+    type: object
+  model.Role:
+    properties:
+      create_time:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      nature:
+        type: string
+      update_time:
         type: string
     type: object
   note_service.Note:
@@ -614,6 +633,40 @@ definitions:
       pager:
         $ref: '#/definitions/common.Pager'
     type: object
+  superserver_internal_controller_role_create.Params:
+    properties:
+      name:
+        type: string
+    type: object
+  superserver_internal_controller_role_create.Reply:
+    type: object
+  superserver_internal_controller_role_delete.Params:
+    properties:
+      id:
+        description: 角色ID
+        type: integer
+    type: object
+  superserver_internal_controller_role_delete.Reply:
+    type: object
+  superserver_internal_controller_role_list.Params:
+    properties:
+      filter:
+        properties:
+          keyword:
+            type: string
+        type: object
+      pager:
+        $ref: '#/definitions/common.Pager'
+    type: object
+  superserver_internal_controller_role_list.Reply:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Role'
+        type: array
+      pager:
+        $ref: '#/definitions/common.Pager'
+    type: object
   superserver_internal_controller_user_create.Params:
     properties:
       name:
@@ -861,6 +914,84 @@ paths:
       summary: 笔记列表
       tags:
       - 笔记
+  /api/role/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_role_create.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_role_create.Reply'
+              type: object
+      summary: 创建角色
+      tags:
+      - 角色
+  /api/role/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_role_delete.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_role_delete.Reply'
+              type: object
+      summary: 删除角色
+      tags:
+      - 角色
+  /api/role/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/superserver_internal_controller_role_list.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_role_list.Reply'
+              type: object
+      summary: 角色列表
+      tags:
+      - 角色
   /api/user/create:
     post:
       consumes:

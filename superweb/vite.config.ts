@@ -41,6 +41,12 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
                     /** 是否允许跨域 */
                     changeOrigin: true,
                     rewrite: (path) => path.replace("/api/v1", "/api")
+                },
+                "/openapi": {
+                    target: "http://127.0.0.1:18020",
+                    ws: false,
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace("/openapi", "")
                 }
             }
         },

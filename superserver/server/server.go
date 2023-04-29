@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 	"superserver/common/logger"
-	"superserver/common/middleware"
 	"superserver/internal/api"
 	"syscall"
 	"time"
@@ -18,19 +17,11 @@ import (
 
 func New() *Server {
 	gin.SetMode(viper.GetString("server.mode"))
-	srv := &Server{engine: gin.New(), middle: middleware.New()}
-	srv.engine.Use(
-		srv.middle.CorsMiddleware(),
-		srv.middle.RecoverMiddleware(),
-		srv.middle.ContextMiddleware(),
-		srv.middle.AuthMiddleware(),
-	)
-	return srv
+	return &Server{engine: gin.New()}
 }
 
 type Server struct {
 	engine *gin.Engine
-	middle *middleware.Middleware
 	server *http.Server
 }
 
@@ -39,6 +30,7 @@ func (srv *Server) InitData() {
 	initAccess(ctx, srv.engine.Routes())
 	initSystemUser(ctx)
 	initInternalRoles(ctx)
+	initEnums(ctx)
 }
 
 // Start api服务入口

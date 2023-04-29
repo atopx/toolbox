@@ -3,12 +3,15 @@ package server
 import (
 	"context"
 	"superserver/common/consts"
+	"superserver/common/enum"
 	"superserver/common/system"
 	"superserver/common/utils"
 	"superserver/domain/auth_service"
 	"superserver/domain/public/common"
 	"superserver/domain/public/ecode"
+	"superserver/domain/public_service"
 	"superserver/service/auth_client"
+	"superserver/service/public_client"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -125,4 +128,13 @@ func initInternalRoles(ctx context.Context) {
 			panic(system.GetErrorMessage(code))
 		}
 	}
+}
+
+func initEnums(ctx context.Context) {
+	header := &common.Header{TraceId: -1, Source: consts.ServiceName, Operator: system.User.Id}
+	reply, code := public_client.ListEnum(ctx, &public_service.ListEnumParams{Header: header})
+	if code != ecode.ECode_SUCCESS {
+		panic(system.GetErrorMessage(code))
+	}
+	enum.InitEnums(reply.Data)
 }

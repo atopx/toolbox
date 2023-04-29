@@ -1,16 +1,13 @@
 package system
 
 import (
+	"superserver/common/enum"
 	"superserver/domain/public/common"
 	"superserver/domain/public/ecode"
 )
 
 func GetErrorMessage(code ecode.ECode) string {
-	value, ok := CodeMap[code]
-	if !ok {
-		value = code.String()
-	}
-	return value
+	return enum.Desc(enum.ECode, int32(code))
 }
 
 func NewResponse(header *common.ReplyHeader, data any) *Response {
@@ -20,9 +17,4 @@ func NewResponse(header *common.ReplyHeader, data any) *Response {
 
 func NewErrorResponse(header *common.ReplyHeader) *Response {
 	return NewResponse(header, nil)
-}
-
-var CodeMap = map[ecode.ECode]string{
-	ecode.ECode_AUTH_SERVICE_ERROR_ListAccess: "auth_service.ListAccess error",
-	ecode.ECode_ACCESS_NotFound:               "访问的资源不存在",
 }

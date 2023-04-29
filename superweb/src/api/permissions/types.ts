@@ -10,4 +10,16 @@ export interface Access {
 }
 
 export type listPermissionAccessRequest = { page: PageIface; filter: {} }
-export type listPermissionAccessResponse = ResponseIface<{ page: PageIface; search: Access[] }>
+export type listPermissionAccessResponse = ResponseIface<{ pager: PageIface; search: Access[] }>
+
+export interface Role {
+    id: number
+    name: string
+    nature: number,
+    nature_desc: string,
+    create_time: string
+    update_time: string
+}
+
+export type listRoleRequest = { page: PageIface; filter: { keyword: string } }
+export type listRoleResponse = ResponseIface<{ pager: PageIface; list: Role[] }>

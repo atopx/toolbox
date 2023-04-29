@@ -59,7 +59,7 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	default:
 		token = listTokenReply.Data[0]
 		// 已有token且未过期，直接返回给用户
-		if token.ExpireTime < current.Unix() {
+		if token.ExpireTime > current.Unix() {
 			return listTokenReply.Data[0], ecode.ECode_SUCCESS
 		}
 	}

@@ -43,7 +43,6 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		// 使用AccessToken的过期时间加密
 		token.AccessToken = utils.SignToken(current, expire, token.ExpireTime)
 		token.RefreshToken = utils.SignToken(current, current.Add(7*24*time.Hour), token.ExpireTime)
-
 		// update auth token
 		if _, code = auth_client.OperateAuthToken(c.Context(), &auth_service.OperateAuthTokenParams{
 			Header:  c.NewServiceHeader(),

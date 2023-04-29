@@ -1,7 +1,6 @@
 package create
 
 import (
-	"fmt"
 	"superserver/domain/public/common"
 	"superserver/domain/public/ecode"
 	"superserver/domain/public_service"
@@ -9,7 +8,6 @@ import (
 )
 
 func (c *Controller) Deal() (any, ecode.ECode) {
-	fmt.Printf("%+v\n", c.Params)
 	params := c.Params.(*Params)
 	if _, ok := common.Source_name[params.Source]; !ok {
 		return nil, ecode.ECode_SOURCE_PARAMS_ERROR_SourceInvalid
