@@ -59,8 +59,8 @@ impl<'a> Business<'a> {
         if let Some(filter) = filter {
             query = match filter.deleted() {
                 BooleanScope::BoolAll => query,
-                BooleanScope::BoolFalse => query.filter(Column::DeleteTime.gt(0)),
-                BooleanScope::BoolTrue => query.filter(Column::DeleteTime.eq(0)),
+                BooleanScope::BoolFalse => query.filter(Column::DeleteTime.eq(0)),
+                BooleanScope::BoolTrue => query.filter(Column::DeleteTime.gt(0)),
             };
             if filter.ids.is_empty().not() {
                 query = query.filter(Column::Id.is_in(filter.ids));

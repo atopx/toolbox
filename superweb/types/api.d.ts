@@ -1,11 +1,14 @@
 /** 所有 api 接口的响应数据都应该准守该格式 */
-interface ResponseIface<T> {
-  success: boolean
-  trace_id: number,
+export interface Header {
+  trace_id: number
   message: string
-  data: T
+  code: number
 }
 
+interface ResponseIface<T> {
+  header: Header
+  data: T
+}
 
 export interface PageIface {
   count: number
@@ -13,3 +16,4 @@ export interface PageIface {
   index: number
   size: number
 }
+

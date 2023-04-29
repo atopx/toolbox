@@ -9,20 +9,18 @@ export interface IRefreshRequestData {
     refresh_token: string
 }
 
-export type LoginResponseData = ResponseIface<{
-    user_id: number
-    name: string
-    username: string
-    access_token: string
-    refresh_token: string
-    expires: number
-}>
-
 export interface Token {
+    id: number
+    user_id: number
     access_token: string
     refresh_token: string
-    expires: number
+    issued_time: number
+    expire_time: number
+    create_time: number
+    update_time: number
 }
+
+export type LoginResponseData = ResponseIface<Token>
 
 export type RefreshResponseData = ResponseIface<Token>
 

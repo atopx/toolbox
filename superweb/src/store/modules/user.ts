@@ -18,13 +18,9 @@ export const useUserStore = defineStore("user", () => {
         return new Promise((resolve, reject) => {
             loginApi(loginData)
                 .then((res) => {
-                    const login_token = {
-                        access_token: res.data.access_token,
-                        refresh_token: res.data.refresh_token,
-                        expires: res.data.expires * 1000
-                    }
-                    setToken(login_token)
-                    token.value = login_token
+                    res.data.expire_time = res.data.expire_time * 1000
+                    setToken(res.data)
+                    token.value = res.data
                     resolve(true)
                 })
                 .catch((error) => {
@@ -37,7 +33,7 @@ export const useUserStore = defineStore("user", () => {
         return new Promise((resolve, reject) => {
             refreshTokenApi(refreshData)
                 .then((res) => {
-                    res.data.expires = res.data.expires * 1000
+                    res.data.expire_time = res.data.expire_time * 1000
                     setToken(res.data)
                     token.value = res.data
                     resolve(true)
@@ -72,9 +68,14 @@ export const useUserStore = defineStore("user", () => {
     const resetToken = () => {
         removeToken()
         token.value = {
+            id: 0,
+            user_id: 0,
             access_token: "",
             refresh_token: "",
-            expires: 0
+            expire_time: 0,
+            issued_time: 0,
+            create_time: 0,
+            update_time: 0
         }
     }
     // 重置 visited views 和 cached views

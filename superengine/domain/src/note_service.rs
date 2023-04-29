@@ -1,111 +1,5 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct NoteLabel {
-    /// 主键
-    #[prost(int32, tag = "1")]
-    pub id: i32,
-    /// 笔记ID
-    #[prost(int32, tag = "2")]
-    pub note_id: i32,
-    /// 标签ID
-    #[prost(int32, tag = "3")]
-    pub label_id: i32,
-    /// 删除时间 时间戳：秒
-    #[prost(int64, tag = "1001")]
-    pub delete_time: i64,
-    /// 创建时间 时间戳：秒
-    #[prost(int64, tag = "1002")]
-    pub create_time: i64,
-    /// 最后更新时间 时间戳：秒
-    #[prost(int64, tag = "1003")]
-    pub update_time: i64,
-    /// 创建人
-    #[prost(int32, tag = "1004")]
-    pub creator: i32,
-    /// 更新人
-    #[prost(int32, tag = "1005")]
-    pub updater: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct NoteLabelFilter {
-    #[prost(int32, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "2")]
-    pub note_ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "3")]
-    pub label_ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(message, optional, tag = "101")]
-    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "102")]
-    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "103")]
-    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(int32, repeated, tag = "104")]
-    pub creators: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "105")]
-    pub updaters: ::prost::alloc::vec::Vec<i32>,
-    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
-    pub deleted: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListNoteLabelParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
-    #[prost(message, optional, tag = "4")]
-    pub filter: ::core::option::Option<NoteLabelFilter>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListNoteLabelReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<NoteLabel>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateNoteLabelParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, optional, tag = "3")]
-    pub data: ::core::option::Option<NoteLabel>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateNoteLabelReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<NoteLabel>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateNoteLabelParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<NoteLabel>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateNoteLabelReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Note {
     /// 主键
     #[prost(int32, tag = "1")]
@@ -344,6 +238,112 @@ pub struct BatchOperateNoteTopicParams {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BatchOperateNoteTopicReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct NoteLabel {
+    /// 主键
+    #[prost(int32, tag = "1")]
+    pub id: i32,
+    /// 笔记ID
+    #[prost(int32, tag = "2")]
+    pub note_id: i32,
+    /// 标签ID
+    #[prost(int32, tag = "3")]
+    pub label_id: i32,
+    /// 删除时间 时间戳：秒
+    #[prost(int64, tag = "1001")]
+    pub delete_time: i64,
+    /// 创建时间 时间戳：秒
+    #[prost(int64, tag = "1002")]
+    pub create_time: i64,
+    /// 最后更新时间 时间戳：秒
+    #[prost(int64, tag = "1003")]
+    pub update_time: i64,
+    /// 创建人
+    #[prost(int32, tag = "1004")]
+    pub creator: i32,
+    /// 更新人
+    #[prost(int32, tag = "1005")]
+    pub updater: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct NoteLabelFilter {
+    #[prost(int32, repeated, tag = "1")]
+    pub ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "2")]
+    pub note_ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "3")]
+    pub label_ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(message, optional, tag = "101")]
+    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "102")]
+    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "103")]
+    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(int32, repeated, tag = "104")]
+    pub creators: ::prost::alloc::vec::Vec<i32>,
+    #[prost(int32, repeated, tag = "105")]
+    pub updaters: ::prost::alloc::vec::Vec<i32>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListNoteLabelParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
+    #[prost(message, optional, tag = "4")]
+    pub filter: ::core::option::Option<NoteLabelFilter>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListNoteLabelReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub pager: ::core::option::Option<super::public::Pager>,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<NoteLabel>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateNoteLabelParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, optional, tag = "3")]
+    pub data: ::core::option::Option<NoteLabel>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct OperateNoteLabelReply {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    #[prost(message, optional, tag = "2")]
+    pub data: ::core::option::Option<NoteLabel>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateNoteLabelParams {
+    #[prost(message, optional, tag = "1")]
+    pub header: ::core::option::Option<super::public::Header>,
+    #[prost(enumeration = "super::public::Operation", tag = "2")]
+    pub operate: i32,
+    #[prost(message, repeated, tag = "3")]
+    pub data: ::prost::alloc::vec::Vec<NoteLabel>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BatchOperateNoteLabelReply {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::ReplyHeader>,
 }

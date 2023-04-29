@@ -17,7 +17,7 @@ function createService() {
             if (!useUserStoreHook().token.access_token) {
                 Promise.reject()
             }
-            if (Date.now() > useUserStoreHook().token.expires) {
+            if (Date.now() > useUserStoreHook().token.expire_time) {
                 useUserStoreHook().refreshToken({ refresh_token: useUserStoreHook().token.refresh_token })
             }
             config.headers.Authorization = "Bearer " + useUserStoreHook().token.access_token
@@ -29,11 +29,11 @@ function createService() {
     // 响应拦截（可根据具体业务作出相应的调整）
     service.interceptors.response.use(
         (response) => {
-            if (response.data.success) {
-                return response.data
+            if (response.data.header.code > 0) {
+                ElMessage.error(response.data.header.message)
+                return Promise.reject(new Error("Error"))
             }
-            ElMessage.error(response.data.message || "Error")
-            return Promise.reject(new Error("Error"))
+            return response.data
         },
         (error) => {
             // Status 是 HTTP 状态码

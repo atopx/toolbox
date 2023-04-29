@@ -10,6 +10,16 @@ pub struct EnumMate {
     value: i32,
 }
 
+pub async fn source_data() -> (StatusCode, Json<Vec<EnumMate>>) {
+    let data = vec![
+        EnumMate { code: "Public", value: 0, desc: "公共" },
+        EnumMate { code: "User", value: 1, desc: "用户" },
+        EnumMate { code: "Note", value: 2, desc: "笔记" },
+        EnumMate { code: "File", value: 3, desc: "文件" },
+    ];
+    (StatusCode::OK, Json(data))
+}
+
 pub async fn ecode_data() -> (StatusCode, Json<Vec<EnumMate>>) {
     let data = vec![
         EnumMate { code: "SUCCESS", value: 0, desc: "请求成功" },
@@ -75,12 +85,11 @@ pub async fn ecode_data() -> (StatusCode, Json<Vec<EnumMate>>) {
     (StatusCode::OK, Json(data))
 }
 
-pub async fn source_data() -> (StatusCode, Json<Vec<EnumMate>>) {
+pub async fn rangescope_data() -> (StatusCode, Json<Vec<EnumMate>>) {
     let data = vec![
-        EnumMate { code: "Public", value: 0, desc: "公共" },
-        EnumMate { code: "User", value: 1, desc: "用户" },
-        EnumMate { code: "Note", value: 2, desc: "笔记" },
-        EnumMate { code: "File", value: 3, desc: "文件" },
+        EnumMate { code: "RANGE_ALL", value: 0, desc: "默认" },
+        EnumMate { code: "RANGE_LEFT", value: 1, desc: "含左" },
+        EnumMate { code: "RANGE_RIGHT", value: 2, desc: "含右" },
     ];
     (StatusCode::OK, Json(data))
 }
@@ -94,21 +103,12 @@ pub async fn booleanscope_data() -> (StatusCode, Json<Vec<EnumMate>>) {
     (StatusCode::OK, Json(data))
 }
 
-pub async fn rangescope_data() -> (StatusCode, Json<Vec<EnumMate>>) {
-    let data = vec![
-        EnumMate { code: "RANGE_ALL", value: 0, desc: "默认" },
-        EnumMate { code: "RANGE_LEFT", value: 1, desc: "含左" },
-        EnumMate { code: "RANGE_RIGHT", value: 2, desc: "含右" },
-    ];
-    (StatusCode::OK, Json(data))
-}
-
 pub(crate) async fn meta_handler(Path(name): Path<String>) -> (StatusCode, Json<Vec<EnumMate>>) {
     match name.as_str() {
-        "ecode" => ecode_data().await,
         "source" => source_data().await,
-        "booleanscope" => booleanscope_data().await,
+        "ecode" => ecode_data().await,
         "rangescope" => rangescope_data().await,
+        "booleanscope" => booleanscope_data().await,
         _=> { (StatusCode::OK, Json(vec![])) }
     }
 }
