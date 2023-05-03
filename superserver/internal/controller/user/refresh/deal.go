@@ -25,18 +25,25 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	if code != ecode.ECode_SUCCESS {
 		return nil, code
 	}
+
+	current := time.Now().Local()
+
 	if len(listTokenReply.Data) == 0 {
 		return nil, ecode.ECode_AUTH_TOKEN_NotFound
 	}
 	token := listTokenReply.Data[0]
+	// 已有token且未过期，直接返回给用户
+	if token.ExpireTime > current.Unix() {
+		return listTokenReply.Data[0], ecode.ECode_SUCCESS
+	}
 
-	current := time.Now().Local()
-	// 如果已过期，重新签发
+	// 获取refresh token的过期时间
 	expireDate, err := utils.UnSignTokenExpire(params.RefreshToken, token.ExpireTime)
 	if err != nil {
 		return nil, ecode.ECode_AUTH_TOKEN_Expired
 	}
-	if expireDate.Before(current) {
+	// 如果refresh没有过期, 重新签发
+	if expireDate.After(current) {
 		expire := current.Add(24 * time.Hour)
 		token.IssuedTime = current.Unix()
 		token.ExpireTime = expire.Unix()

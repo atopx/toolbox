@@ -21,5 +21,5 @@ export interface Role {
     update_time: string
 }
 
-export type listRoleRequest = { page: PageIface; filter: { keyword: string } }
+export type listRoleRequest = { pager: PageIface; filter: { keyword: string } }
 export type listRoleResponse = ResponseIface<{ pager: PageIface; list: Role[] }>

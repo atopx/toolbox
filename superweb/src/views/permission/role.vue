@@ -89,7 +89,7 @@ const getTableData = () => {
     loading.value = true
 
     listRoleApi({
-        page: {
+        pager: {
             index: paginationData.currentPage,
             size: paginationData.pageSize,
             disabled: false,
@@ -148,7 +148,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         <el-card v-loading="loading" shadow="never">
             <div class="toolbar-wrapper">
                 <div>
-                    <el-button type="primary" :icon="CirclePlus" @click="dialogVisible = true">新增用户</el-button>
+                    <el-button type="primary" :icon="CirclePlus" @click="dialogVisible = true">新增角色</el-button>
                     <el-button type="danger" :icon="Delete">批量删除</el-button>
                 </div>
                 <div>
