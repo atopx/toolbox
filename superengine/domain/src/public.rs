@@ -171,6 +171,22 @@ pub enum ECode {
     NoteServiceErrorOperateNoteTopic = 532002,
     /// NOTE_SERVICE_ERROR_BatchOperateNoteTopic
     NoteServiceErrorBatchOperateNoteTopic = 532003,
+    /// novel-service book error
+    ///
+    /// NOVEL_SERVICE_ERROR_ListBook
+    NovelServiceErrorListBook = 540001,
+    /// NOVEL_SERVICE_ERROR_OperateBook
+    NovelServiceErrorOperateBook = 540002,
+    /// NOVEL_SERVICE_ERROR_BatchOperateBook
+    NovelServiceErrorBatchOperateBook = 540003,
+    /// novel-service line error
+    ///
+    /// NOVEL_SERVICE_ERROR_ListLine
+    NovelServiceErrorListLine = 541001,
+    /// NOVEL_SERVICE_ERROR_OperateLine
+    NovelServiceErrorOperateLine = 541002,
+    /// NOVEL_SERVICE_ERROR_BatchOperateLine
+    NovelServiceErrorBatchOperateLine = 541003,
 }
 impl ECode {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -279,6 +295,16 @@ impl ECode {
             }
             ECode::NoteServiceErrorBatchOperateNoteTopic => {
                 "NOTE_SERVICE_ERROR_BatchOperateNoteTopic"
+            }
+            ECode::NovelServiceErrorListBook => "NOVEL_SERVICE_ERROR_ListBook",
+            ECode::NovelServiceErrorOperateBook => "NOVEL_SERVICE_ERROR_OperateBook",
+            ECode::NovelServiceErrorBatchOperateBook => {
+                "NOVEL_SERVICE_ERROR_BatchOperateBook"
+            }
+            ECode::NovelServiceErrorListLine => "NOVEL_SERVICE_ERROR_ListLine",
+            ECode::NovelServiceErrorOperateLine => "NOVEL_SERVICE_ERROR_OperateLine",
+            ECode::NovelServiceErrorBatchOperateLine => {
+                "NOVEL_SERVICE_ERROR_BatchOperateLine"
             }
         }
     }
@@ -405,6 +431,16 @@ impl ECode {
             }
             "NOTE_SERVICE_ERROR_BatchOperateNoteTopic" => {
                 Some(Self::NoteServiceErrorBatchOperateNoteTopic)
+            }
+            "NOVEL_SERVICE_ERROR_ListBook" => Some(Self::NovelServiceErrorListBook),
+            "NOVEL_SERVICE_ERROR_OperateBook" => Some(Self::NovelServiceErrorOperateBook),
+            "NOVEL_SERVICE_ERROR_BatchOperateBook" => {
+                Some(Self::NovelServiceErrorBatchOperateBook)
+            }
+            "NOVEL_SERVICE_ERROR_ListLine" => Some(Self::NovelServiceErrorListLine),
+            "NOVEL_SERVICE_ERROR_OperateLine" => Some(Self::NovelServiceErrorOperateLine),
+            "NOVEL_SERVICE_ERROR_BatchOperateLine" => {
+                Some(Self::NovelServiceErrorBatchOperateLine)
             }
             _ => None,
         }

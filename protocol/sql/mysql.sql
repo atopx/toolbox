@@ -195,7 +195,7 @@ create table book
     url         varchar(128)                  not null comment '下载页',
     name        varchar(128) default ''       not null comment '书名',
     author      varchar(32)  default ''       not null comment '作者',
-    status      tinyint(1)   default '0'      not null comment '采集状态',
+    status      int          default '0'      not null comment '采集状态',
     message     varchar(255) default ''       not null comment '采集消息',
     creator     int          default 0        not null comment '创建人',
     updater     int          default 0        not null comment '更新人',
@@ -203,6 +203,7 @@ create table book
     update_time bigint                        not null comment '最后更新时间 时间戳：秒',
     delete_time bigint                        not null comment '删除时间 时间戳：秒'
 ) comment '电子书';
+create unique index book_src_idx on book(src);
 
 create table line
 (

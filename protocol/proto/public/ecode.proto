@@ -117,4 +117,14 @@ enum ECode {
     NOTE_SERVICE_ERROR_ListNoteTopic = 532001; // NOTE_SERVICE_ERROR_ListNoteTopic
     NOTE_SERVICE_ERROR_OperateNoteTopic = 532002; // NOTE_SERVICE_ERROR_OperateNoteTopic
     NOTE_SERVICE_ERROR_BatchOperateNoteTopic = 532003; // NOTE_SERVICE_ERROR_BatchOperateNoteTopic
+
+    // novel-service book error
+    NOVEL_SERVICE_ERROR_ListBook = 540001; // NOVEL_SERVICE_ERROR_ListBook
+    NOVEL_SERVICE_ERROR_OperateBook = 540002; // NOVEL_SERVICE_ERROR_OperateBook
+    NOVEL_SERVICE_ERROR_BatchOperateBook = 540003; // NOVEL_SERVICE_ERROR_BatchOperateBook
+
+    // novel-service line error
+    NOVEL_SERVICE_ERROR_ListLine = 541001; // NOVEL_SERVICE_ERROR_ListLine
+    NOVEL_SERVICE_ERROR_OperateLine = 541002; // NOVEL_SERVICE_ERROR_OperateLine
+    NOVEL_SERVICE_ERROR_BatchOperateLine = 541003; // NOVEL_SERVICE_ERROR_BatchOperateLine
 }

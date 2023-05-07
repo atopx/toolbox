@@ -11,7 +11,7 @@ pub struct Model {
     pub url: String,
     pub name: String,
     pub author: String,
-    pub status: i8,
+    pub status: i32,
     pub message: String,
     pub creator: i32,
     pub updater: i32,
