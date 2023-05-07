@@ -1,0 +1,84 @@
+syntax = "proto3";
+package novel_service;
+option go_package = "superserver/domain/novel_service";
+
+import "public/common.proto";
+
+enum Status {
+    PENDING = 0;
+    RUNNING = 1;
+    SUCCESS = 2;
+    FAILURE = 4;
+}
+
+message Book {
+    int32 id = 1;
+    string src = 2;
+    string url = 3;
+    string name = 4;
+    string author = 5;
+    Status status = 6;
+    string message = 7;
+
+    int64 delete_time = 1001; // 删除时间 时间戳：秒
+    int64 create_time = 1002; // 创建时间 时间戳：秒
+    int64 update_time = 1003; // 最后更新时间 时间戳：秒
+    int32 creator = 1004; // 创建人
+    int32 updater = 1005; // 更新人
+}
+
+message BookFilter {
+    repeated int32 ids = 1;
+    repeated Status states = 2;
+    repeated string names = 3;
+    repeated string authors = 4;
+
+    public.BetweenInt64 delete_time_range = 101;
+    public.BetweenInt64 create_time_range = 102;
+    public.BetweenInt64 update_time_range = 103;
+    repeated int32 creators = 104;
+    repeated int32 updaters = 105;
+
+    public.BooleanScope deleted = 500;
+
+    Keywords keywords = 201;
+    message Keywords {
+        string keyword = 1;
+        string name = 2;
+        string author = 3;
+    }
+}
+
+message ListBookParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    BookFilter filter = 4;
+}
+
+message ListBookReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated Book data = 3;
+}
+
+message OperateBookParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    Book data = 3;
+}
+
+message OperateBookReply {
+    public.ReplyHeader header = 1;
+    Book data = 2;
+}
+
+message BatchOperateBookParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    repeated Book data = 3;
+}
+
+message BatchOperateBookReply {
+    public.ReplyHeader header = 1;
+}

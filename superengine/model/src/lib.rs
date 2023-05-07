@@ -4,10 +4,13 @@ pub mod prelude;
 
 pub mod access;
 pub mod auth_token;
+pub mod book;
 pub mod computer;
 pub mod file;
 pub mod folder;
+pub mod grey_decipher;
 pub mod label;
+pub mod line;
 pub mod note;
 pub mod note_label;
 pub mod note_topic;

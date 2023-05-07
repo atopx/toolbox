@@ -1,0 +1,52 @@
+syntax = "proto3";
+package novel_service;
+option go_package = "superserver/domain/novel_service";
+
+import "public/common.proto";
+
+
+message Line {
+    int32 id = 1;
+    int32 book_id = 2;
+    string code = 3;
+    string value = 4;
+}
+
+message LineFilter {
+    repeated int32 ids = 1;
+    repeated int32 book_ids = 2;
+}
+
+message ListLineParams {
+    public.Header header = 1;
+    public.Pager pager = 2;
+    repeated public.Sort sorts = 3;
+    LineFilter filter = 4;
+}
+
+message ListLineReply {
+    public.ReplyHeader header = 1;
+    public.Pager pager = 2;
+    repeated Line data = 3;
+}
+
+message OperateLineParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    Line data = 3;
+}
+
+message OperateLineReply {
+    public.ReplyHeader header = 1;
+    Line data = 2;
+}
+
+message BatchOperateLineParams {
+    public.Header header = 1;
+    public.Operation operate = 2;
+    repeated Line data = 3;
+}
+
+message BatchOperateLineReply {
+    public.ReplyHeader header = 1;
+}

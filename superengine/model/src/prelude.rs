@@ -2,10 +2,13 @@
 
 pub use super::access::Entity as Access;
 pub use super::auth_token::Entity as AuthToken;
+pub use super::book::Entity as Book;
 pub use super::computer::Entity as Computer;
 pub use super::file::Entity as File;
 pub use super::folder::Entity as Folder;
+pub use super::grey_decipher::Entity as GreyDecipher;
 pub use super::label::Entity as Label;
+pub use super::line::Entity as Line;
 pub use super::note::Entity as Note;
 pub use super::note_label::Entity as NoteLabel;
 pub use super::note_topic::Entity as NoteTopic;
