@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"superserver/common/utils"
 
 	"superserver/common/system"
 
@@ -27,7 +28,7 @@ func Setup(level string) (err error) {
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.CapitalLevelEncoder,
-		EncodeTime:     zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05"),
+		EncodeTime:     zapcore.TimeEncoderOfLayout(utils.DefaultDateLayout),
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.FullCallerEncoder,
 	}), zapcore.AddSync(os.Stdout), loggerLevel)

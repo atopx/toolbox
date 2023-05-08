@@ -1,12 +1,23 @@
 package novel
 
 import (
+	"context"
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"github.com/redis/go-redis/v9"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"superserver/common/consts"
+	"superserver/common/logger"
+	"superserver/common/utils"
+	"superserver/domain/public/common"
+	"superserver/pkg"
+	"syscall"
 	"time"
 )
 
@@ -16,6 +27,7 @@ type Chapter struct {
 }
 
 type Book struct {
+	src      string
 	start    time.Time
 	Name     string
 	Author   string
@@ -25,13 +37,25 @@ type Book struct {
 type Crawler struct {
 	collector *colly.Collector
 	replacer  *strings.Replacer
+	store     *redis.Client
+	ctx       context.Context
+	cancel    context.CancelFunc
+	queue     *redis.PubSub
 }
 
 func New() *Crawler {
 	crawler := &Crawler{
 		collector: colly.NewCollector(),
 		replacer:  strings.NewReplacer("\u00a0\u00a0", "\n"),
+		store:     pkg.NewRedisClient(viper.GetStringMap("redis")),
 	}
+
+	crawler.ctx, crawler.cancel = context.WithCancel(context.Background())
+	crawler.ctx = context.WithValue(crawler.ctx, consts.RequestHeader, &common.Header{
+		TraceId: utils.NewTraceId(),
+		Source:  "novel-crawler",
+	})
+	crawler.queue = crawler.store.Subscribe(crawler.ctx, "crawler-novel")
 	crawler.collector.Async = true
 	crawler.collector.TraceHTTP = true
 	crawler.collector.DetectCharset = true
@@ -47,16 +71,16 @@ func New() *Crawler {
 }
 
 func (c *Crawler) request(request *colly.Request) {
-	//log.Printf("request: %s", request.URL)
+	logger.Debug(c.ctx, "request", zap.String("src", request.URL.String()))
 }
 func (c *Crawler) response(response *colly.Response) {
-	//fmt.Println("OnResponse")
+	logger.Debug(c.ctx, "response", zap.Int("status_code", response.StatusCode), zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) scraped(response *colly.Response) {
-	//log.Printf("success: %s", response.Request.URL)
+	logger.Debug(c.ctx, "success", zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) error(response *colly.Response, err error) {
-	log.Printf("crawler %s failed: %s", response.Request.URL, err.Error())
+	logger.Error(c.ctx, "failed", zap.Error(err), zap.String("src", response.Request.URL.String()))
 }
 
 const (
@@ -67,23 +91,30 @@ const (
 )
 
 func (c *Crawler) Save(book Book) error {
-	file, err := os.OpenFile(fmt.Sprintf("%s-%s.txt", book.Name, book.Author), os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		return err
-	}
+	buf := new(strings.Builder)
 	for _, chapter := range book.Chapters {
-		_, _ = file.WriteString(chapter.Title)
-		_, _ = file.WriteString("\n")
-		_, _ = file.WriteString(chapter.Content)
-		_, _ = file.WriteString("\n")
+		buf.WriteString(chapter.Title)
+		buf.WriteString("\n")
+		buf.WriteString(chapter.Content)
+		buf.WriteString("\n")
 	}
-	log.Printf("save success, total cost %s", time.Since(book.start))
-	return file.Close()
+	c.store.HSet(
+		c.ctx,
+		fmt.Sprintf("novel::%s", book.src),
+		"name", book.Name,
+		"author", book.Author,
+		"content", buf.String(),
+	)
+	logger.Info(c.ctx, "saved", zap.String("src", book.src), zap.Duration("cost", time.Since(book.start)))
+	return nil
 }
 
-func (c *Crawler) Do(url string) error {
-	book := Book{start: time.Now().Local()}
+func (c *Crawler) scheduler(url string) error {
+	book := Book{start: time.Now().Local(), src: url}
 	records := make(map[string]int)
+	header := c.ctx.Value(consts.RequestHeader).(*common.Header)
+	header.TraceId = utils.NewTraceId()
+	header.Source = url
 
 	if err := c.collector.Limit(&colly.LimitRule{
 		DomainGlob:  "*",
@@ -96,6 +127,7 @@ func (c *Crawler) Do(url string) error {
 	c.collector.OnHTML(BookInfoSelector, func(element *colly.HTMLElement) {
 		book.Name = element.ChildText("h1")
 		book.Author = element.ChildTexts("a")[0]
+		logger.Debug(c.ctx, "crawler", zap.Any("book", book), zap.String("src", url))
 		c.collector.OnHTMLDetach(BookInfoSelector)
 	})
 
@@ -106,7 +138,7 @@ func (c *Crawler) Do(url string) error {
 			records[link] = i
 			chapter := &Chapter{Title: element.Text}
 			book.Chapters = append(book.Chapters, chapter)
-			//log.Printf("start crawler %s: %s", chapter.Title, link)
+			logger.Debug(c.ctx, "visit", zap.String("title", chapter.Title), zap.String("src", link))
 			_ = element.Request.Visit(link)
 		})
 		c.collector.OnHTMLDetach(ChapterListSelector)
@@ -121,6 +153,31 @@ func (c *Crawler) Do(url string) error {
 		return err
 	}
 	c.collector.Wait()
-	log.Printf("crawled %d page, cost %s", len(book.Chapters)+1, time.Since(book.start))
+	logger.Debug(c.ctx, "crawled", zap.Int("pages", len(book.Chapters)), zap.Duration("cost", time.Since(book.start)), zap.String("src", url))
 	return c.Save(book)
+}
+
+func (c *Crawler) Listen() {
+	go func() {
+		for message := range c.queue.Channel(redis.WithChannelSize(1), redis.WithChannelHealthCheckInterval(time.Minute)) {
+			if err := c.scheduler(message.Payload); err != nil {
+				logger.Error(c.ctx, "failed", zap.String("src", message.Payload), zap.Error(err))
+			}
+		}
+	}()
+	log.Println("start novel crawler")
+	manager := make(chan os.Signal, 1)
+	signal.Notify(manager, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	select {
+	case s := <-manager:
+		switch s {
+		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
+			c.Stop()
+		}
+	}
+}
+
+func (c *Crawler) Stop() {
+	_ = c.queue.Close()
+	c.cancel()
 }
