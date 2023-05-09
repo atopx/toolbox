@@ -98,10 +98,7 @@ func (c *Crawler) parseBook(book *models.Book, element *colly.HTMLElement) error
 	}
 	book.LastModify = utils.TimeLoad(element.ChildText("#info p:nth-child(4)"), "最后更新：2006-01-02 15:04:05")
 	book.Cover = element.Request.AbsoluteURL(element.ChildAttr("#fmimg img", "src"))
-	return book.Connect().Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "src"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name", "author", "intro", "last_modify", "cover", "update_time"}),
-	}).Create(book).Error
+	return book.Update(book)
 }
 
 func (c *Crawler) parseChapters(book *models.Book, element *colly.HTMLElement) error {
@@ -117,7 +114,7 @@ func (c *Crawler) parseChapters(book *models.Book, element *colly.HTMLElement) e
 		chapters = append(chapters, &chapter)
 		if err := models.NewChapterClient(c.db).Connect().Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "src"}},
-			DoUpdates: clause.AssignmentColumns([]string{"code", "title", "update_time"}),
+			DoUpdates: clause.AssignmentColumns([]string{"code", "title", "state", "update_time"}),
 		}).Create(&chapter).Error; err != nil {
 			logger.Error("parse chapter error", zap.Error(err), zap.String("src", chapter.Src))
 		}

@@ -62,9 +62,9 @@ func (s *Scheduler) register() {
 func (s *Scheduler) Start() {
 	s.register()
 	go func() {
-		for msg := range s.queue.Channel(redis.WithChannelSize(1)) {
-			logger.Info("queue message", zap.String("queue", msg.Channel), zap.String("payload", msg.Payload))
-			_ = s.bookSpider.Visit(msg.Payload)
+		for event := range s.queue.Channel() {
+			logger.Info("queue message", zap.String("queue", event.Channel), zap.String("payload", event.Payload))
+			_ = s.bookSpider.Visit(event.Payload)
 			s.bookSpider.Wait()
 		}
 	}()
