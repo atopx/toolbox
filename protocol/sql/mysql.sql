@@ -191,25 +191,32 @@ create unique index folder_file_sign_idx on file(folder_id, sign);
 create table book
 (
     id          int primary key auto_increment comment '主键',
-    src         varchar(128)                  not null comment '采集页',
-    url         varchar(128)                  not null comment '下载页',
-    name        varchar(128) default ''       not null comment '书名',
-    author      varchar(32)  default ''       not null comment '作者',
-    status      int          default '0'      not null comment '采集状态',
-    message     varchar(255) default ''       not null comment '采集消息',
-    creator     int          default 0        not null comment '创建人',
-    updater     int          default 0        not null comment '更新人',
-    create_time bigint                        not null comment '创建时间 时间戳：秒',
-    update_time bigint                        not null comment '最后更新时间 时间戳：秒',
-    delete_time bigint                        not null comment '删除时间 时间戳：秒'
-) comment '电子书';
-create unique index book_src_idx on book(src);
+    name        varchar(128)  default ''     not null comment '名称',
+    author      varchar(128)  default ''     not null comment '作者',
+    src         varchar(256)  default ''     not null comment '链接',
+    cover       varchar(256)  default ''     not null comment '封面',
+    label       varchar(32)   default ''     not null comment '标签/分类',
+    intro       varchar(4096) default ''     not null comment '简介',
+    state       varchar(32)   default 'NONE' not null comment '状态',
+    last_modify bigint        default 0      not null comment '最后修改时间 时间戳：秒',
+    create_time bigint        default 0      not null comment '创建时间 时间戳：秒',
+    update_time bigint        default 0      not null comment '更新时间 时间戳：秒',
+    delete_time bigint        default 0      not null comment '删除时间 时间戳：秒',
+    constraint src_idx unique (src)
+);
 
-create table line
+create table chapter
 (
-    id      int primary key auto_increment comment '主键',
-    book_id int         not null comment '电子书ID',
-    code    varchar(24) not null comment '章节编码',
-    value   text comment '内容'
-) comment '电子书-章节线';
-create index book_idx on line(book_id);
+    id          int primary key auto_increment comment '主键',
+    book_id     int                         not null comment 'book-id',
+    code        int                         not null comment '章节code',
+    src         varchar(256) default ''     not null comment '链接',
+    title       varchar(256) default ''     not null comment '章节标题',
+    state       varchar(32)  default 'NONE' not null comment '状态',
+    content     text comment '章节内容',
+    create_time bigint       default 0      not null comment '创建时间 时间戳：秒',
+    update_time bigint       default 0      not null comment '更新时间 时间戳：秒',
+    delete_time bigint       default 0      not null comment '删除时间 时间戳：秒',
+    constraint books unique (book_id, code),
+    constraint src_idx unique (src)
+);
