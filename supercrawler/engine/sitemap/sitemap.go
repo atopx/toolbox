@@ -66,7 +66,7 @@ func (c *Crawler) response(response *colly.Response) {
 	logger.Debug("sitemap crawler response", zap.Int("status_code", response.StatusCode), zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) scraped(response *colly.Response) {
-	logger.Debug("sitemap crawler success", zap.String("src", response.Request.URL.String()))
+	logger.Info("sitemap crawler success", zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) error(response *colly.Response, err error) {
 	logger.Error("sitemap crawler failed", zap.Error(err), zap.String("src", response.Request.URL.String()))

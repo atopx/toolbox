@@ -52,7 +52,7 @@ func (c *Crawler) response(response *colly.Response) {
 	logger.Debug("chapter crawler response", zap.Int("status_code", response.StatusCode), zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) scraped(response *colly.Response) {
-	logger.Debug("chapter crawler success", zap.String("src", response.Request.URL.String()))
+	logger.Info("chapter crawler success", zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) error(response *colly.Response, err error) {
 	logger.Error("chapter crawler failed", zap.Error(err), zap.String("src", response.Request.URL.String()))

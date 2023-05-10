@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
 )
 
 func Test_PublishBook(t *testing.T) {
@@ -27,16 +26,19 @@ func Test_AllPublishBook(t *testing.T) {
 	rdb := pkg.NewRedisClient(viper.GetStringMap("redis"))
 	db := pkg.NewDbClient(viper.GetStringMap("mysql"))
 	ctx := context.Background()
-	var records []models.Book
-	models.NewBookClient(db).Connect().Order("id").Select("src").
-		Where("name='' and state!=?", models.BookStatusFinal).
-		FindInBatches(&records, 1000, func(tx *gorm.DB, batch int) error {
-			for _, record := range records {
-				rdb.Publish(ctx, config.Queue.BookQueue, record.Src)
-			}
-			fmt.Println()
-			return nil
-		})
+	size := 1000
+	for page := 0; ; page++ {
+		var records []string
+		models.NewBookClient(db).Connect().Select("src").Where("name=''").
+			Offset(page * size).Limit(size).Find(&records)
+		for _, record := range records {
+			rdb.Publish(ctx, config.Queue.BookQueue, record)
+		}
+		if len(records) < config.Crawler.Parallelism {
+			break
+		}
+		fmt.Println(page)
+	}
 }
 
 func Test_PublishChapter(t *testing.T) {
@@ -53,14 +55,18 @@ func Test_AllPublishChapter(t *testing.T) {
 	}
 	rdb := pkg.NewRedisClient(viper.GetStringMap("redis"))
 	db := pkg.NewDbClient(viper.GetStringMap("mysql"))
-	var records []models.Chapter
 	ctx := context.Background()
-	models.NewChapterClient(db).Connect().Order("id").Select("src").
-		Where("state!=?", models.BookStatusFinal).
-		FindInBatches(&records, 1000, func(tx *gorm.DB, batch int) error {
-			for _, record := range records {
-				rdb.Publish(ctx, config.Queue.ChapterQueue, record.Src)
-			}
-			return nil
-		})
+	size := 2000
+	for page := 0; ; page++ {
+		var records []string
+		models.NewChapterClient(db).Connect().Select("src").Where("state!=?", models.BookStatusFinal).
+			Offset(page * size).Limit(size).Find(&records)
+		for _, record := range records {
+			rdb.Publish(ctx, config.Queue.ChapterQueue, record)
+		}
+		if len(records) < config.Crawler.Parallelism {
+			break
+		}
+		fmt.Println(page)
+	}
 }
