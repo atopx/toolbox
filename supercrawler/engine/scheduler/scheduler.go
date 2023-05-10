@@ -107,10 +107,10 @@ func (s *Scheduler) Start() {
 	case op := <-manager:
 		switch op {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
-			s.bookSpider.Wait()
-			s.chapterSpider.Wait()
 			s.cron.Stop()
 			_ = s.subscribe.Close()
+			s.bookSpider.Wait()
+			s.chapterSpider.Wait()
 		}
 	}
 }
