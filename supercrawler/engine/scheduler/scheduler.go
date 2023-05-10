@@ -88,14 +88,16 @@ func (s *Scheduler) Start() {
 			switch event.Channel {
 			case config.BookQueue:
 				for _, src := range srcs {
-					_ = s.bookSpider.Visit(src)
+					if err := s.bookSpider.Visit(src); err != nil {
+						logger.Error("book visit error", zap.String("src", src), zap.Error(err))
+					}
 				}
-				s.bookSpider.Wait()
 			case config.ChapterQueue:
 				for _, src := range srcs {
-					_ = s.chapterSpider.Visit(src)
+					if err := s.chapterSpider.Visit(src); err != nil {
+						logger.Error("chapter visit error", zap.String("src", src), zap.Error(err))
+					}
 				}
-				s.chapterSpider.Wait()
 			}
 		}
 	}()
@@ -105,6 +107,8 @@ func (s *Scheduler) Start() {
 	case op := <-manager:
 		switch op {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
+			s.bookSpider.Wait()
+			s.chapterSpider.Wait()
 			s.cron.Stop()
 			_ = s.subscribe.Close()
 		}
