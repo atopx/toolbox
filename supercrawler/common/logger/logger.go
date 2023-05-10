@@ -50,7 +50,6 @@ func Debug(message string, fields ...zapcore.Field) {
 }
 
 func Info(message string, fields ...zapcore.Field) {
-	fmt.Println(message)
 	output(zap.InfoLevel, message, fields...)
 }
 

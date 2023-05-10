@@ -1,14 +1,15 @@
-package sitemap
+package chapter
 
 import (
-	"github.com/antchfx/xmlquery"
 	"github.com/gocolly/colly/v2"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"net/http"
+	"strings"
 	"supercrawler/common/logger"
 	"supercrawler/engine/config"
 	"supercrawler/models"
+	"time"
 )
 
 type Crawler struct {
@@ -39,39 +40,37 @@ func New(db *gorm.DB) *Crawler {
 	crawler.ctor.OnError(crawler.error)
 	crawler.ctor.OnScraped(crawler.scraped)
 	crawler.ctor.OnResponse(crawler.response)
-	crawler.ctor.OnXML(config.SitemapIndex, crawler.sitemapIndex)
-	crawler.ctor.OnXML(config.SitemapUrlList, crawler.sitemapUrlList)
+	crawler.ctor.OnHTML("#main", crawler.chapter)
 	return &crawler
 }
 
-func (c *Crawler) sitemapIndex(element *colly.XMLElement) {
-	dom := element.DOM.(*xmlquery.Node)
-	for _, node := range dom.SelectElements(config.SitemapIndexList) {
-		_ = element.Request.Visit(node.SelectElement(config.SitemapIndexLoc).InnerText())
-	}
-}
-
-func (c *Crawler) sitemapUrlList(element *colly.XMLElement) {
-	book := models.NewBookClient(c.db)
-	book.Src = element.ChildText(config.SitemapIndexLoc)
-	book.State = models.BookStatusNew
-	book.Connect().Where("src=?", book.Src).FirstOrCreate(&book)
-}
-
 func (c *Crawler) request(request *colly.Request) {
-	logger.Debug("sitemap crawler request", zap.String("src", request.URL.String()))
+	logger.Debug("chapter crawler request", zap.String("src", request.URL.String()))
 }
 func (c *Crawler) response(response *colly.Response) {
-	logger.Debug("sitemap crawler response", zap.Int("status_code", response.StatusCode), zap.String("src", response.Request.URL.String()))
+	logger.Debug("chapter crawler response", zap.Int("status_code", response.StatusCode), zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) scraped(response *colly.Response) {
-	logger.Debug("sitemap crawler success", zap.String("src", response.Request.URL.String()))
+	logger.Debug("chapter crawler success", zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) error(response *colly.Response, err error) {
-	logger.Error("sitemap crawler failed", zap.Error(err), zap.String("src", response.Request.URL.String()))
+	logger.Error("chapter crawler failed", zap.Error(err), zap.String("src", response.Request.URL.String()))
 }
 
-func (c *Crawler) Start() {
-	_ = c.ctor.Visit(config.SitemapApi)
+func (c *Crawler) chapter(element *colly.HTMLElement) {
+	content := element.DOM.Find("#content").After("p").Before("div").Contents().Text()
+	content = strings.ReplaceAll(strings.TrimSpace(content), "\u00a0\u00a0", "\n")
+	models.NewChapterClient(c.db).Connect().Where("src = ?", element.Request.URL.String()).Updates(map[string]interface{}{
+		"content":     content,
+		"state":       models.BookStatusFinal,
+		"update_time": time.Now().Local().Unix(),
+	})
+}
+
+func (c *Crawler) Wait() {
 	c.ctor.Wait()
+}
+
+func (c *Crawler) Visit(url string) error {
+	return c.ctor.Visit(url)
 }

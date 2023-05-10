@@ -11,7 +11,6 @@ import (
 	"supercrawler/common/utils"
 	"supercrawler/engine/config"
 	"supercrawler/models"
-	"time"
 )
 
 type Crawler struct {
@@ -47,44 +46,30 @@ func New(db *gorm.DB) *Crawler {
 }
 
 func (c *Crawler) request(request *colly.Request) {
-	logger.Debug("request", zap.String("src", request.URL.String()))
+	logger.Debug("book crawler request", zap.String("src", request.URL.String()))
 }
 func (c *Crawler) response(response *colly.Response) {
-	logger.Debug("response", zap.Int("status_code", response.StatusCode), zap.String("src", response.Request.URL.String()))
+	logger.Debug("book crawler response", zap.Int("status_code", response.StatusCode), zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) scraped(response *colly.Response) {
-	logger.Debug("success", zap.String("src", response.Request.URL.String()))
+	logger.Debug("book crawler success", zap.String("src", response.Request.URL.String()))
 }
 func (c *Crawler) error(response *colly.Response, err error) {
-	logger.Error("failed", zap.Error(err), zap.String("src", response.Request.URL.String()))
+	logger.Error("book crawler failed", zap.Error(err), zap.String("src", response.Request.URL.String()))
 }
 
 func (c *Crawler) book(element *colly.HTMLElement) {
-	if s := element.DOM.Find("#bookdetail"); len(s.Nodes) > 0 {
-		book := models.NewBookClient(c.db)
-		book.Connect().Where("src=?", element.Request.URL.String()).First(&book)
-		if book.State != models.BookStatusFinal {
-			if err := c.parseBook(book, element); err != nil {
-				logger.Error("parse book error", zap.String("src", element.Request.URL.String()), zap.Error(err))
-			} else {
-				if err = c.parseChapters(book, element); err != nil {
-					logger.Error("parse chapters error", zap.String("src", element.Request.URL.String()), zap.Error(err))
-				}
+	book := models.NewBookClient(c.db)
+	book.Connect().Where("src=?", element.Request.URL.String()).First(&book)
+	if book.State != models.BookStatusFinal {
+		if err := c.parseBook(book, element); err != nil {
+			logger.Error("parse book error", zap.String("src", element.Request.URL.String()), zap.Error(err))
+		} else {
+			if err = c.parseChapters(book, element); err != nil {
+				logger.Error("parse chapters error", zap.String("src", element.Request.URL.String()), zap.Error(err))
 			}
 		}
-	} else {
-		c.chapter(element)
 	}
-}
-
-func (c *Crawler) chapter(element *colly.HTMLElement) {
-	content := element.DOM.Find("#content").After("p").Before("div").Contents().Text()
-	content = strings.ReplaceAll(strings.TrimSpace(content), "\u00a0\u00a0", "\n")
-	models.NewChapterClient(c.db).Connect().Where("src = ?", element.Request.URL.String()).Updates(map[string]interface{}{
-		"content":     content,
-		"state":       models.BookStatusFinal,
-		"update_time": time.Now().Local().Unix(),
-	})
 }
 
 func (c *Crawler) parseBook(book *models.Book, element *colly.HTMLElement) error {
@@ -98,7 +83,7 @@ func (c *Crawler) parseBook(book *models.Book, element *colly.HTMLElement) error
 	}
 	book.LastModify = utils.TimeLoad(element.ChildText("#info p:nth-child(4)"), "最后更新：2006-01-02 15:04:05")
 	book.Cover = element.Request.AbsoluteURL(element.ChildAttr("#fmimg img", "src"))
-	return book.Update(book)
+	return book.Connect().Where("id=?", book.Id).Updates(book).Error
 }
 
 func (c *Crawler) parseChapters(book *models.Book, element *colly.HTMLElement) error {
@@ -118,7 +103,6 @@ func (c *Crawler) parseChapters(book *models.Book, element *colly.HTMLElement) e
 		}).Create(&chapter).Error; err != nil {
 			logger.Error("parse chapter error", zap.Error(err), zap.String("src", chapter.Src))
 		}
-		_ = c.ctor.Visit(chapter.Src)
 	})
 	return nil
 }
