@@ -78,9 +78,6 @@ func (c *Crawler) parseBook(book *models.Book, element *colly.HTMLElement) error
 	book.Author = element.ChildText("#info p:nth-child(2) a")
 	book.State = models.BookStatusPending
 	book.Intro = strings.ReplaceAll(element.ChildText("#intro"), "\u00a0\u00a0", "\n")
-	if len(book.Intro) > 4095 {
-		book.Intro = book.Intro[:4095]
-	}
 	book.LastModify = utils.TimeLoad(element.ChildText("#info p:nth-child(4)"), "最后更新：2006-01-02 15:04:05")
 	book.Cover = element.Request.AbsoluteURL(element.ChildAttr("#fmimg img", "src"))
 	return book.Connect().Where("id=?", book.Id).Updates(book).Error

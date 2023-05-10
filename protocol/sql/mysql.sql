@@ -196,7 +196,7 @@ create table book
     src         varchar(256)  default ''     not null comment '链接',
     cover       varchar(256)  default ''     not null comment '封面',
     label       varchar(32)   default ''     not null comment '标签/分类',
-    intro       varchar(4096) default ''     not null comment '简介',
+    intro       text                             null comment '简介',
     state       varchar(32)   default 'NONE' not null comment '状态',
     last_modify bigint        default 0      not null comment '最后修改时间 时间戳：秒',
     create_time bigint        default 0      not null comment '创建时间 时间戳：秒',
