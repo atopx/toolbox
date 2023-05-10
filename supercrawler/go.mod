@@ -6,7 +6,6 @@ require (
 	github.com/antchfx/xmlquery v1.3.1
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/redis/go-redis/v9 v9.0.4
-	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/viper v1.15.0
 	go.uber.org/zap v1.24.0
 	gorm.io/driver/mysql v1.5.0

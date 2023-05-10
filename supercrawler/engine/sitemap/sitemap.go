@@ -1,14 +1,15 @@
 package sitemap
 
 import (
-	"github.com/antchfx/xmlquery"
-	"github.com/gocolly/colly/v2"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
 	"net/http"
 	"supercrawler/common/logger"
 	"supercrawler/engine/config"
 	"supercrawler/models"
+
+	"github.com/antchfx/xmlquery"
+	"github.com/gocolly/colly/v2"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type Crawler struct {
@@ -26,34 +27,34 @@ func New(db *gorm.DB) *Crawler {
 	crawler.ctor.DetectCharset = true
 	crawler.ctor.IgnoreRobotsTxt = true
 	crawler.ctor.AllowURLRevisit = true
-	crawler.ctor.UserAgent = config.UserAgent
+	crawler.ctor.UserAgent = config.Crawler.UserAgent
 	crawler.ctor.DisableCookies()
 	crawler.ctor.WithTransport(&http.Transport{DisableKeepAlives: true})
 	_ = crawler.ctor.Limit(&colly.LimitRule{
 		DomainGlob:  "*",
-		RandomDelay: config.Delay,
-		Parallelism: config.Parallelism,
+		RandomDelay: config.Crawler.Delay,
+		Parallelism: config.Crawler.Parallelism,
 	})
 
 	crawler.ctor.OnRequest(crawler.request)
 	crawler.ctor.OnError(crawler.error)
 	crawler.ctor.OnScraped(crawler.scraped)
 	crawler.ctor.OnResponse(crawler.response)
-	crawler.ctor.OnXML(config.SitemapIndex, crawler.sitemapIndex)
-	crawler.ctor.OnXML(config.SitemapUrlList, crawler.sitemapUrlList)
+	crawler.ctor.OnXML(config.Sitemap.SitemapIndex, crawler.sitemapIndex)
+	crawler.ctor.OnXML(config.Sitemap.SitemapUrls, crawler.sitemapUrlList)
 	return &crawler
 }
 
 func (c *Crawler) sitemapIndex(element *colly.XMLElement) {
 	dom := element.DOM.(*xmlquery.Node)
-	for _, node := range dom.SelectElements(config.SitemapIndexList) {
-		_ = element.Request.Visit(node.SelectElement(config.SitemapIndexLoc).InnerText())
+	for _, node := range dom.SelectElements(config.Sitemap.SitemapIndexList) {
+		_ = element.Request.Visit(node.SelectElement(config.Sitemap.SitemapIndexLoc).InnerText())
 	}
 }
 
 func (c *Crawler) sitemapUrlList(element *colly.XMLElement) {
 	book := models.NewBookClient(c.db)
-	book.Src = element.ChildText(config.SitemapIndexLoc)
+	book.Src = element.ChildText(config.Sitemap.SitemapIndexLoc)
 	book.State = models.BookStatusNew
 	book.Connect().Where("src=?", book.Src).FirstOrCreate(&book)
 }
@@ -71,7 +72,10 @@ func (c *Crawler) error(response *colly.Response, err error) {
 	logger.Error("sitemap crawler failed", zap.Error(err), zap.String("src", response.Request.URL.String()))
 }
 
-func (c *Crawler) Start() {
-	_ = c.ctor.Visit(config.SitemapApi)
+func (c *Crawler) Wait() {
 	c.ctor.Wait()
+}
+
+func (c *Crawler) Visit(url string) error {
+	return c.ctor.Visit(url)
 }

@@ -1,16 +1,17 @@
 package book
 
 import (
-	"github.com/gocolly/colly/v2"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"net/http"
 	"strings"
 	"supercrawler/common/logger"
 	"supercrawler/common/utils"
 	"supercrawler/engine/config"
 	"supercrawler/models"
+
+	"github.com/gocolly/colly/v2"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Crawler struct {
@@ -28,13 +29,13 @@ func New(db *gorm.DB) *Crawler {
 	crawler.ctor.DetectCharset = true
 	crawler.ctor.IgnoreRobotsTxt = true
 	crawler.ctor.AllowURLRevisit = true
-	crawler.ctor.UserAgent = config.UserAgent
+	crawler.ctor.UserAgent = config.Crawler.UserAgent
 	crawler.ctor.DisableCookies()
 	crawler.ctor.WithTransport(&http.Transport{DisableKeepAlives: true})
 	_ = crawler.ctor.Limit(&colly.LimitRule{
 		DomainGlob:  "*",
-		RandomDelay: config.Delay,
-		Parallelism: config.Parallelism,
+		RandomDelay: config.Crawler.Delay,
+		Parallelism: config.Crawler.Parallelism,
 	})
 
 	crawler.ctor.OnRequest(crawler.request)

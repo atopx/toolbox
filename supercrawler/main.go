@@ -5,7 +5,8 @@ import (
 	"log"
 	"supercrawler/common/logger"
 	"supercrawler/common/pkg"
-	"supercrawler/engine/scheduler"
+	"supercrawler/engine"
+	"supercrawler/engine/config"
 
 	"github.com/spf13/viper"
 )
@@ -13,8 +14,7 @@ import (
 func main() {
 	configPath := flag.String("c", "config.yaml", "config file path.")
 	flag.Parse()
-	viper.SetConfigFile(*configPath)
-	if err := viper.ReadInConfig(); err != nil {
+	if err := config.Read(*configPath); err != nil {
 		panic(err)
 	}
 
@@ -22,10 +22,11 @@ func main() {
 	if err := logger.Setup(viper.GetString("server.loglevel")); err != nil {
 		log.Panicf("logger setup failed: %s", err.Error())
 	}
-	db, err := pkg.NewDbClient(viper.GetStringMap("mysql"), nil)
-	if err != nil {
-		panic(err)
-	}
+
+	// init db
+	db := pkg.NewDbClient(viper.GetStringMap("mysql"))
 	rdb := pkg.NewRedisClient(viper.GetStringMap("redis"))
-	scheduler.New(db, rdb).Start()
+
+	// start engine
+	engine.New(db, rdb).Start()
 }

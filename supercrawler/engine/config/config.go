@@ -1,32 +1,24 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
-const (
-	UserAgent = "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)"
-)
-
-type Crawler struct {
+type CrawlerConfig struct {
 	Delay       time.Duration
 	Parallelism int
-	Threshold   int
 	UserAgent   string
 }
 
-type Queue struct {
+type QueueConfig struct {
 	BookQueue    string
 	ChapterQueue string
+	SitemapQueue string
 }
 
-type Cron struct {
-	SitemapCron string
-	CrawlerCron string
-}
-
-type Sitemap struct {
+type SitemapConfig struct {
 	SitemapApi       string
 	SitemapIndex     string
 	SitemapIndexList string
@@ -34,57 +26,41 @@ type Sitemap struct {
 	SitemapUrls      string
 }
 
-type Config struct {
-	Crawler
-	Queue
-	Cron
-	Sitemap
-}
+var (
+	Queue   *QueueConfig
+	Crawler *CrawlerConfig
+	Sitemap *SitemapConfig
+)
 
-func Get() *Config {
-	return &Config{
-		Crawler{
+func Read(path string) error {
+	viper.SetConfigFile(path)
+	if err := viper.ReadInConfig(); err != nil {
+		return err
+	}
+	if Crawler == nil {
+		Crawler = &CrawlerConfig{
 			Delay:       viper.GetDuration("crawler.delay") * time.Second,
 			Parallelism: viper.GetInt("crawler.parallelism"),
-			Threshold:   viper.GetInt("crawler.threshold"),
 			UserAgent:   viper.GetString("crawler.user_agent"),
-		},
-		Queue{
+		}
+	}
+
+	if Queue == nil {
+		Queue = &QueueConfig{
 			BookQueue:    viper.GetString("crawler.book_queue"),
 			ChapterQueue: viper.GetString("crawler.chapter_queue"),
-		},
-		Cron{
-			SitemapCron: viper.GetString("crawler.sitemap_cron"),
-			CrawlerCron: viper.GetString("crawler.crawler_cron"),
-		},
-		Sitemap{
+			SitemapQueue: viper.GetString("crawler.sitemap_queue"),
+		}
+	}
+
+	if Sitemap == nil {
+		Sitemap = &SitemapConfig{
 			SitemapApi:       viper.GetString("crawler.sitemap_api"),
 			SitemapIndex:     viper.GetString("crawler.sitemap_index"),
 			SitemapIndexList: viper.GetString("crawler.sitemap_index_list"),
 			SitemapIndexLoc:  viper.GetString("crawler.sitemap_index_loc"),
 			SitemapUrls:      viper.GetString("crawler.sitemap_urls"),
-		},
+		}
 	}
+	return nil
 }
-
-const (
-	Site         = "https://www.ibiquge.info"
-	Delay        = time.Second
-	Parallelism  = 8
-	Threshold    = 64
-	BookQueue    = "novel_crawler_book"
-	ChapterQueue = "novel_crawler_chapter"
-)
-
-const (
-	SitemapApi       = Site + "/api/sitemap.xml"
-	SitemapIndex     = "/sitemapindex"
-	SitemapIndexList = "/sitemap"
-	SitemapIndexLoc  = "loc"
-	SitemapUrlList   = "/urlset/url"
-)
-
-const (
-	SitemapCron = "0 1 * * ?"
-	CrawlerCron = "*/1 * * * *"
-)
