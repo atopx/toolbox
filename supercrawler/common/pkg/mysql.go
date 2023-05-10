@@ -20,7 +20,7 @@ func NewDbClient(cfg map[string]interface{}) *gorm.DB {
 		NowFunc:                func() time.Time { return time.Now().Local() },
 		Logger:                 defaultDbLogger(),
 		PrepareStmt:            true,
-		CreateBatchSize:        800,
+		CreateBatchSize:        500,
 	})
 	if err != nil {
 		panic(err)
@@ -30,7 +30,7 @@ func NewDbClient(cfg map[string]interface{}) *gorm.DB {
 		panic(err)
 	}
 	handle.SetMaxIdleConns(10)
-	handle.SetMaxOpenConns(20)
+	handle.SetMaxOpenConns(50)
 	handle.SetConnMaxLifetime(time.Hour)
 	return db
 }

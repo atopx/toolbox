@@ -95,14 +95,11 @@ func (c *Crawler) parseChapters(book *models.Book, element *colly.HTMLElement) e
 			State:  models.BookStatusPending,
 		}
 		chapters = append(chapters, &chapter)
-		if err := models.NewChapterClient(c.db).Connect().Clauses(clause.OnConflict{
-			Columns:   []clause.Column{{Name: "src"}},
-			DoUpdates: clause.AssignmentColumns([]string{"code", "title", "state", "update_time"}),
-		}).Create(&chapter).Error; err != nil {
-			logger.Error("parse chapter error", zap.Error(err), zap.String("src", chapter.Src))
-		}
 	})
-	return nil
+	return models.NewChapterClient(c.db).Connect().Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "src"}},
+		DoUpdates: clause.AssignmentColumns([]string{"code", "title", "state", "update_time"}),
+	}).Create(&chapters).Error
 }
 
 func (c *Crawler) Wait() {
