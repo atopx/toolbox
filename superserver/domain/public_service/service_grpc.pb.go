@@ -19,13 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	PublicService_ListLabel_FullMethodName          = "/public_service.PublicService/ListLabel"
-	PublicService_OperateLabel_FullMethodName       = "/public_service.PublicService/OperateLabel"
-	PublicService_BatchOperateLabel_FullMethodName  = "/public_service.PublicService/BatchOperateLabel"
-	PublicService_ListFolder_FullMethodName         = "/public_service.PublicService/ListFolder"
-	PublicService_OperateFolder_FullMethodName      = "/public_service.PublicService/OperateFolder"
-	PublicService_BatchOperateFolder_FullMethodName = "/public_service.PublicService/BatchOperateFolder"
-	PublicService_ListEnum_FullMethodName           = "/public_service.PublicService/ListEnum"
+	PublicService_ListLabel_FullMethodName         = "/public_service.PublicService/ListLabel"
+	PublicService_OperateLabel_FullMethodName      = "/public_service.PublicService/OperateLabel"
+	PublicService_BatchOperateLabel_FullMethodName = "/public_service.PublicService/BatchOperateLabel"
+	PublicService_ListEnum_FullMethodName          = "/public_service.PublicService/ListEnum"
 )
 
 // PublicServiceClient is the client API for PublicService service.
@@ -36,10 +33,6 @@ type PublicServiceClient interface {
 	ListLabel(ctx context.Context, in *ListLabelParams, opts ...grpc.CallOption) (*ListLabelReply, error)
 	OperateLabel(ctx context.Context, in *OperateLabelParams, opts ...grpc.CallOption) (*OperateLabelReply, error)
 	BatchOperateLabel(ctx context.Context, in *BatchOperateLabelParams, opts ...grpc.CallOption) (*BatchOperateLabelReply, error)
-	// 文件夹
-	ListFolder(ctx context.Context, in *ListFolderParams, opts ...grpc.CallOption) (*ListFolderReply, error)
-	OperateFolder(ctx context.Context, in *OperateFolderParams, opts ...grpc.CallOption) (*OperateFolderReply, error)
-	BatchOperateFolder(ctx context.Context, in *BatchOperateFolderParams, opts ...grpc.CallOption) (*BatchOperateFolderReply, error)
 	// Enums
 	ListEnum(ctx context.Context, in *ListEnumParams, opts ...grpc.CallOption) (*ListEnumReply, error)
 }
@@ -79,33 +72,6 @@ func (c *publicServiceClient) BatchOperateLabel(ctx context.Context, in *BatchOp
 	return out, nil
 }
 
-func (c *publicServiceClient) ListFolder(ctx context.Context, in *ListFolderParams, opts ...grpc.CallOption) (*ListFolderReply, error) {
-	out := new(ListFolderReply)
-	err := c.cc.Invoke(ctx, PublicService_ListFolder_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *publicServiceClient) OperateFolder(ctx context.Context, in *OperateFolderParams, opts ...grpc.CallOption) (*OperateFolderReply, error) {
-	out := new(OperateFolderReply)
-	err := c.cc.Invoke(ctx, PublicService_OperateFolder_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *publicServiceClient) BatchOperateFolder(ctx context.Context, in *BatchOperateFolderParams, opts ...grpc.CallOption) (*BatchOperateFolderReply, error) {
-	out := new(BatchOperateFolderReply)
-	err := c.cc.Invoke(ctx, PublicService_BatchOperateFolder_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *publicServiceClient) ListEnum(ctx context.Context, in *ListEnumParams, opts ...grpc.CallOption) (*ListEnumReply, error) {
 	out := new(ListEnumReply)
 	err := c.cc.Invoke(ctx, PublicService_ListEnum_FullMethodName, in, out, opts...)
@@ -123,10 +89,6 @@ type PublicServiceServer interface {
 	ListLabel(context.Context, *ListLabelParams) (*ListLabelReply, error)
 	OperateLabel(context.Context, *OperateLabelParams) (*OperateLabelReply, error)
 	BatchOperateLabel(context.Context, *BatchOperateLabelParams) (*BatchOperateLabelReply, error)
-	// 文件夹
-	ListFolder(context.Context, *ListFolderParams) (*ListFolderReply, error)
-	OperateFolder(context.Context, *OperateFolderParams) (*OperateFolderReply, error)
-	BatchOperateFolder(context.Context, *BatchOperateFolderParams) (*BatchOperateFolderReply, error)
 	// Enums
 	ListEnum(context.Context, *ListEnumParams) (*ListEnumReply, error)
 	mustEmbedUnimplementedPublicServiceServer()
@@ -144,15 +106,6 @@ func (UnimplementedPublicServiceServer) OperateLabel(context.Context, *OperateLa
 }
 func (UnimplementedPublicServiceServer) BatchOperateLabel(context.Context, *BatchOperateLabelParams) (*BatchOperateLabelReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateLabel not implemented")
-}
-func (UnimplementedPublicServiceServer) ListFolder(context.Context, *ListFolderParams) (*ListFolderReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListFolder not implemented")
-}
-func (UnimplementedPublicServiceServer) OperateFolder(context.Context, *OperateFolderParams) (*OperateFolderReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OperateFolder not implemented")
-}
-func (UnimplementedPublicServiceServer) BatchOperateFolder(context.Context, *BatchOperateFolderParams) (*BatchOperateFolderReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateFolder not implemented")
 }
 func (UnimplementedPublicServiceServer) ListEnum(context.Context, *ListEnumParams) (*ListEnumReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListEnum not implemented")
@@ -224,60 +177,6 @@ func _PublicService_BatchOperateLabel_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PublicService_ListFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListFolderParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PublicServiceServer).ListFolder(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PublicService_ListFolder_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PublicServiceServer).ListFolder(ctx, req.(*ListFolderParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PublicService_OperateFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OperateFolderParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PublicServiceServer).OperateFolder(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PublicService_OperateFolder_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PublicServiceServer).OperateFolder(ctx, req.(*OperateFolderParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PublicService_BatchOperateFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BatchOperateFolderParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PublicServiceServer).BatchOperateFolder(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PublicService_BatchOperateFolder_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PublicServiceServer).BatchOperateFolder(ctx, req.(*BatchOperateFolderParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _PublicService_ListEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListEnumParams)
 	if err := dec(in); err != nil {
@@ -314,18 +213,6 @@ var PublicService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BatchOperateLabel",
 			Handler:    _PublicService_BatchOperateLabel_Handler,
-		},
-		{
-			MethodName: "ListFolder",
-			Handler:    _PublicService_ListFolder_Handler,
-		},
-		{
-			MethodName: "OperateFolder",
-			Handler:    _PublicService_OperateFolder_Handler,
-		},
-		{
-			MethodName: "BatchOperateFolder",
-			Handler:    _PublicService_BatchOperateFolder_Handler,
 		},
 		{
 			MethodName: "ListEnum",

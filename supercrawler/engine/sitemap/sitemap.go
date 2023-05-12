@@ -55,7 +55,7 @@ func (c *Crawler) sitemapIndex(element *colly.XMLElement) {
 func (c *Crawler) sitemapUrlList(element *colly.XMLElement) {
 	book := models.NewBookClient(c.db)
 	book.Src = element.ChildText(config.Sitemap.SitemapIndexLoc)
-	book.State = models.BookStatusNew
+	book.State = models.PENDING
 	book.Connect().Where("src=?", book.Src).FirstOrCreate(&book)
 }
 

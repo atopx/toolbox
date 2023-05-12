@@ -36,7 +36,7 @@ message Header {
 
 message ReplyHeader {
     int64 trace_id = 1;
-    public.ECode code = 2;
+    ecode.ECode code = 2;
     string message = 3;
 }
 
@@ -67,9 +67,10 @@ enum Operation {
     OPERATION_UPSERT = 101;
 }
 
-enum Source {
-    Public = 0; // 公共
-    User = 1; // 用户
-    Note = 2; // 笔记
-    File = 3; // 文件
+enum TaskStatus {
+    PENDING = 0;
+    RUNNING = 1;
+    SUCCESS = 2;
+    FAILURE = 4;
+    FINALLY = 5;
 }

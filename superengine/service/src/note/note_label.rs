@@ -5,7 +5,8 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTr
 use sea_orm::ActiveValue::Set;
 
 use domain::{note_service, public};
-use domain::public::{BooleanScope, ECode, Operation};
+use domain::ecode::ECode;
+use domain::public::{BooleanScope, Operation};
 use model::note_label::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {
@@ -25,6 +26,7 @@ impl<'a> Business<'a> {
             id: 0,
             note_id: dto.note_id,
             label_id: dto.label_id,
+            label_type: dto.label_type,
             creator: self.header.operator,
             updater: self.header.operator,
             create_time: current_time,
@@ -43,6 +45,7 @@ impl<'a> Business<'a> {
             delete_time: model.delete_time,
             create_time: model.create_time,
             update_time: model.update_time,
+            label_type: model.label_type,
         }
     }
 
@@ -70,6 +73,9 @@ impl<'a> Business<'a> {
             }
             if filter.note_ids.is_empty().not() {
                 query = query.filter(Column::NoteId.is_in(filter.note_ids))
+            }
+            if filter.label_types.is_empty().not() {
+                query = query.filter(Column::LabelType.is_in(filter.label_types))
             }
             if filter.creators.is_empty().not() {
                 query = query.filter(Column::Creator.is_in(filter.creators));

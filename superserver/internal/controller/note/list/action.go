@@ -19,11 +19,8 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		Pager:  params.Pager,
 		Sorts:  params.Sorts,
 		Filter: &note_service.NoteFilter{
-			FolderIds:    params.Filter.FolderIds,
-			TopicIds:     params.Filter.TopicIds,
-			PublicSelect: params.Filter.PublicSelect,
-			Keywords:     &note_service.NoteFilter_Keywords{Keyword: params.Filter.Keyword},
-			Deleted:      common.BooleanScope_BOOL_FALSE,
+			Deleted:  common.BooleanScope_BOOL_FALSE,
+			Keywords: &note_service.NoteFilter_Keywords{Keyword: params.Filter.Keyword},
 		},
 	})
 	if code != ecode.ECode_SUCCESS {

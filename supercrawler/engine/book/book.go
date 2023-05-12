@@ -62,7 +62,7 @@ func (c *Crawler) error(response *colly.Response, err error) {
 func (c *Crawler) book(element *colly.HTMLElement) {
 	book := models.NewBookClient(c.db)
 	book.Connect().Where("src=?", element.Request.URL.String()).First(&book)
-	if book.State != models.BookStatusFinal {
+	if book.State != models.FINALLY {
 		if err := c.parseBook(book, element); err != nil {
 			logger.Error("parse book error", zap.String("src", element.Request.URL.String()), zap.Error(err))
 		} else {
@@ -77,7 +77,7 @@ func (c *Crawler) parseBook(book *models.Book, element *colly.HTMLElement) error
 	book.Name = element.ChildText("#info h1")
 	book.Src = element.Request.URL.String()
 	book.Author = element.ChildText("#info p:nth-child(2) a")
-	book.State = models.BookStatusPending
+	book.State = models.SUCCESS
 	book.Intro = strings.ReplaceAll(element.ChildText("#intro"), "\u00a0\u00a0", "\n")
 	book.LastModify = utils.TimeLoad(element.ChildText("#info p:nth-child(4)"), "最后更新：2006-01-02 15:04:05")
 	book.Cover = element.Request.AbsoluteURL(element.ChildAttr("#fmimg img", "src"))
@@ -92,7 +92,7 @@ func (c *Crawler) parseChapters(book *models.Book, element *colly.HTMLElement) e
 			Code:   i + 1,
 			Src:    element.Request.AbsoluteURL(element.Attr("href")),
 			Title:  element.Text,
-			State:  models.BookStatusPending,
+			State:  models.SUCCESS,
 		}
 		chapters = append(chapters, &chapter)
 	})

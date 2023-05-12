@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"superserver/common/logger"
-	"superserver/internal/controller/novel"
 	"superserver/server"
 )
 
@@ -21,7 +20,6 @@ import (
 func main() {
 	// 配置初始化
 	config := flag.String("c", "config.yaml", "config file path.")
-	worker := flag.String("w", "", "start a worker")
 	flag.Parse()
 	viper.SetConfigFile(*config)
 	if err := viper.ReadInConfig(); err != nil {
@@ -43,12 +41,7 @@ func main() {
 	}
 
 	// 启动服务
-	switch *worker {
-	case "novel":
-		novel.New().Listen()
-	default:
-		if err := server.New().Start(); err != nil {
-			log.Panicf("start server failed: %s", err.Error())
-		}
+	if err := server.New().Start(); err != nil {
+		log.Panicf("start server failed: %s", err.Error())
 	}
 }

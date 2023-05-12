@@ -4,8 +4,9 @@ use std::str::FromStr;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, sea_query};
 use sea_orm::ActiveValue::Set;
 
-use domain::{public, auth_service};
-use domain::public::{BooleanScope, ECode, Operation};
+use domain::{auth_service, public};
+use domain::ecode::ECode;
+use domain::public::{BooleanScope, Operation};
 use model::auth_token::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {

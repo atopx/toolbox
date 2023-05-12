@@ -52,8 +52,8 @@ func TestNewGrpcClient_PublicService(t *testing.T) {
 		Header:  &common.Header{},
 		Operate: common.Operation_OPERATION_CREATE,
 		Data: &public_service.Label{
-			Source: 1,
-			Name:   "fpeaiohfao[we",
+			Code: "code",
+			Name: "name",
 		},
 	})
 	if err != nil {
@@ -76,15 +76,8 @@ func TestNewGrpcClient_PublicService_ListLabel(t *testing.T) {
 		Header: &common.Header{},
 		Pager:  &common.Pager{Index: 1, Size: 10},
 		Filter: &public_service.LabelFilter{
-			Ids:             []int32{1},
-			Sources:         nil,
-			Names:           nil,
-			DeleteTimeRange: nil,
-			CreateTimeRange: nil,
-			UpdateTimeRange: nil,
-			Creators:        nil,
-			Updaters:        nil,
-			Keywords:        &public_service.LabelFilter_Keywords{Name: "peaio"},
+			Ids:      []int32{1},
+			Keywords: &public_service.LabelFilter_Keywords{Keyword: "peaio"},
 		},
 	})
 	if err != nil {

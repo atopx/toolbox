@@ -7,14 +7,15 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub src: String,
-    pub url: String,
     pub name: String,
     pub author: String,
-    pub status: i32,
-    pub message: String,
-    pub creator: i32,
-    pub updater: i32,
+    pub src: String,
+    pub cover: String,
+    pub label: String,
+    #[sea_orm(column_type = "Text")]
+    pub intro: String,
+    pub state: i32,
+    pub last_modify: i64,
     pub create_time: i64,
     pub update_time: i64,
     pub delete_time: i64,

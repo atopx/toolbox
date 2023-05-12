@@ -9,6 +9,7 @@ pub struct Model {
     pub id: i32,
     pub note_id: i32,
     pub label_id: i32,
+    pub label_type: i32,
     pub creator: i32,
     pub updater: i32,
     pub create_time: i64,

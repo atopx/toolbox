@@ -8,7 +8,7 @@ type Chapter struct {
 	Code    int    `json:"code"`    // 章节code
 	Src     string `json:"src"`     // 链接
 	Title   string `json:"title"`   // 章节标题
-	State   string `json:"state"`   // 状态
+	State   int    `json:"state"`   // 状态
 	Content string `json:"content"` // 章节内容
 }
 

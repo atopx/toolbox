@@ -15,8 +15,7 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		Pager:  params.Pager,
 		Filter: &public_service.LabelFilter{
 			Ids:      params.Filter.Ids,
-			Sources:  params.Filter.Sources,
-			Keywords: &public_service.LabelFilter_Keywords{Name: params.Filter.Keyword},
+			Keywords: &public_service.LabelFilter_Keywords{Keyword: params.Filter.Keyword},
 			Deleted:  common.BooleanScope_BOOL_FALSE,
 		},
 	})

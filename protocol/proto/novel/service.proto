@@ -3,14 +3,9 @@ package novel_service;
 option go_package = "superserver/domain/novel_service";
 
 import "novel/book.proto";
-import "novel/line.proto";
+import "novel/chapter.proto";
 
 service NovelService {
     rpc ListBook(ListBookParams) returns (ListBookReply);
-    rpc OperateBook(OperateBookParams) returns(OperateBookReply);
-    rpc BatchOperateBook(BatchOperateBookParams) returns(BatchOperateBookReply);
-
-    rpc ListLine(ListLineParams) returns (ListLineReply);
-    rpc OperateLine(OperateLineParams) returns(OperateLineReply);
-    rpc BatchOperateLine(BatchOperateLineParams) returns(BatchOperateLineReply);
+    rpc ListChapter(ListChapterParams) returns(ListChapterReply);
 }

@@ -8,9 +8,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub user_id: i32,
-    #[sea_orm(unique)]
     pub access_token: String,
-    #[sea_orm(unique)]
     pub refresh_token: String,
     pub issued_time: i64,
     pub expire_time: i64,

@@ -14,7 +14,6 @@ pub fn build() {
     let rs_outfile = "service/src/public/enums.rs";
     let golang_outfile = "../superserver/common/enum/keys.go";
     let enum_proto = vec![
-        ("../protocol/proto/public/common.proto", "Source"),
         ("../protocol/proto/public/ecode.proto", "ECode"),
         ("../protocol/proto/auth/role.proto", "RoleNature"),
         ("../protocol/proto/auth/access.proto", "AccessStatus"),

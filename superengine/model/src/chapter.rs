@@ -3,21 +3,17 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "computer")]
+#[sea_orm(table_name = "chapter")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub name: String,
-    pub username: String,
-    pub password: String,
-    pub lan_hostname: String,
-    pub wan_hostname: String,
-    #[sea_orm(unique)]
-    pub mac_address: String,
-    pub power_status: i32,
-    pub scan_time: i64,
-    pub creator: i32,
-    pub updater: i32,
+    pub book_id: i32,
+    pub code: i32,
+    pub src: String,
+    pub title: String,
+    pub state: i32,
+    #[sea_orm(column_type = "Text")]
+    pub content: String,
     pub create_time: i64,
     pub update_time: i64,
     pub delete_time: i64,

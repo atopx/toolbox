@@ -62,3 +62,8 @@ func (b *Base) Paginate(pager *Pager) func(tx *gorm.DB) *gorm.DB {
 type Object interface {
 	Connect() *gorm.DB
 }
+
+const (
+	TablenameBook    = "book"
+	TablenameChapter = "chapter"
+)

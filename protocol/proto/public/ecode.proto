@@ -1,5 +1,5 @@
 syntax = "proto3";
-package public;
+package ecode;
 option go_package = "superserver/domain/public/ecode";
 
 enum ECode {
@@ -95,13 +95,8 @@ enum ECode {
     PUBLIC_SERVICE_ERROR_OperateLabel = 520002; // PUBLIC_SERVICE_ERROR_OperateLabel
     PUBLIC_SERVICE_ERROR_BatchOperateLabel = 520003; // PUBLIC_SERVICE_ERROR_BatchOperateLabel
 
-    // public-service folder error
-    PUBLIC_SERVICE_ERROR_ListFolder = 521001; // PUBLIC_SERVICE_ERROR_ListFolder
-    PUBLIC_SERVICE_ERROR_OperateFolder = 521002; // PUBLIC_SERVICE_ERROR_OperateFolder
-    PUBLIC_SERVICE_ERROR_BatchOperateFolder = 521003; // PUBLIC_SERVICE_ERROR_BatchOperateFolder
-
     // public-service list enum error
-    PUBLIC_SERVICE_ERROR_ListEnum = 522001; // PUBLIC_SERVICE_ERROR_ListEnum
+    PUBLIC_SERVICE_ERROR_ListEnum = 521001; // PUBLIC_SERVICE_ERROR_ListEnum
 
     // note-service note error
     NOTE_SERVICE_ERROR_ListNote = 530001; // NOTE_SERVICE_ERROR_ListNote
@@ -113,18 +108,13 @@ enum ECode {
     NOTE_SERVICE_ERROR_OperateNoteLabel = 531002; // NOTE_SERVICE_ERROR_OperateNoteLabel
     NOTE_SERVICE_ERROR_BatchOperateNoteLabel = 531003; // NOTE_SERVICE_ERROR_BatchOperateNoteLabel
 
-    // note-service note-topic error
-    NOTE_SERVICE_ERROR_ListNoteTopic = 532001; // NOTE_SERVICE_ERROR_ListNoteTopic
-    NOTE_SERVICE_ERROR_OperateNoteTopic = 532002; // NOTE_SERVICE_ERROR_OperateNoteTopic
-    NOTE_SERVICE_ERROR_BatchOperateNoteTopic = 532003; // NOTE_SERVICE_ERROR_BatchOperateNoteTopic
-
     // novel-service book error
     NOVEL_SERVICE_ERROR_ListBook = 540001; // NOVEL_SERVICE_ERROR_ListBook
     NOVEL_SERVICE_ERROR_OperateBook = 540002; // NOVEL_SERVICE_ERROR_OperateBook
     NOVEL_SERVICE_ERROR_BatchOperateBook = 540003; // NOVEL_SERVICE_ERROR_BatchOperateBook
 
-    // novel-service line error
-    NOVEL_SERVICE_ERROR_ListLine = 541001; // NOVEL_SERVICE_ERROR_ListLine
-    NOVEL_SERVICE_ERROR_OperateLine = 541002; // NOVEL_SERVICE_ERROR_OperateLine
-    NOVEL_SERVICE_ERROR_BatchOperateLine = 541003; // NOVEL_SERVICE_ERROR_BatchOperateLine
+    // novel-service chapter error
+    NOVEL_SERVICE_ERROR_ListChapter = 541001; // NOVEL_SERVICE_ERROR_ListChapter
+    NOVEL_SERVICE_ERROR_OperateChapter = 541002; // NOVEL_SERVICE_ERROR_OperateChapter
+    NOVEL_SERVICE_ERROR_BatchOperateChapter = 541003; // NOVEL_SERVICE_ERROR_BatchOperateChapter
 }

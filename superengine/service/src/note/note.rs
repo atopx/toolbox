@@ -1,11 +1,12 @@
 use std::ops::Not;
 use std::str::FromStr;
 
-use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, sea_query};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder};
 use sea_orm::ActiveValue::Set;
 
 use domain::{note_service, public};
-use domain::public::{BooleanScope, ECode, Operation};
+use domain::ecode::ECode;
+use domain::public::{BooleanScope, Operation};
 use model::note::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {
@@ -23,12 +24,8 @@ impl<'a> Business<'a> {
         let current_time = common::utils::current_timestamp();
         Model {
             id: 0,
-            folder_id: dto.folder_id,
-            topic_id: dto.topic_id,
-            sign: dto.sign,
             title: dto.title,
             content: dto.content,
-            public: i8::from(dto.public),
             creator: self.header.operator,
             updater: self.header.operator,
             create_time: current_time,
@@ -40,12 +37,8 @@ impl<'a> Business<'a> {
     fn encode(&self, model: Model) -> note_service::Note {
         note_service::Note {
             id: model.id,
-            folder_id: model.folder_id,
-            topic_id: model.topic_id,
-            sign: model.sign,
             title: model.title,
             content: model.content,
-            public: model.public != 0,
             creator: self.header.operator,
             updater: self.header.operator,
             delete_time: model.delete_time,
@@ -70,21 +63,9 @@ impl<'a> Business<'a> {
                 BooleanScope::BoolFalse => query.filter(Column::DeleteTime.eq(0)),
                 BooleanScope::BoolTrue => query.filter(Column::DeleteTime.gt(0)),
             };
-            
-            query = match filter.public_select() {
-                BooleanScope::BoolAll => query,
-                BooleanScope::BoolFalse => query.filter(Column::Public.eq(false)),
-                BooleanScope::BoolTrue => query.filter(Column::Public.eq(true))
-            };
 
             if filter.ids.is_empty().not() {
                 query = query.filter(Column::Id.is_in(filter.ids));
-            }
-            if filter.folder_ids.is_empty().not() {
-                query = query.filter(Column::FolderId.is_in(filter.folder_ids))
-            }
-            if filter.topic_ids.is_empty().not() {
-                query = query.filter(Column::TopicId.is_in(filter.topic_ids))
             }
             if filter.creators.is_empty().not() {
                 query = query.filter(Column::Creator.is_in(filter.creators));
@@ -179,7 +160,7 @@ impl<'a> Business<'a> {
                 let result = match operate {
                     Operation::Create => self.insert(data).await,
                     Operation::Update => self.update(data).await,
-                    Operation::Upsert => self.save(data).await,
+                    Operation::Upsert => Ok(None),
                     Operation::Delete => self.delete(data.id).await,
                     Operation::RealDelete => self.delete_real(data.id).await,
                 };
@@ -211,7 +192,7 @@ impl<'a> Business<'a> {
             )
         } else {
             let result = match operate {
-                Operation::Upsert => self.batch_save(data).await,
+                Operation::Upsert => Ok(None),
                 Operation::Delete => self.batch_delete(data).await,
                 _ => Ok(None)
             };
@@ -240,10 +221,6 @@ impl<'a> Business<'a> {
         let value: Option<Model> = Entity::find_by_id(dto.id).one(self.db).await?;
         let mut active: ActiveModel = value.unwrap().into();
         active.title = Set(dto.title);
-        active.public = Set(i8::from(dto.public));
-        active.sign = Set(dto.sign);
-        active.topic_id = Set(dto.topic_id);
-        active.folder_id = Set(dto.folder_id);
         active.content = Set(dto.content);
         active.updater = Set(self.header.operator);
         active.update_time = Set(common::utils::current_timestamp());
@@ -263,56 +240,6 @@ impl<'a> Business<'a> {
     // 物理删除
     async fn delete_real(&self, id: i32) -> Result<Option<note_service::Note>, DbErr> {
         Entity::delete_by_id(id).exec(self.db).await?;
-        Ok(None)
-    }
-
-    // 保存并更新
-    async fn save(&self, mut data: note_service::Note) -> Result<Option<note_service::Note>, DbErr> {
-        let active: ActiveModel = self.decode(data.clone()).into();
-        let result = Entity::insert(active).on_conflict(
-            sea_query::OnConflict::column(Column::Sign)
-                .update_columns(
-                    [
-                        Column::Title,
-                        Column::Public,
-                        Column::FolderId,
-                        Column::TopicId,
-                        Column::Content,
-                        Column::Updater,
-                        Column::UpdateTime
-                    ],
-                )
-                .to_owned()
-        ).exec(self.db).await?;
-        data.id = result.last_insert_id;
-        Ok(Some(data))
-    }
-
-    // 批量写入，有冲突则更新
-    async fn batch_save(
-        &self,
-        dtos: Vec<note_service::Note>,
-    ) -> Result<Option<i32>, DbErr> {
-        let mut actives = vec![];
-        for dto in dtos {
-            let active: ActiveModel = self.decode(dto).into();
-            actives.push(active);
-        }
-        Entity::insert_many(actives).on_conflict(
-            sea_query::OnConflict::column(Column::Sign)
-                .update_columns(
-                    [
-                        Column::Title,
-                        Column::Public,
-                        Column::FolderId,
-                        Column::TopicId,
-                        Column::Content,
-                        Column::Updater,
-                        Column::UpdateTime
-                    ],
-                )
-                .to_owned()
-        ).exec(self.db).await?;
         Ok(None)
     }
 

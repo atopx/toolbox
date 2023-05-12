@@ -7,12 +7,8 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub folder_id: i32,
-    pub topic_id: i32,
-    pub sign: String,
     pub title: String,
-    pub public: i8,
-    #[sea_orm(column_type = "custom(\"MEDIUMTEXT\")")]
+    #[sea_orm(column_type = "Text")]
     pub content: String,
     pub creator: i32,
     pub updater: i32,

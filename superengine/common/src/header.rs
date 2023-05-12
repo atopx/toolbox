@@ -1,4 +1,5 @@
-use domain::public::{ECode, ReplyHeader};
+use domain::ecode::ECode;
+use domain::public::ReplyHeader;
 
 pub fn reply(id: i64) -> Option<ReplyHeader> {
     Some(ReplyHeader {

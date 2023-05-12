@@ -3,7 +3,7 @@ use tonic::{Request, Response, Status};
 use domain::novel_service;
 
 mod book;
-mod line;
+mod chapter;
 
 
 pub struct NovelService {
@@ -28,53 +28,13 @@ impl novel_service::novel_service_server::NovelService for NovelService {
         Ok(Response::new(reply))
     }
 
-    async fn operate_book(
+    async fn list_chapter(
         &self,
-        request: Request<novel_service::OperateBookParams>,
-    ) -> Result<Response<novel_service::OperateBookReply>, Status> {
+        request: Request<novel_service::ListChapterParams>,
+    ) -> Result<Response<novel_service::ListChapterReply>, Status> {
         let params = request.into_inner();
-        let bis = book::Business::new(&self.db, params.header.to_owned().unwrap());
-        let reply = bis.operate(params.operate(), params.data).await;
-        Ok(Response::new(reply))
-    }
-
-    async fn batch_operate_book(
-        &self,
-        request: Request<novel_service::BatchOperateBookParams>,
-    ) -> Result<Response<novel_service::BatchOperateBookReply>, Status> {
-        let params = request.into_inner();
-        let bis = book::Business::new(&self.db, params.header.to_owned().unwrap());
-        let reply = bis.batch_operate(params.operate(), params.data).await;
-        Ok(Response::new(reply))
-    }
-
-    async fn list_line(
-        &self,
-        request: Request<novel_service::ListLineParams>,
-    ) -> Result<Response<novel_service::ListLineReply>, Status> {
-        let params = request.into_inner();
-        let bis = line::Business::new(&self.db, params.header.to_owned().unwrap());
+        let bis = chapter::Business::new(&self.db, params.header.to_owned().unwrap());
         let reply = bis.list(params.filter, params.sorts, params.pager).await;
-        Ok(Response::new(reply))
-    }
-
-    async fn operate_line(
-        &self,
-        request: Request<novel_service::OperateLineParams>,
-    ) -> Result<Response<novel_service::OperateLineReply>, Status> {
-        let params = request.into_inner();
-        let bis = line::Business::new(&self.db, params.header.to_owned().unwrap());
-        let reply = bis.operate(params.operate(), params.data).await;
-        Ok(Response::new(reply))
-    }
-
-    async fn batch_operate_line(
-        &self,
-        request: Request<novel_service::BatchOperateLineParams>,
-    ) -> Result<Response<novel_service::BatchOperateLineReply>, Status> {
-        let params = request.into_inner();
-        let bis = line::Business::new(&self.db, params.header.to_owned().unwrap());
-        let reply = bis.batch_operate(params.operate(), params.data).await;
         Ok(Response::new(reply))
     }
 }

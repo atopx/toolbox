@@ -9,19 +9,13 @@ import (
 
 func (c *Controller) Deal() (any, ecode.ECode) {
 	params := c.Params.(*Params)
-	if _, ok := common.Source_name[params.Source]; !ok {
-		return nil, ecode.ECode_SOURCE_PARAMS_ERROR_SourceInvalid
-	}
 	if params.Name == "" {
 		return nil, ecode.ECode_LABEL_PARAMS_ERROR_NameRequired
 	}
 	_, code := public_client.OperateLabel(c.Context(), &public_service.OperateLabelParams{
 		Header:  c.NewServiceHeader(),
 		Operate: common.Operation_OPERATION_CREATE,
-		Data: &public_service.Label{
-			Source: params.Source,
-			Name:   params.Name,
-		},
+		Data:    &public_service.Label{Name: params.Name},
 	})
 	return Reply{}, code
 }

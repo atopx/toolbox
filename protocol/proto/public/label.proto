@@ -6,7 +6,7 @@ import "public/common.proto";
 
 message Label {
     int32 id = 1; // 主键
-    int32 source = 2; // 来源,枚举
+    string code = 2; // 编码
     string name = 3; // 名称
 
     int64 delete_time = 1001; // 删除时间 时间戳：秒
@@ -18,7 +18,7 @@ message Label {
 
 message LabelFilter {
     repeated int32 ids = 1;
-    repeated int32 sources = 2;
+    repeated string codes = 2;
     repeated string names = 3;
 
     public.BetweenInt64 delete_time_range = 101;
@@ -31,10 +31,9 @@ message LabelFilter {
 
     Keywords keywords = 201;
     message Keywords {
-        string name = 1;
+        string keyword = 1;
     }
 }
-
 
 message ListLabelParams {
     public.Header header = 1;

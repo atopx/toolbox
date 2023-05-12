@@ -2,25 +2,6 @@
 use domain::public_service::{Enum, Enums, ListEnumReply};
 
 
-fn get_accessstatus() -> Enums {
-    let data = vec![
-        Enum { code: "ACCESS_DEFAULT".to_string(), value: 0, desc: "默认状态, 需要验证权限".to_string() },
-        Enum { code: "ACCESS_ANONYMOUS".to_string(), value: 1, desc: "可匿名访问，无需验证权限".to_string() },
-        Enum { code: "ACCESS_DISABLED".to_string(), value: 2, desc: "已禁用，禁止访问".to_string() },
-    ];
-    Enums { key: "AccessStatus".to_string(), data }
-}
-
-fn get_source() -> Enums {
-    let data = vec![
-        Enum { code: "Public".to_string(), value: 0, desc: "公共".to_string() },
-        Enum { code: "User".to_string(), value: 1, desc: "用户".to_string() },
-        Enum { code: "Note".to_string(), value: 2, desc: "笔记".to_string() },
-        Enum { code: "File".to_string(), value: 3, desc: "文件".to_string() },
-    ];
-    Enums { key: "Source".to_string(), data }
-}
-
 fn get_ecode() -> Enums {
     let data = vec![
         Enum { code: "SUCCESS".to_string(), value: 0, desc: "请求成功".to_string() },
@@ -71,30 +52,21 @@ fn get_ecode() -> Enums {
         Enum { code: "PUBLIC_SERVICE_ERROR_ListLabel".to_string(), value: 520001, desc: "PUBLIC_SERVICE_ERROR_ListLabel".to_string() },
         Enum { code: "PUBLIC_SERVICE_ERROR_OperateLabel".to_string(), value: 520002, desc: "PUBLIC_SERVICE_ERROR_OperateLabel".to_string() },
         Enum { code: "PUBLIC_SERVICE_ERROR_BatchOperateLabel".to_string(), value: 520003, desc: "PUBLIC_SERVICE_ERROR_BatchOperateLabel".to_string() },
-        Enum { code: "PUBLIC_SERVICE_ERROR_ListFolder".to_string(), value: 521001, desc: "PUBLIC_SERVICE_ERROR_ListFolder".to_string() },
-        Enum { code: "PUBLIC_SERVICE_ERROR_OperateFolder".to_string(), value: 521002, desc: "PUBLIC_SERVICE_ERROR_OperateFolder".to_string() },
-        Enum { code: "PUBLIC_SERVICE_ERROR_BatchOperateFolder".to_string(), value: 521003, desc: "PUBLIC_SERVICE_ERROR_BatchOperateFolder".to_string() },
-        Enum { code: "PUBLIC_SERVICE_ERROR_ListEnum".to_string(), value: 522001, desc: "PUBLIC_SERVICE_ERROR_ListEnum".to_string() },
+        Enum { code: "PUBLIC_SERVICE_ERROR_ListEnum".to_string(), value: 521001, desc: "PUBLIC_SERVICE_ERROR_ListEnum".to_string() },
         Enum { code: "NOTE_SERVICE_ERROR_ListNote".to_string(), value: 530001, desc: "NOTE_SERVICE_ERROR_ListNote".to_string() },
         Enum { code: "NOTE_SERVICE_ERROR_OperateNote".to_string(), value: 530002, desc: "NOTE_SERVICE_ERROR_OperateNote".to_string() },
         Enum { code: "NOTE_SERVICE_ERROR_BatchOperateNote".to_string(), value: 530003, desc: "NOTE_SERVICE_ERROR_BatchOperateNote".to_string() },
         Enum { code: "NOTE_SERVICE_ERROR_ListNoteLabel".to_string(), value: 531001, desc: "NOTE_SERVICE_ERROR_ListNoteLabel".to_string() },
         Enum { code: "NOTE_SERVICE_ERROR_OperateNoteLabel".to_string(), value: 531002, desc: "NOTE_SERVICE_ERROR_OperateNoteLabel".to_string() },
         Enum { code: "NOTE_SERVICE_ERROR_BatchOperateNoteLabel".to_string(), value: 531003, desc: "NOTE_SERVICE_ERROR_BatchOperateNoteLabel".to_string() },
-        Enum { code: "NOTE_SERVICE_ERROR_ListNoteTopic".to_string(), value: 532001, desc: "NOTE_SERVICE_ERROR_ListNoteTopic".to_string() },
-        Enum { code: "NOTE_SERVICE_ERROR_OperateNoteTopic".to_string(), value: 532002, desc: "NOTE_SERVICE_ERROR_OperateNoteTopic".to_string() },
-        Enum { code: "NOTE_SERVICE_ERROR_BatchOperateNoteTopic".to_string(), value: 532003, desc: "NOTE_SERVICE_ERROR_BatchOperateNoteTopic".to_string() },
+        Enum { code: "NOVEL_SERVICE_ERROR_ListBook".to_string(), value: 540001, desc: "NOVEL_SERVICE_ERROR_ListBook".to_string() },
+        Enum { code: "NOVEL_SERVICE_ERROR_OperateBook".to_string(), value: 540002, desc: "NOVEL_SERVICE_ERROR_OperateBook".to_string() },
+        Enum { code: "NOVEL_SERVICE_ERROR_BatchOperateBook".to_string(), value: 540003, desc: "NOVEL_SERVICE_ERROR_BatchOperateBook".to_string() },
+        Enum { code: "NOVEL_SERVICE_ERROR_ListChapter".to_string(), value: 541001, desc: "NOVEL_SERVICE_ERROR_ListChapter".to_string() },
+        Enum { code: "NOVEL_SERVICE_ERROR_OperateChapter".to_string(), value: 541002, desc: "NOVEL_SERVICE_ERROR_OperateChapter".to_string() },
+        Enum { code: "NOVEL_SERVICE_ERROR_BatchOperateChapter".to_string(), value: 541003, desc: "NOVEL_SERVICE_ERROR_BatchOperateChapter".to_string() },
     ];
     Enums { key: "ECode".to_string(), data }
-}
-
-fn get_userstatus() -> Enums {
-    let data = vec![
-        Enum { code: "USER_NORMAL".to_string(), value: 0, desc: "正常".to_string() },
-        Enum { code: "USER_STATUS_DISABLED".to_string(), value: 1, desc: "禁用".to_string() },
-        Enum { code: "USER_STATUS_BLACK".to_string(), value: 2, desc: "黑名单".to_string() },
-    ];
-    Enums { key: "UserStatus".to_string(), data }
 }
 
 fn get_rolenature() -> Enums {
@@ -106,15 +78,32 @@ fn get_rolenature() -> Enums {
     Enums { key: "RoleNature".to_string(), data }
 }
 
+fn get_accessstatus() -> Enums {
+    let data = vec![
+        Enum { code: "ACCESS_DEFAULT".to_string(), value: 0, desc: "默认状态, 需要验证权限".to_string() },
+        Enum { code: "ACCESS_ANONYMOUS".to_string(), value: 1, desc: "可匿名访问，无需验证权限".to_string() },
+        Enum { code: "ACCESS_DISABLED".to_string(), value: 2, desc: "已禁用，禁止访问".to_string() },
+    ];
+    Enums { key: "AccessStatus".to_string(), data }
+}
+
+fn get_userstatus() -> Enums {
+    let data = vec![
+        Enum { code: "USER_NORMAL".to_string(), value: 0, desc: "正常".to_string() },
+        Enum { code: "USER_STATUS_DISABLED".to_string(), value: 1, desc: "禁用".to_string() },
+        Enum { code: "USER_STATUS_BLACK".to_string(), value: 2, desc: "黑名单".to_string() },
+    ];
+    Enums { key: "UserStatus".to_string(), data }
+}
+
 pub fn list_enum(trace_id: i64) -> ListEnumReply {
     ListEnumReply {
         header: common::header::reply(trace_id),
         data: vec![
-            get_accessstatus(),
-            get_source(),
             get_ecode(),
-            get_userstatus(),
             get_rolenature(),
+            get_accessstatus(),
+            get_userstatus(),
         ],
     }
 }

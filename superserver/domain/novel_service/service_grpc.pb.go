@@ -19,12 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	NovelService_ListBook_FullMethodName         = "/novel_service.NovelService/ListBook"
-	NovelService_OperateBook_FullMethodName      = "/novel_service.NovelService/OperateBook"
-	NovelService_BatchOperateBook_FullMethodName = "/novel_service.NovelService/BatchOperateBook"
-	NovelService_ListLine_FullMethodName         = "/novel_service.NovelService/ListLine"
-	NovelService_OperateLine_FullMethodName      = "/novel_service.NovelService/OperateLine"
-	NovelService_BatchOperateLine_FullMethodName = "/novel_service.NovelService/BatchOperateLine"
+	NovelService_ListBook_FullMethodName    = "/novel_service.NovelService/ListBook"
+	NovelService_ListChapter_FullMethodName = "/novel_service.NovelService/ListChapter"
 )
 
 // NovelServiceClient is the client API for NovelService service.
@@ -32,11 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NovelServiceClient interface {
 	ListBook(ctx context.Context, in *ListBookParams, opts ...grpc.CallOption) (*ListBookReply, error)
-	OperateBook(ctx context.Context, in *OperateBookParams, opts ...grpc.CallOption) (*OperateBookReply, error)
-	BatchOperateBook(ctx context.Context, in *BatchOperateBookParams, opts ...grpc.CallOption) (*BatchOperateBookReply, error)
-	ListLine(ctx context.Context, in *ListLineParams, opts ...grpc.CallOption) (*ListLineReply, error)
-	OperateLine(ctx context.Context, in *OperateLineParams, opts ...grpc.CallOption) (*OperateLineReply, error)
-	BatchOperateLine(ctx context.Context, in *BatchOperateLineParams, opts ...grpc.CallOption) (*BatchOperateLineReply, error)
+	ListChapter(ctx context.Context, in *ListChapterParams, opts ...grpc.CallOption) (*ListChapterReply, error)
 }
 
 type novelServiceClient struct {
@@ -56,45 +48,9 @@ func (c *novelServiceClient) ListBook(ctx context.Context, in *ListBookParams, o
 	return out, nil
 }
 
-func (c *novelServiceClient) OperateBook(ctx context.Context, in *OperateBookParams, opts ...grpc.CallOption) (*OperateBookReply, error) {
-	out := new(OperateBookReply)
-	err := c.cc.Invoke(ctx, NovelService_OperateBook_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *novelServiceClient) BatchOperateBook(ctx context.Context, in *BatchOperateBookParams, opts ...grpc.CallOption) (*BatchOperateBookReply, error) {
-	out := new(BatchOperateBookReply)
-	err := c.cc.Invoke(ctx, NovelService_BatchOperateBook_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *novelServiceClient) ListLine(ctx context.Context, in *ListLineParams, opts ...grpc.CallOption) (*ListLineReply, error) {
-	out := new(ListLineReply)
-	err := c.cc.Invoke(ctx, NovelService_ListLine_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *novelServiceClient) OperateLine(ctx context.Context, in *OperateLineParams, opts ...grpc.CallOption) (*OperateLineReply, error) {
-	out := new(OperateLineReply)
-	err := c.cc.Invoke(ctx, NovelService_OperateLine_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *novelServiceClient) BatchOperateLine(ctx context.Context, in *BatchOperateLineParams, opts ...grpc.CallOption) (*BatchOperateLineReply, error) {
-	out := new(BatchOperateLineReply)
-	err := c.cc.Invoke(ctx, NovelService_BatchOperateLine_FullMethodName, in, out, opts...)
+func (c *novelServiceClient) ListChapter(ctx context.Context, in *ListChapterParams, opts ...grpc.CallOption) (*ListChapterReply, error) {
+	out := new(ListChapterReply)
+	err := c.cc.Invoke(ctx, NovelService_ListChapter_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,11 +62,7 @@ func (c *novelServiceClient) BatchOperateLine(ctx context.Context, in *BatchOper
 // for forward compatibility
 type NovelServiceServer interface {
 	ListBook(context.Context, *ListBookParams) (*ListBookReply, error)
-	OperateBook(context.Context, *OperateBookParams) (*OperateBookReply, error)
-	BatchOperateBook(context.Context, *BatchOperateBookParams) (*BatchOperateBookReply, error)
-	ListLine(context.Context, *ListLineParams) (*ListLineReply, error)
-	OperateLine(context.Context, *OperateLineParams) (*OperateLineReply, error)
-	BatchOperateLine(context.Context, *BatchOperateLineParams) (*BatchOperateLineReply, error)
+	ListChapter(context.Context, *ListChapterParams) (*ListChapterReply, error)
 	mustEmbedUnimplementedNovelServiceServer()
 }
 
@@ -121,20 +73,8 @@ type UnimplementedNovelServiceServer struct {
 func (UnimplementedNovelServiceServer) ListBook(context.Context, *ListBookParams) (*ListBookReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListBook not implemented")
 }
-func (UnimplementedNovelServiceServer) OperateBook(context.Context, *OperateBookParams) (*OperateBookReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OperateBook not implemented")
-}
-func (UnimplementedNovelServiceServer) BatchOperateBook(context.Context, *BatchOperateBookParams) (*BatchOperateBookReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateBook not implemented")
-}
-func (UnimplementedNovelServiceServer) ListLine(context.Context, *ListLineParams) (*ListLineReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListLine not implemented")
-}
-func (UnimplementedNovelServiceServer) OperateLine(context.Context, *OperateLineParams) (*OperateLineReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OperateLine not implemented")
-}
-func (UnimplementedNovelServiceServer) BatchOperateLine(context.Context, *BatchOperateLineParams) (*BatchOperateLineReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateLine not implemented")
+func (UnimplementedNovelServiceServer) ListChapter(context.Context, *ListChapterParams) (*ListChapterReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListChapter not implemented")
 }
 func (UnimplementedNovelServiceServer) mustEmbedUnimplementedNovelServiceServer() {}
 
@@ -167,92 +107,20 @@ func _NovelService_ListBook_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NovelService_OperateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OperateBookParams)
+func _NovelService_ListChapter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListChapterParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NovelServiceServer).OperateBook(ctx, in)
+		return srv.(NovelServiceServer).ListChapter(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: NovelService_OperateBook_FullMethodName,
+		FullMethod: NovelService_ListChapter_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NovelServiceServer).OperateBook(ctx, req.(*OperateBookParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NovelService_BatchOperateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BatchOperateBookParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NovelServiceServer).BatchOperateBook(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NovelService_BatchOperateBook_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NovelServiceServer).BatchOperateBook(ctx, req.(*BatchOperateBookParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NovelService_ListLine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListLineParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NovelServiceServer).ListLine(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NovelService_ListLine_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NovelServiceServer).ListLine(ctx, req.(*ListLineParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NovelService_OperateLine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OperateLineParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NovelServiceServer).OperateLine(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NovelService_OperateLine_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NovelServiceServer).OperateLine(ctx, req.(*OperateLineParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NovelService_BatchOperateLine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BatchOperateLineParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NovelServiceServer).BatchOperateLine(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NovelService_BatchOperateLine_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NovelServiceServer).BatchOperateLine(ctx, req.(*BatchOperateLineParams))
+		return srv.(NovelServiceServer).ListChapter(ctx, req.(*ListChapterParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -269,24 +137,8 @@ var NovelService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NovelService_ListBook_Handler,
 		},
 		{
-			MethodName: "OperateBook",
-			Handler:    _NovelService_OperateBook_Handler,
-		},
-		{
-			MethodName: "BatchOperateBook",
-			Handler:    _NovelService_BatchOperateBook_Handler,
-		},
-		{
-			MethodName: "ListLine",
-			Handler:    _NovelService_ListLine_Handler,
-		},
-		{
-			MethodName: "OperateLine",
-			Handler:    _NovelService_OperateLine_Handler,
-		},
-		{
-			MethodName: "BatchOperateLine",
-			Handler:    _NovelService_BatchOperateLine_Handler,
+			MethodName: "ListChapter",
+			Handler:    _NovelService_ListChapter_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

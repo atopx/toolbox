@@ -6,15 +6,19 @@ pub struct Book {
     #[prost(string, tag = "2")]
     pub src: ::prost::alloc::string::String,
     #[prost(string, tag = "3")]
-    pub url: ::prost::alloc::string::String,
-    #[prost(string, tag = "4")]
     pub name: ::prost::alloc::string::String,
-    #[prost(string, tag = "5")]
+    #[prost(string, tag = "4")]
     pub author: ::prost::alloc::string::String,
-    #[prost(enumeration = "Status", tag = "6")]
-    pub status: i32,
+    #[prost(string, tag = "5")]
+    pub label: ::prost::alloc::string::String,
+    #[prost(string, tag = "6")]
+    pub cover: ::prost::alloc::string::String,
     #[prost(string, tag = "7")]
-    pub message: ::prost::alloc::string::String,
+    pub intro: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::public::TaskStatus", tag = "8")]
+    pub state: i32,
+    #[prost(int64, tag = "9")]
+    pub last_modify: i64,
     /// 删除时间 时间戳：秒
     #[prost(int64, tag = "1001")]
     pub delete_time: i64,
@@ -24,34 +28,30 @@ pub struct Book {
     /// 最后更新时间 时间戳：秒
     #[prost(int64, tag = "1003")]
     pub update_time: i64,
-    /// 创建人
-    #[prost(int32, tag = "1004")]
-    pub creator: i32,
-    /// 更新人
-    #[prost(int32, tag = "1005")]
-    pub updater: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BookFilter {
     #[prost(int32, repeated, tag = "1")]
     pub ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(enumeration = "Status", repeated, tag = "2")]
+    #[prost(enumeration = "super::public::TaskStatus", repeated, tag = "2")]
     pub states: ::prost::alloc::vec::Vec<i32>,
     #[prost(string, repeated, tag = "3")]
-    pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    pub srcs: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(string, repeated, tag = "4")]
+    pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "5")]
     pub authors: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "6")]
+    pub labels: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(message, optional, tag = "20")]
+    pub last_modify: ::core::option::Option<super::public::BetweenInt64>,
     #[prost(message, optional, tag = "101")]
     pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
     #[prost(message, optional, tag = "102")]
     pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
     #[prost(message, optional, tag = "103")]
     pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(int32, repeated, tag = "104")]
-    pub creators: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "105")]
-    pub updaters: ::prost::alloc::vec::Vec<i32>,
     #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
     pub deleted: i32,
     #[prost(message, optional, tag = "201")]
@@ -94,93 +94,65 @@ pub struct ListBookReply {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateBookParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, optional, tag = "3")]
-    pub data: ::core::option::Option<Book>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateBookReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<Book>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateBookParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<Book>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateBookReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum Status {
-    Pending = 0,
-    Running = 1,
-    Success = 2,
-    Failure = 4,
-}
-impl Status {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            Status::Pending => "PENDING",
-            Status::Running => "RUNNING",
-            Status::Success => "SUCCESS",
-            Status::Failure => "FAILURE",
-        }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "PENDING" => Some(Self::Pending),
-            "RUNNING" => Some(Self::Running),
-            "SUCCESS" => Some(Self::Success),
-            "FAILURE" => Some(Self::Failure),
-            _ => None,
-        }
-    }
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Line {
+pub struct Chapter {
     #[prost(int32, tag = "1")]
     pub id: i32,
     #[prost(int32, tag = "2")]
     pub book_id: i32,
-    #[prost(string, tag = "3")]
-    pub code: ::prost::alloc::string::String,
+    #[prost(int32, tag = "3")]
+    pub code: i32,
     #[prost(string, tag = "4")]
-    pub value: ::prost::alloc::string::String,
+    pub src: ::prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub title: ::prost::alloc::string::String,
+    #[prost(string, tag = "6")]
+    pub content: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::public::TaskStatus", tag = "7")]
+    pub state: i32,
+    /// 删除时间 时间戳：秒
+    #[prost(int64, tag = "1001")]
+    pub delete_time: i64,
+    /// 创建时间 时间戳：秒
+    #[prost(int64, tag = "1002")]
+    pub create_time: i64,
+    /// 最后更新时间 时间戳：秒
+    #[prost(int64, tag = "1003")]
+    pub update_time: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LineFilter {
+pub struct ChapterFilter {
     #[prost(int32, repeated, tag = "1")]
     pub ids: ::prost::alloc::vec::Vec<i32>,
     #[prost(int32, repeated, tag = "2")]
     pub book_ids: ::prost::alloc::vec::Vec<i32>,
+    #[prost(string, repeated, tag = "3")]
+    pub srcs: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(enumeration = "super::public::TaskStatus", repeated, tag = "4")]
+    pub states: ::prost::alloc::vec::Vec<i32>,
+    #[prost(message, optional, tag = "101")]
+    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "102")]
+    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(message, optional, tag = "103")]
+    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
+    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
+    pub deleted: i32,
+    #[prost(message, optional, tag = "201")]
+    pub keywords: ::core::option::Option<chapter_filter::Keywords>,
+}
+/// Nested message and enum types in `ChapterFilter`.
+pub mod chapter_filter {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Keywords {
+        #[prost(string, tag = "1")]
+        pub keyword: ::prost::alloc::string::String,
+    }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListLineParams {
+pub struct ListChapterParams {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::Header>,
     #[prost(message, optional, tag = "2")]
@@ -188,51 +160,17 @@ pub struct ListLineParams {
     #[prost(message, repeated, tag = "3")]
     pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
     #[prost(message, optional, tag = "4")]
-    pub filter: ::core::option::Option<LineFilter>,
+    pub filter: ::core::option::Option<ChapterFilter>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListLineReply {
+pub struct ListChapterReply {
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<super::public::ReplyHeader>,
     #[prost(message, optional, tag = "2")]
     pub pager: ::core::option::Option<super::public::Pager>,
     #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<Line>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateLineParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, optional, tag = "3")]
-    pub data: ::core::option::Option<Line>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateLineReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<Line>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateLineParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<Line>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateLineReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
+    pub data: ::prost::alloc::vec::Vec<Chapter>,
 }
 /// Generated server implementations.
 pub mod novel_service_server {
@@ -245,36 +183,11 @@ pub mod novel_service_server {
             &self,
             request: tonic::Request<super::ListBookParams>,
         ) -> std::result::Result<tonic::Response<super::ListBookReply>, tonic::Status>;
-        async fn operate_book(
+        async fn list_chapter(
             &self,
-            request: tonic::Request<super::OperateBookParams>,
+            request: tonic::Request<super::ListChapterParams>,
         ) -> std::result::Result<
-            tonic::Response<super::OperateBookReply>,
-            tonic::Status,
-        >;
-        async fn batch_operate_book(
-            &self,
-            request: tonic::Request<super::BatchOperateBookParams>,
-        ) -> std::result::Result<
-            tonic::Response<super::BatchOperateBookReply>,
-            tonic::Status,
-        >;
-        async fn list_line(
-            &self,
-            request: tonic::Request<super::ListLineParams>,
-        ) -> std::result::Result<tonic::Response<super::ListLineReply>, tonic::Status>;
-        async fn operate_line(
-            &self,
-            request: tonic::Request<super::OperateLineParams>,
-        ) -> std::result::Result<
-            tonic::Response<super::OperateLineReply>,
-            tonic::Status,
-        >;
-        async fn batch_operate_line(
-            &self,
-            request: tonic::Request<super::BatchOperateLineParams>,
-        ) -> std::result::Result<
-            tonic::Response<super::BatchOperateLineReply>,
+            tonic::Response<super::ListChapterReply>,
             tonic::Status,
         >;
     }
@@ -401,25 +314,25 @@ pub mod novel_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/novel_service.NovelService/OperateBook" => {
+                "/novel_service.NovelService/ListChapter" => {
                     #[allow(non_camel_case_types)]
-                    struct OperateBookSvc<T: NovelService>(pub Arc<T>);
+                    struct ListChapterSvc<T: NovelService>(pub Arc<T>);
                     impl<
                         T: NovelService,
-                    > tonic::server::UnaryService<super::OperateBookParams>
-                    for OperateBookSvc<T> {
-                        type Response = super::OperateBookReply;
+                    > tonic::server::UnaryService<super::ListChapterParams>
+                    for ListChapterSvc<T> {
+                        type Response = super::ListChapterReply;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::OperateBookParams>,
+                            request: tonic::Request<super::ListChapterParams>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).operate_book(request).await
+                                (*inner).list_chapter(request).await
                             };
                             Box::pin(fut)
                         }
@@ -431,189 +344,7 @@ pub mod novel_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = OperateBookSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/novel_service.NovelService/BatchOperateBook" => {
-                    #[allow(non_camel_case_types)]
-                    struct BatchOperateBookSvc<T: NovelService>(pub Arc<T>);
-                    impl<
-                        T: NovelService,
-                    > tonic::server::UnaryService<super::BatchOperateBookParams>
-                    for BatchOperateBookSvc<T> {
-                        type Response = super::BatchOperateBookReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::BatchOperateBookParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                (*inner).batch_operate_book(request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = BatchOperateBookSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/novel_service.NovelService/ListLine" => {
-                    #[allow(non_camel_case_types)]
-                    struct ListLineSvc<T: NovelService>(pub Arc<T>);
-                    impl<
-                        T: NovelService,
-                    > tonic::server::UnaryService<super::ListLineParams>
-                    for ListLineSvc<T> {
-                        type Response = super::ListLineReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::ListLineParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).list_line(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = ListLineSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/novel_service.NovelService/OperateLine" => {
-                    #[allow(non_camel_case_types)]
-                    struct OperateLineSvc<T: NovelService>(pub Arc<T>);
-                    impl<
-                        T: NovelService,
-                    > tonic::server::UnaryService<super::OperateLineParams>
-                    for OperateLineSvc<T> {
-                        type Response = super::OperateLineReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::OperateLineParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                (*inner).operate_line(request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = OperateLineSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/novel_service.NovelService/BatchOperateLine" => {
-                    #[allow(non_camel_case_types)]
-                    struct BatchOperateLineSvc<T: NovelService>(pub Arc<T>);
-                    impl<
-                        T: NovelService,
-                    > tonic::server::UnaryService<super::BatchOperateLineParams>
-                    for BatchOperateLineSvc<T> {
-                        type Response = super::BatchOperateLineReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::BatchOperateLineParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                (*inner).batch_operate_line(request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = BatchOperateLineSvc(inner);
+                        let method = ListChapterSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

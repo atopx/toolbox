@@ -14,8 +14,7 @@ func NewController(ctx *gin.Context) *Controller {
 }
 
 type Params struct {
-	Source int32  `json:"source"`
-	Name   string `json:"name"`
+	Name string `json:"name"`
 }
 
 type Reply struct{}

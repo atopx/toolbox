@@ -5,7 +5,6 @@ use domain::note_service;
 
 mod note;
 mod note_label;
-mod note_topic;
 
 pub struct NoteService {
     db: DatabaseConnection,
@@ -45,36 +44,6 @@ impl note_service::note_service_server::NoteService for NoteService {
     ) -> Result<Response<note_service::BatchOperateNoteReply>, Status> {
         let params = request.into_inner();
         let bis = note::Business::new(&self.db, params.header.to_owned().unwrap());
-        let reply = bis.batch_operate(params.operate(), params.data).await;
-        Ok(Response::new(reply))
-    }
-
-    async fn list_note_topic(
-        &self,
-        request: Request<note_service::ListNoteTopicParams>,
-    ) -> Result<Response<note_service::ListNoteTopicReply>, Status> {
-        let params = request.into_inner();
-        let bis = note_topic::Business::new(&self.db, params.header.to_owned().unwrap());
-        let reply = bis.list(params.filter, params.sorts, params.pager).await;
-        Ok(Response::new(reply))
-    }
-
-    async fn operate_note_topic(
-        &self,
-        request: Request<note_service::OperateNoteTopicParams>,
-    ) -> Result<Response<note_service::OperateNoteTopicReply>, Status> {
-        let params = request.into_inner();
-        let bis = note_topic::Business::new(&self.db, params.header.to_owned().unwrap());
-        let reply = bis.operate(params.operate(), params.data).await;
-        Ok(Response::new(reply))
-    }
-
-    async fn batch_operate_note_topic(
-        &self,
-        request: Request<note_service::BatchOperateNoteTopicParams>,
-    ) -> Result<Response<note_service::BatchOperateNoteTopicReply>, Status> {
-        let params = request.into_inner();
-        let bis = note_topic::Business::new(&self.db, params.header.to_owned().unwrap());
         let reply = bis.batch_operate(params.operate(), params.data).await;
         Ok(Response::new(reply))
     }

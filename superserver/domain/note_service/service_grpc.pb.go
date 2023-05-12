@@ -22,9 +22,6 @@ const (
 	NoteService_ListNote_FullMethodName              = "/note_service.NoteService/ListNote"
 	NoteService_OperateNote_FullMethodName           = "/note_service.NoteService/OperateNote"
 	NoteService_BatchOperateNote_FullMethodName      = "/note_service.NoteService/BatchOperateNote"
-	NoteService_ListNoteTopic_FullMethodName         = "/note_service.NoteService/ListNoteTopic"
-	NoteService_OperateNoteTopic_FullMethodName      = "/note_service.NoteService/OperateNoteTopic"
-	NoteService_BatchOperateNoteTopic_FullMethodName = "/note_service.NoteService/BatchOperateNoteTopic"
 	NoteService_ListNoteLabel_FullMethodName         = "/note_service.NoteService/ListNoteLabel"
 	NoteService_OperateNoteLabel_FullMethodName      = "/note_service.NoteService/OperateNoteLabel"
 	NoteService_BatchOperateNoteLabel_FullMethodName = "/note_service.NoteService/BatchOperateNoteLabel"
@@ -38,10 +35,6 @@ type NoteServiceClient interface {
 	ListNote(ctx context.Context, in *ListNoteParams, opts ...grpc.CallOption) (*ListNoteReply, error)
 	OperateNote(ctx context.Context, in *OperateNoteParams, opts ...grpc.CallOption) (*OperateNoteReply, error)
 	BatchOperateNote(ctx context.Context, in *BatchOperateNoteParams, opts ...grpc.CallOption) (*BatchOperateNoteReply, error)
-	// 笔记主题
-	ListNoteTopic(ctx context.Context, in *ListNoteTopicParams, opts ...grpc.CallOption) (*ListNoteTopicReply, error)
-	OperateNoteTopic(ctx context.Context, in *OperateNoteTopicParams, opts ...grpc.CallOption) (*OperateNoteTopicReply, error)
-	BatchOperateNoteTopic(ctx context.Context, in *BatchOperateNoteTopicParams, opts ...grpc.CallOption) (*BatchOperateNoteTopicReply, error)
 	// 笔记标签
 	ListNoteLabel(ctx context.Context, in *ListNoteLabelParams, opts ...grpc.CallOption) (*ListNoteLabelReply, error)
 	OperateNoteLabel(ctx context.Context, in *OperateNoteLabelParams, opts ...grpc.CallOption) (*OperateNoteLabelReply, error)
@@ -83,33 +76,6 @@ func (c *noteServiceClient) BatchOperateNote(ctx context.Context, in *BatchOpera
 	return out, nil
 }
 
-func (c *noteServiceClient) ListNoteTopic(ctx context.Context, in *ListNoteTopicParams, opts ...grpc.CallOption) (*ListNoteTopicReply, error) {
-	out := new(ListNoteTopicReply)
-	err := c.cc.Invoke(ctx, NoteService_ListNoteTopic_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *noteServiceClient) OperateNoteTopic(ctx context.Context, in *OperateNoteTopicParams, opts ...grpc.CallOption) (*OperateNoteTopicReply, error) {
-	out := new(OperateNoteTopicReply)
-	err := c.cc.Invoke(ctx, NoteService_OperateNoteTopic_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *noteServiceClient) BatchOperateNoteTopic(ctx context.Context, in *BatchOperateNoteTopicParams, opts ...grpc.CallOption) (*BatchOperateNoteTopicReply, error) {
-	out := new(BatchOperateNoteTopicReply)
-	err := c.cc.Invoke(ctx, NoteService_BatchOperateNoteTopic_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *noteServiceClient) ListNoteLabel(ctx context.Context, in *ListNoteLabelParams, opts ...grpc.CallOption) (*ListNoteLabelReply, error) {
 	out := new(ListNoteLabelReply)
 	err := c.cc.Invoke(ctx, NoteService_ListNoteLabel_FullMethodName, in, out, opts...)
@@ -145,10 +111,6 @@ type NoteServiceServer interface {
 	ListNote(context.Context, *ListNoteParams) (*ListNoteReply, error)
 	OperateNote(context.Context, *OperateNoteParams) (*OperateNoteReply, error)
 	BatchOperateNote(context.Context, *BatchOperateNoteParams) (*BatchOperateNoteReply, error)
-	// 笔记主题
-	ListNoteTopic(context.Context, *ListNoteTopicParams) (*ListNoteTopicReply, error)
-	OperateNoteTopic(context.Context, *OperateNoteTopicParams) (*OperateNoteTopicReply, error)
-	BatchOperateNoteTopic(context.Context, *BatchOperateNoteTopicParams) (*BatchOperateNoteTopicReply, error)
 	// 笔记标签
 	ListNoteLabel(context.Context, *ListNoteLabelParams) (*ListNoteLabelReply, error)
 	OperateNoteLabel(context.Context, *OperateNoteLabelParams) (*OperateNoteLabelReply, error)
@@ -168,15 +130,6 @@ func (UnimplementedNoteServiceServer) OperateNote(context.Context, *OperateNoteP
 }
 func (UnimplementedNoteServiceServer) BatchOperateNote(context.Context, *BatchOperateNoteParams) (*BatchOperateNoteReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateNote not implemented")
-}
-func (UnimplementedNoteServiceServer) ListNoteTopic(context.Context, *ListNoteTopicParams) (*ListNoteTopicReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListNoteTopic not implemented")
-}
-func (UnimplementedNoteServiceServer) OperateNoteTopic(context.Context, *OperateNoteTopicParams) (*OperateNoteTopicReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OperateNoteTopic not implemented")
-}
-func (UnimplementedNoteServiceServer) BatchOperateNoteTopic(context.Context, *BatchOperateNoteTopicParams) (*BatchOperateNoteTopicReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchOperateNoteTopic not implemented")
 }
 func (UnimplementedNoteServiceServer) ListNoteLabel(context.Context, *ListNoteLabelParams) (*ListNoteLabelReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListNoteLabel not implemented")
@@ -254,60 +207,6 @@ func _NoteService_BatchOperateNote_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NoteService_ListNoteTopic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListNoteTopicParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NoteServiceServer).ListNoteTopic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NoteService_ListNoteTopic_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NoteServiceServer).ListNoteTopic(ctx, req.(*ListNoteTopicParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NoteService_OperateNoteTopic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OperateNoteTopicParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NoteServiceServer).OperateNoteTopic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NoteService_OperateNoteTopic_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NoteServiceServer).OperateNoteTopic(ctx, req.(*OperateNoteTopicParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NoteService_BatchOperateNoteTopic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BatchOperateNoteTopicParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NoteServiceServer).BatchOperateNoteTopic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NoteService_BatchOperateNoteTopic_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NoteServiceServer).BatchOperateNoteTopic(ctx, req.(*BatchOperateNoteTopicParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _NoteService_ListNoteLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListNoteLabelParams)
 	if err := dec(in); err != nil {
@@ -380,18 +279,6 @@ var NoteService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BatchOperateNote",
 			Handler:    _NoteService_BatchOperateNote_Handler,
-		},
-		{
-			MethodName: "ListNoteTopic",
-			Handler:    _NoteService_ListNoteTopic_Handler,
-		},
-		{
-			MethodName: "OperateNoteTopic",
-			Handler:    _NoteService_OperateNoteTopic_Handler,
-		},
-		{
-			MethodName: "BatchOperateNoteTopic",
-			Handler:    _NoteService_BatchOperateNoteTopic_Handler,
 		},
 		{
 			MethodName: "ListNoteLabel",

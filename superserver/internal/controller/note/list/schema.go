@@ -22,7 +22,6 @@ type Params struct {
 	Filter struct {
 		PublicSelect common.BooleanScope `json:"public_elect"`
 		Keyword      string              `json:"keyword"`
-		FolderIds    []int32             `json:"folder_ids"`
 		TopicIds     []int32             `json:"topic_ids"`
 		LabelIds     []int32             `json:"label_ids"`
 	} `json:"filter"`

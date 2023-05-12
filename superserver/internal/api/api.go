@@ -36,14 +36,6 @@ func (a *Api) Route() *Api {
 		labelGroup.DELETE("/delete", a.LabelDelete)
 	}
 
-	// 文件夹
-	folderGroup := a.router.Group("/folder")
-	{
-		folderGroup.POST("/create", a.FolderCreate)
-		folderGroup.POST("/list", a.FolderList)
-		folderGroup.DELETE("/delete", a.FolderDelete)
-	}
-
 	// 角色
 	roleGroup := a.router.Group("/role", a.middle.OwnerMiddleware())
 	{

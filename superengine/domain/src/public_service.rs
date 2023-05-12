@@ -32,138 +32,13 @@ pub struct ListEnumReply {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Folder {
-    /// 主键
-    #[prost(int32, tag = "1")]
-    pub id: i32,
-    /// 父级ID
-    #[prost(int32, tag = "2")]
-    pub parent_id: i32,
-    /// 来源,枚举
-    #[prost(int32, tag = "3")]
-    pub source: i32,
-    /// 名称
-    #[prost(string, tag = "4")]
-    pub name: ::prost::alloc::string::String,
-    /// 存储路径,虚拟文件夹为空
-    #[prost(string, tag = "5")]
-    pub path: ::prost::alloc::string::String,
-    /// 删除时间 时间戳：秒
-    #[prost(int64, tag = "1001")]
-    pub delete_time: i64,
-    /// 创建时间 时间戳：秒
-    #[prost(int64, tag = "1002")]
-    pub create_time: i64,
-    /// 最后更新时间 时间戳：秒
-    #[prost(int64, tag = "1003")]
-    pub update_time: i64,
-    /// 创建人
-    #[prost(int32, tag = "1004")]
-    pub creator: i32,
-    /// 更新人
-    #[prost(int32, tag = "1005")]
-    pub updater: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct FolderFilter {
-    #[prost(int32, repeated, tag = "1")]
-    pub ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "2")]
-    pub parent_ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "3")]
-    pub sources: ::prost::alloc::vec::Vec<i32>,
-    #[prost(string, repeated, tag = "4")]
-    pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    #[prost(message, optional, tag = "101")]
-    pub delete_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "102")]
-    pub create_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(message, optional, tag = "103")]
-    pub update_time_range: ::core::option::Option<super::public::BetweenInt64>,
-    #[prost(int32, repeated, tag = "104")]
-    pub creators: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "105")]
-    pub updaters: ::prost::alloc::vec::Vec<i32>,
-    #[prost(enumeration = "super::public::BooleanScope", tag = "500")]
-    pub deleted: i32,
-    #[prost(message, optional, tag = "201")]
-    pub keywords: ::core::option::Option<folder_filter::Keywords>,
-}
-/// Nested message and enum types in `FolderFilter`.
-pub mod folder_filter {
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Keywords {
-        #[prost(string, tag = "1")]
-        pub name: ::prost::alloc::string::String,
-    }
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListFolderParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub sorts: ::prost::alloc::vec::Vec<super::public::Sort>,
-    #[prost(message, optional, tag = "4")]
-    pub filter: ::core::option::Option<FolderFilter>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListFolderReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub pager: ::core::option::Option<super::public::Pager>,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<Folder>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateFolderParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, optional, tag = "3")]
-    pub data: ::core::option::Option<Folder>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OperateFolderReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-    #[prost(message, optional, tag = "2")]
-    pub data: ::core::option::Option<Folder>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateFolderParams {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::Header>,
-    #[prost(enumeration = "super::public::Operation", tag = "2")]
-    pub operate: i32,
-    #[prost(message, repeated, tag = "3")]
-    pub data: ::prost::alloc::vec::Vec<Folder>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BatchOperateFolderReply {
-    #[prost(message, optional, tag = "1")]
-    pub header: ::core::option::Option<super::public::ReplyHeader>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Label {
     /// 主键
     #[prost(int32, tag = "1")]
     pub id: i32,
-    /// 来源,枚举
-    #[prost(int32, tag = "2")]
-    pub source: i32,
+    /// 编码
+    #[prost(string, tag = "2")]
+    pub code: ::prost::alloc::string::String,
     /// 名称
     #[prost(string, tag = "3")]
     pub name: ::prost::alloc::string::String,
@@ -188,8 +63,8 @@ pub struct Label {
 pub struct LabelFilter {
     #[prost(int32, repeated, tag = "1")]
     pub ids: ::prost::alloc::vec::Vec<i32>,
-    #[prost(int32, repeated, tag = "2")]
-    pub sources: ::prost::alloc::vec::Vec<i32>,
+    #[prost(string, repeated, tag = "2")]
+    pub codes: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(string, repeated, tag = "3")]
     pub names: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(message, optional, tag = "101")]
@@ -213,7 +88,7 @@ pub mod label_filter {
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Keywords {
         #[prost(string, tag = "1")]
-        pub name: ::prost::alloc::string::String,
+        pub keyword: ::prost::alloc::string::String,
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -296,25 +171,6 @@ pub mod public_service_server {
             request: tonic::Request<super::BatchOperateLabelParams>,
         ) -> std::result::Result<
             tonic::Response<super::BatchOperateLabelReply>,
-            tonic::Status,
-        >;
-        /// 文件夹
-        async fn list_folder(
-            &self,
-            request: tonic::Request<super::ListFolderParams>,
-        ) -> std::result::Result<tonic::Response<super::ListFolderReply>, tonic::Status>;
-        async fn operate_folder(
-            &self,
-            request: tonic::Request<super::OperateFolderParams>,
-        ) -> std::result::Result<
-            tonic::Response<super::OperateFolderReply>,
-            tonic::Status,
-        >;
-        async fn batch_operate_folder(
-            &self,
-            request: tonic::Request<super::BatchOperateFolderParams>,
-        ) -> std::result::Result<
-            tonic::Response<super::BatchOperateFolderReply>,
             tonic::Status,
         >;
         /// Enums
@@ -523,142 +379,6 @@ pub mod public_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = BatchOperateLabelSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/public_service.PublicService/ListFolder" => {
-                    #[allow(non_camel_case_types)]
-                    struct ListFolderSvc<T: PublicService>(pub Arc<T>);
-                    impl<
-                        T: PublicService,
-                    > tonic::server::UnaryService<super::ListFolderParams>
-                    for ListFolderSvc<T> {
-                        type Response = super::ListFolderReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::ListFolderParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).list_folder(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = ListFolderSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/public_service.PublicService/OperateFolder" => {
-                    #[allow(non_camel_case_types)]
-                    struct OperateFolderSvc<T: PublicService>(pub Arc<T>);
-                    impl<
-                        T: PublicService,
-                    > tonic::server::UnaryService<super::OperateFolderParams>
-                    for OperateFolderSvc<T> {
-                        type Response = super::OperateFolderReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::OperateFolderParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                (*inner).operate_folder(request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = OperateFolderSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/public_service.PublicService/BatchOperateFolder" => {
-                    #[allow(non_camel_case_types)]
-                    struct BatchOperateFolderSvc<T: PublicService>(pub Arc<T>);
-                    impl<
-                        T: PublicService,
-                    > tonic::server::UnaryService<super::BatchOperateFolderParams>
-                    for BatchOperateFolderSvc<T> {
-                        type Response = super::BatchOperateFolderReply;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::BatchOperateFolderParams>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                (*inner).batch_operate_folder(request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = BatchOperateFolderSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

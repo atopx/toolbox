@@ -69,7 +69,7 @@ func Test_AllPublishChapter(t *testing.T) {
 	size := 2000
 	for page := 0; ; page++ {
 		var records []string
-		models.NewChapterClient(db).Connect().Select("src").Where("state!=?", models.BookStatusFinal).
+		models.NewChapterClient(db).Connect().Select("src").Where("state!=?", models.FINALLY).
 			Offset(page * size).Limit(size).Find(&records)
 		for _, record := range records {
 			rdb.Publish(ctx, config.Queue.ChapterQueue, record)

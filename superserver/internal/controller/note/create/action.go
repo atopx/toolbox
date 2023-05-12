@@ -15,17 +15,8 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	}
 
 	note := &note_service.Note{
-		FolderId: params.FolderId,
-		Sign:     "", // TODO sign
-		Title:    params.Title,
-		Public:   params.Public,
-		Content:  params.Content,
-	}
-
-	if params.Topic != nil {
-		// TODO create topic
-
-		note.TopicId = params.Topic.Id
+		Title:   params.Title,
+		Content: params.Content,
 	}
 
 	_, code := note_client.OperateNote(c.Context(), &note_service.OperateNoteParams{

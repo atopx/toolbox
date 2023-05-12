@@ -5,7 +5,8 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTr
 use sea_orm::ActiveValue::Set;
 
 use domain::{auth_service, public};
-use domain::public::{ECode, Operation};
+use domain::ecode::ECode;
+use domain::public::Operation;
 use model::access::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {
@@ -34,7 +35,6 @@ impl<'a> Business<'a> {
             path: model.path,
             method: model.method,
             status: model.status,
-
         }
     }
 
@@ -201,7 +201,7 @@ impl<'a> Business<'a> {
         let active: ActiveModel = self.decode(data.clone()).into();
         let result = Entity::insert(active).on_conflict(
             // 定义冲突
-            sea_query::OnConflict::column(Column::Path)
+            sea_query::OnConflict::columns([Column::Path, Column::Method])
                 // 冲突后更新的字段
                 .update_columns([Column::Status, Column::Method])
                 .to_owned(),
@@ -222,7 +222,7 @@ impl<'a> Business<'a> {
         }
         Entity::insert_many(actives).on_conflict(
             // 定义冲突
-            sea_query::OnConflict::column(Column::Path)
+            sea_query::OnConflict::columns([Column::Path, Column::Method])
                 // 冲突后更新的字段
                 .update_columns([Column::Status, Column::Method])
                 .to_owned(),

@@ -63,7 +63,7 @@ func (c *Crawler) chapter(element *colly.HTMLElement) {
 	content = strings.ReplaceAll(strings.TrimSpace(content), "\u00a0\u00a0", "\n")
 	models.NewChapterClient(c.db).Connect().Where("src = ?", element.Request.URL.String()).Updates(map[string]interface{}{
 		"content":     content,
-		"state":       models.BookStatusFinal,
+		"state":       models.FINALLY,
 		"update_time": time.Now().Local().Unix(),
 	})
 }

@@ -4,11 +4,16 @@ option go_package = "superserver/domain/note_service";
 
 import "public/common.proto";
 
+enum LabelType {
+    TAG = 0;
+    TOPIC = 1;
+}
+
 message NoteLabel {
     int32 id = 1; // 主键
     int32 note_id = 2; // 笔记ID
     int32 label_id = 3; // 标签ID
-
+    LabelType label_type = 4; // 标签类型
     int64 delete_time = 1001; // 删除时间 时间戳：秒
     int64 create_time = 1002; // 创建时间 时间戳：秒
     int64 update_time = 1003; // 最后更新时间 时间戳：秒
@@ -20,6 +25,7 @@ message NoteLabelFilter {
     repeated int32 ids = 1;
     repeated int32 note_ids = 2;
     repeated int32 label_ids = 3;
+    repeated LabelType label_types = 4;
 
     public.BetweenInt64 delete_time_range = 101;
     public.BetweenInt64 create_time_range = 102;

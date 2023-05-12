@@ -5,7 +5,8 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTr
 use sea_orm::ActiveValue::Set;
 
 use domain::{auth_service, public};
-use domain::public::{BooleanScope, ECode, Operation};
+use domain::ecode::ECode;
+use domain::public::{BooleanScope, Operation};
 use model::user::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {

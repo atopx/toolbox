@@ -5,7 +5,8 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTr
 use sea_orm::ActiveValue::Set;
 
 use domain::{public, public_service};
-use domain::public::{BooleanScope, ECode, Operation};
+use domain::ecode::ECode;
+use domain::public::{BooleanScope, Operation};
 use model::label::{ActiveModel, Column, Entity, Model};
 
 pub struct Business<'a> {
@@ -23,7 +24,7 @@ impl<'a> Business<'a> {
         let current_time = common::utils::current_timestamp();
         Model {
             id: 0,
-            source: dto.source,
+            code: dto.code,
             name: dto.name,
             creator: self.header.operator,
             updater: self.header.operator,
@@ -36,7 +37,7 @@ impl<'a> Business<'a> {
     fn encode(&self, model: Model) -> public_service::Label {
         public_service::Label {
             id: model.id,
-            source: model.source,
+            code: model.code,
             name: model.name,
             creator: self.header.operator,
             updater: self.header.operator,
@@ -68,8 +69,8 @@ impl<'a> Business<'a> {
             if filter.names.is_empty().not() {
                 query = query.filter(Column::Name.is_in(filter.names))
             }
-            if filter.sources.is_empty().not() {
-                query = query.filter(Column::Source.is_in(filter.sources))
+            if filter.codes.is_empty().not() {
+                query = query.filter(Column::Code.is_in(filter.codes))
             }
             if filter.creators.is_empty().not() {
                 query = query.filter(Column::Creator.is_in(filter.creators));
@@ -88,9 +89,11 @@ impl<'a> Business<'a> {
             }
 
             if let Some(keywords) = filter.keywords {
-                if keywords.name.is_empty().not() {
+                if keywords.keyword.is_empty().not() {
                     query = query.filter(
-                        Column::Name.contains(&keywords.name),
+                        Column::Name.contains(&keywords.keyword).or(
+                            Column::Name.contains(&keywords.keyword)
+                        ),
                     )
                 }
             }
@@ -244,7 +247,7 @@ impl<'a> Business<'a> {
     async fn save(&self, mut data: public_service::Label) -> Result<Option<public_service::Label>, DbErr> {
         let active: ActiveModel = self.decode(data.clone()).into();
         let result = Entity::insert(active).on_conflict(
-            sea_query::OnConflict::columns([Column::Name, Column::Source])
+            sea_query::OnConflict::column(Column::Code)
                 .update_columns([Column::Name, Column::Updater, Column::UpdateTime])
                 .to_owned()
         ).exec(self.db).await?;
@@ -264,9 +267,9 @@ impl<'a> Business<'a> {
         }
         Entity::insert_many(actives).on_conflict(
             // 定义冲突
-            sea_query::OnConflict::columns([Column::Name, Column::Source])
+            sea_query::OnConflict::column(Column::Code)
                 // 冲突后更新的字段
-                .update_columns([Column::Name]).to_owned(),
+                .update_columns([Column::Name, Column::Updater, Column::UpdateTime]).to_owned(),
         ).exec(self.db).await?;
         Ok(None)
     }

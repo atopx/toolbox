@@ -1,3 +1,0 @@
-syntax = "proto3";
-package file_service;
-option go_package = "superserver/domain/file_service";

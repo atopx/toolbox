@@ -6,13 +6,8 @@ import "public/common.proto";
 
 message Note {
     int32 id = 1; // 主键
-    int32 folder_id = 2; // 文件夹ID
-    int32 topic_id = 3; // 主题ID
-    string sign = 4; // 签名:内容+时间
-    string title = 5; // 标题
-    bool public = 6; // 公开的
-    string content = 7; // 笔记内容
-
+    string title = 2; // 标题
+    string content = 3; // 笔记内容
     int64 delete_time = 1001; // 删除时间 时间戳：秒
     int64 create_time = 1002; // 创建时间 时间戳：秒
     int64 update_time = 1003; // 最后更新时间 时间戳：秒
@@ -22,9 +17,6 @@ message Note {
 
 message NoteFilter {
     repeated int32 ids = 1;
-    repeated int32 folder_ids = 2;
-    repeated int32 topic_ids = 3;
-    public.BooleanScope public_select = 4;
 
     public.BetweenInt64 delete_time_range = 101;
     public.BetweenInt64 create_time_range = 102;
