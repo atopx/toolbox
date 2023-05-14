@@ -44,17 +44,29 @@ type Spider interface {
 
 func (e *Engine) Start() {
 	ctx := context.Background()
-	args := &redis.XReadArgs{Streams: []string{config.Crawler.Queue, "$"}, Count: 1, Block: 0}
+	e.rdb.XGroupCreateMkStream(ctx, config.Crawler.Stream, config.Crawler.Group, "0")
+	e.rdb.XGroupCreateConsumer(ctx, config.Crawler.Stream, config.Crawler.Group, config.Crawler.Stream)
+	args := &redis.XReadGroupArgs{
+		Group:    config.Crawler.Group,
+		Consumer: config.Crawler.Group,
+		Streams:  []string{config.Crawler.Stream, ">"},
+		Count:    24,
+		Block:    0,
+		NoAck:    true,
+	}
 	for {
-		reader := e.rdb.XRead(ctx, args)
+		reader := e.rdb.XReadGroup(ctx, args)
 		queues, err := reader.Result()
 		if err != nil {
 			logger.Panic("read group failed", zap.Error(err))
 		}
 		message := queues[0].Messages[0]
-		logger.Info("consumer message", zap.Any("data", message))
+		label, data := DecodeParams(message.Values)
+
+		logger.Info("consumer message", zap.String("id", message.ID), zap.String("label", label), zap.Strings("data", data))
+
 		var spider Spider
-		switch message.Values["label"].(string) {
+		switch label {
 		case BookLabel:
 			spider = e.bookSpider
 		case ChapterLabel:
@@ -63,13 +75,11 @@ func (e *Engine) Start() {
 			spider = e.sitemapSpider
 		}
 		if spider != nil {
-			if err = spider.Visit(message.Values["src"].(string)); err != nil {
-				logger.Error("visit error", zap.Error(err))
-			} else {
-				spider.Wait()
-				logger.Info("consumer success")
+			for _, src := range data {
+				_ = spider.Visit(src)
 			}
+			spider.Wait()
 		}
-		e.rdb.XDel(ctx, config.Crawler.Queue, message.ID)
+		e.rdb.XDel(ctx, config.Crawler.Stream, message.ID)
 	}
 }

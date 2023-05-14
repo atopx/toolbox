@@ -10,7 +10,8 @@ type CrawlerConfig struct {
 	Delay       time.Duration
 	Parallelism int
 	UserAgent   string
-	Queue       string
+	Stream      string
+	Group       string
 }
 
 type QueueConfig struct {
@@ -42,7 +43,8 @@ func Read(path string) error {
 			Delay:       viper.GetDuration("crawler.delay") * time.Second,
 			Parallelism: viper.GetInt("crawler.parallelism"),
 			UserAgent:   viper.GetString("crawler.user_agent"),
-			Queue:       viper.GetString("crawler.queue"),
+			Stream:      viper.GetString("crawler.stream"),
+			Group:       viper.GetString("crawler.group"),
 		}
 	}
 

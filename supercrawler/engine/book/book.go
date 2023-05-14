@@ -58,6 +58,7 @@ func (c *Crawler) scraped(response *colly.Response) {
 }
 func (c *Crawler) error(response *colly.Response, err error) {
 	logger.Error("book crawler failed", zap.Error(err), zap.String("src", response.Request.URL.String()))
+	models.NewBookClient(c.db).SetState(response.Request.URL.String(), models.FAILURE)
 }
 
 func (c *Crawler) book(element *colly.HTMLElement) {

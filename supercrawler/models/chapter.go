@@ -19,3 +19,7 @@ func (m *Chapter) Connect() *gorm.DB {
 func NewChapterClient(db *gorm.DB) *Chapter {
 	return &Chapter{Base: Base{conn: db}}
 }
+
+func (m *Chapter) SetState(src string, state int) {
+	m.Connect().Where("src=?", src).UpdateColumn("state", state)
+}

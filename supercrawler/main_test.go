@@ -17,12 +17,12 @@ func publish(value map[string]interface{}) error {
 		return err
 	}
 	rdb := pkg.NewRedisClient(viper.GetStringMap("redis"))
-	return rdb.XAdd(context.Background(), &redis.XAddArgs{Stream: config.Crawler.Queue, Values: value}).Err()
+	return rdb.XAdd(context.Background(), &redis.XAddArgs{Stream: config.Crawler.Stream, Values: value}).Err()
 }
 
 func Test_Publish_sitemap(t *testing.T) {
 	if err := publish(map[string]interface{}{
-		"label": engine.BookLabel,
+		"label": engine.SitemapLabel,
 		"src":   "https://www.ibiquge.info/api/sitemap.xml",
 	}); err != nil {
 		t.Fatal(err)
@@ -32,7 +32,7 @@ func Test_Publish_sitemap(t *testing.T) {
 func Test_Publish_book(t *testing.T) {
 	if err := publish(map[string]interface{}{
 		"label": engine.BookLabel,
-		"src":   "https://www.ibiquge.info/157_157430/",
+		"src":   "https://www.ibiquge.info/155_155894/",
 	}); err != nil {
 		t.Fatal(err)
 	}

@@ -22,6 +22,10 @@ func NewBookClient(db *gorm.DB) *Book {
 	return &Book{Base: Base{conn: db}}
 }
 
+func (m *Book) SetState(src string, state int) {
+	m.Connect().Where("src=?", src).UpdateColumn("state", state)
+}
+
 const (
 	PENDING = iota
 	RUNNING
