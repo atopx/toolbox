@@ -62,9 +62,7 @@ func (e *Engine) Start() {
 		}
 		message := queues[0].Messages[0]
 		label, data := DecodeParams(message.Values)
-
-		logger.Info("consumer message", zap.String("id", message.ID), zap.String("label", label), zap.Strings("data", data))
-
+		logger.Info("consumer message", zap.String("id", message.ID), zap.String("label", label))
 		var spider Spider
 		switch label {
 		case BookLabel:
@@ -80,6 +78,7 @@ func (e *Engine) Start() {
 			}
 			spider.Wait()
 		}
+		logger.Info("consumer success", zap.String("id", message.ID), zap.String("id", message.ID), zap.String("label", label))
 		e.rdb.XDel(ctx, config.Crawler.Stream, message.ID)
 	}
 }
