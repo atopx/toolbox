@@ -79,6 +79,7 @@ func (e *Engine) Start() {
 			spider.Wait()
 		}
 		logger.Info("consumer success", zap.String("id", message.ID), zap.String("id", message.ID), zap.String("label", label))
+		e.rdb.XAck(ctx, config.Crawler.Stream, config.Crawler.Group, message.ID)
 		e.rdb.XDel(ctx, config.Crawler.Stream, message.ID)
 	}
 }
