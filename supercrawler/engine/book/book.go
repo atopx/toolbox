@@ -1,6 +1,8 @@
 package book
 
 import (
+	"github.com/PuerkitoBio/goquery"
+	"gorm.io/gorm/clause"
 	"net/http"
 	"strings"
 	"supercrawler/common/logger"
@@ -11,7 +13,6 @@ import (
 	"github.com/gocolly/colly/v2"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type Crawler struct {
@@ -85,16 +86,18 @@ func (c *Crawler) parseBook(book *models.Book, element *colly.HTMLElement) error
 }
 
 func (c *Crawler) parseChapters(book *models.Book, element *colly.HTMLElement) error {
-	var chapters []*models.Chapter
-	element.ForEach("#list dl dd:nth-child(n+14) a", func(i int, element *colly.HTMLElement) {
-		chapter := models.Chapter{
-			BookId: book.Id,
-			Code:   i + 1,
-			Src:    element.Request.AbsoluteURL(element.Attr("href")),
-			Title:  element.Text,
-			State:  models.SUCCESS,
+	list := element.DOM.Find("#list dl dd:nth-child(n+14) a")
+	chapters := make([]*models.Chapter, 0, list.Length())
+	list.Each(func(i int, node *goquery.Selection) {
+		if src, ok := node.Attr("href"); ok {
+			chapters = append(chapters, &models.Chapter{
+				BookId: book.Id,
+				Code:   i + 1,
+				Src:    src,
+				Title:  node.Text(),
+				State:  models.SUCCESS,
+			})
 		}
-		chapters = append(chapters, &chapter)
 	})
 	return models.NewChapterClient(c.db).Connect().Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "src"}},
