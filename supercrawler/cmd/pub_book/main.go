@@ -19,14 +19,13 @@ func main() {
 	}
 	db := pkg.NewDbClient(viper.GetStringMap("mysql"))
 	rdb := pkg.NewRedisClient(viper.GetStringMap("redis"))
-	size := 1680
 	ctx := context.Background()
 	for page := 0; ; page++ {
-		list := make([]string, 0, size)
+		list := make([]string, 0, config.Crawler.Parallelism)
 		models.NewBookClient(db).Connect().Where("state=?", models.PENDING).
-			Select("src").Limit(size).Offset(page * size).Find(&list)
+			Select("src").Limit(config.Crawler.Parallelism).Offset(page * config.Crawler.Parallelism).Find(&list)
 		rdb.XAdd(ctx, &redis.XAddArgs{Stream: config.Crawler.Stream, Values: engine.EncodeParams(engine.BookLabel, list)})
-		if len(list) < size {
+		if len(list) < config.Crawler.Parallelism {
 			break
 		}
 	}
