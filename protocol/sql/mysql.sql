@@ -124,7 +124,7 @@ create table book
     src         VARCHAR(256) DEFAULT '' NOT NULL COMMENT '链接',
     cover       VARCHAR(256) DEFAULT '' NOT NULL COMMENT '封面',
     label       VARCHAR(32)  DEFAULT '' NOT NULL COMMENT '标签/分类',
-    INTro       TEXT                    null COMMENT '简介',
+    intro       TEXT                    null COMMENT '简介',
     state       INT          DEFAULT 0  NOT NULL COMMENT '任务状态',
     last_modify BIGINT       DEFAULT 0  NOT NULL COMMENT '最后修改时间 时间戳：秒',
     create_time BIGINT       DEFAULT 0  NOT NULL COMMENT '创建时间 时间戳：秒',

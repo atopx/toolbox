@@ -10,6 +10,7 @@ type CrawlerConfig struct {
 	Delay       time.Duration
 	Parallelism int
 	UserAgent   string
+	Queue       string
 }
 
 type QueueConfig struct {
@@ -19,15 +20,14 @@ type QueueConfig struct {
 }
 
 type SitemapConfig struct {
-	SitemapApi       string
-	SitemapIndex     string
+	SitemapIndexRoot string
 	SitemapIndexList string
-	SitemapIndexLoc  string
-	SitemapUrls      string
+	SitemapLoc       string
+	SitemapUrlRoot   string
+	SitemapUrlList   string
 }
 
 var (
-	Queue   *QueueConfig
 	Crawler *CrawlerConfig
 	Sitemap *SitemapConfig
 )
@@ -42,24 +42,17 @@ func Read(path string) error {
 			Delay:       viper.GetDuration("crawler.delay") * time.Second,
 			Parallelism: viper.GetInt("crawler.parallelism"),
 			UserAgent:   viper.GetString("crawler.user_agent"),
-		}
-	}
-
-	if Queue == nil {
-		Queue = &QueueConfig{
-			BookQueue:    viper.GetString("crawler.book_queue"),
-			ChapterQueue: viper.GetString("crawler.chapter_queue"),
-			SitemapQueue: viper.GetString("crawler.sitemap_queue"),
+			Queue:       viper.GetString("crawler.queue"),
 		}
 	}
 
 	if Sitemap == nil {
 		Sitemap = &SitemapConfig{
-			SitemapApi:       viper.GetString("crawler.sitemap_api"),
-			SitemapIndex:     viper.GetString("crawler.sitemap_index"),
+			SitemapLoc:       viper.GetString("crawler.sitemap_loc"),
+			SitemapIndexRoot: viper.GetString("crawler.sitemap_index_root"),
 			SitemapIndexList: viper.GetString("crawler.sitemap_index_list"),
-			SitemapIndexLoc:  viper.GetString("crawler.sitemap_index_loc"),
-			SitemapUrls:      viper.GetString("crawler.sitemap_urls"),
+			SitemapUrlRoot:   viper.GetString("crawler.sitemap_url_root"),
+			SitemapUrlList:   viper.GetString("crawler.sitemap_url_list"),
 		}
 	}
 	return nil
