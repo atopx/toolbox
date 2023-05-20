@@ -1,7 +1,6 @@
-package create
+package save
 
 import (
-	"superserver/domain/public_service"
 	"superserver/internal/controller"
 
 	"github.com/gin-gonic/gin"
@@ -16,10 +15,11 @@ func NewController(ctx *gin.Context) *Controller {
 }
 
 type Params struct {
-	Title   string                  `json:"title"`   // 标题
-	Content string                  `json:"content"` // 内容
-	Topics  []*public_service.Label `json:"topics"`
-	Labels  []*public_service.Label `json:"labels"` // 标签
+	Id      int32   `json:"id"`
+	Title   string  `json:"title"`   // 标题
+	Content string  `json:"content"` // 内容
+	Topics  []int32 `json:"topics"`
+	Labels  []int32 `json:"labels"` // 标签
 }
 
 type Reply struct{}

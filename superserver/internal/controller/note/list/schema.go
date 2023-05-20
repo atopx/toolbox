@@ -1,9 +1,9 @@
 package list
 
 import (
-	"superserver/domain/note_service"
 	"superserver/domain/public/common"
 	"superserver/internal/controller"
+	"superserver/internal/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,14 +20,13 @@ type Params struct {
 	Pager  *common.Pager  `json:"pager"`
 	Sorts  []*common.Sort `json:"sorts"`
 	Filter struct {
-		PublicSelect common.BooleanScope `json:"public_elect"`
-		Keyword      string              `json:"keyword"`
-		TopicIds     []int32             `json:"topic_ids"`
-		LabelIds     []int32             `json:"label_ids"`
+		Keyword  string  `json:"keyword"`
+		TopicIds []int32 `json:"topic_ids"`
+		LabelIds []int32 `json:"label_ids"`
 	} `json:"filter"`
 }
 
 type Reply struct {
-	Pager *common.Pager        `json:"pager"`
-	List  []*note_service.Note `json:"list"`
+	Pager *common.Pager `json:"pager"`
+	List  []model.Note  `json:"list"`
 }

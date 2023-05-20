@@ -1,4 +1,4 @@
-package create
+package save
 
 import (
 	"superserver/domain/note_service"
@@ -19,9 +19,17 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 		Content: params.Content,
 	}
 
+	var operate common.Operation
+	switch params.Id {
+	case 0:
+		operate = common.Operation_OPERATION_CREATE
+	default:
+		note.Id = params.Id
+		operate = common.Operation_OPERATION_UPDATE
+	}
 	_, code := note_client.OperateNote(c.Context(), &note_service.OperateNoteParams{
 		Header:  c.NewServiceHeader(),
-		Operate: common.Operation_OPERATION_CREATE,
+		Operate: operate,
 		Data:    note,
 	})
 

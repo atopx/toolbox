@@ -1,4 +1,4 @@
-package list
+package info
 
 import (
 	"superserver/domain/note_service"
@@ -10,27 +10,24 @@ import (
 
 func (c *Controller) Deal() (any, ecode.ECode) {
 	params := c.Params.(*Params)
-
-	if len(params.Filter.LabelIds) > 0 {
-		// TODO 查笔记-标签关系 note_label
+	if params.Id == nil {
+		return nil, ecode.ECode_BAD_REQUEST
 	}
-
 	listNoteReply, code := note_client.ListNote(c.Context(), &note_service.ListNoteParams{
 		Header: c.NewServiceHeader(),
-		Pager:  params.Pager,
-		Sorts:  params.Sorts,
+		Pager:  &common.Pager{Index: 1, Size: 1},
 		Filter: &note_service.NoteFilter{
-			Deleted:  common.BooleanScope_BOOL_FALSE,
-			Keywords: &note_service.NoteFilter_Keywords{Keyword: params.Filter.Keyword},
+			Ids:     []int32{*params.Id},
+			Deleted: common.BooleanScope_BOOL_FALSE,
 		},
 	})
 	if code != ecode.ECode_SUCCESS {
 		return nil, code
 	}
-
-	reply := Reply{
-		Pager: listNoteReply.Pager,
-		List:  model.NewNoteList(listNoteReply.Data),
+	if listNoteReply.Pager.Count != 1 {
+		return nil, code
 	}
+
+	reply := Reply(model.NewNote(listNoteReply.Data[0]))
 	return reply, ecode.ECode_SUCCESS
 }

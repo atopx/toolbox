@@ -5,11 +5,11 @@ export interface Access {
     path: string
     method: string
     handler: string
-    create_time: number
-    update_time: number
+    create_time: string
+    update_time: string
 }
 
-export type listPermissionAccessRequest = { page: PageIface; filter: {} }
+export type listPermissionAccessRequest = { pager: PageIface; filter: {} }
 export type listPermissionAccessResponse = ResponseIface<{ pager: PageIface; search: Access[] }>
 
 export interface Role {

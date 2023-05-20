@@ -5,6 +5,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx"
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons"
 import svgLoader from "vite-svg-loader"
 import UnoCSS from "unocss/vite"
+import prismjs from 'vite-plugin-prismjs'
 import DefineOptions from "unplugin-vue-define-options/vite"
 
 /** 配置项文档：https://cn.vitejs.dev/config */
@@ -19,6 +20,9 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
                 /** @ 符号指向 src 目录 */
                 "@": resolve(__dirname, "./src")
             }
+        },
+        optimizeDeps: {
+            include: ['@kangc/v-md-editor/lib/theme/vuepress.js'],
         },
         server: {
             /** 是否开启 HTTPS */
@@ -84,7 +88,10 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
             /** UnoCSS */
             UnoCSS(),
             /** DefineOptions 可以更简单的注册组件名称 */
-            DefineOptions()
+            DefineOptions(),
+            prismjs({
+                languages: ['json', 'go', 'rust', 'python', 'typescript', 'java', 'javascript', 'sql', 'bash'],
+            }),
         ]
     }
 }

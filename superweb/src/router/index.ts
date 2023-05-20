@@ -57,6 +57,36 @@ export const constantRoutes: RouteRecordRaw[] = [
         ]
     },
     {
+        path: "/note",
+        component: Layout,
+        redirect: "/notes/list",
+        name: "Note",
+        meta: {
+            title: "文档管理",
+            elIcon: "Notebook",
+            alwaysShow: true // 将始终显示根菜单
+        },
+        children: [
+            {
+                path: "list",
+                component:  () => import("@/views/note/list.vue"),
+                name: "NoteList",
+                meta: {
+                    title: "笔记列表"
+                }
+            },
+            {
+                path: "editor",
+                component:  () => import("@/views/note/editor.vue"),
+                name: "NoteEditor",
+                meta: {
+                    title: "编辑笔记",
+                    hidden: true,
+                }
+            },
+        ]
+    },
+    {
         path: "/permission",
         component: Layout,
         redirect: "/permission/roles",

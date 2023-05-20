@@ -34,7 +34,7 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 			Pager:  servicePager,
 			Filter: &auth_service.AccessFilter{
 				Methods: []string{ctx.Request.Method},
-				Paths:   []string{ctx.Request.RequestURI},
+				Paths:   []string{ctx.FullPath()},
 			},
 		})
 		if code != ecode.ECode_SUCCESS {

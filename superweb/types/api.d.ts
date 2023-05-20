@@ -5,10 +5,12 @@ export interface Header {
   code: number
 }
 
-interface ResponseIface<T> {
+export interface ResponseIface<T> {
   header: Header
   data: T
 }
+
+export type NullResponse = ResponseIface<null>
 
 export interface PageIface {
   count: number

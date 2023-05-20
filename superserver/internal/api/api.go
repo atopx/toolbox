@@ -24,8 +24,10 @@ func (a *Api) Route() *Api {
 	// 笔记
 	noteGroup := a.router.Group("/note")
 	{
-		noteGroup.POST("/create", a.NoteCreate)
+		noteGroup.POST("/save", a.NoteSave)
 		noteGroup.POST("/list", a.NoteList)
+		noteGroup.GET("/info", a.NoteInfo)
+		noteGroup.DELETE("/delete", a.NoteDelete)
 	}
 
 	// 标签

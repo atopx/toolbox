@@ -2,6 +2,7 @@ package engine
 
 import (
 	"context"
+	"fmt"
 	"go.uber.org/zap"
 	"supercrawler/common/logger"
 	"supercrawler/engine/book"
@@ -61,6 +62,7 @@ func (e *Engine) Start() {
 			logger.Panic("read group failed", zap.Error(err))
 		}
 		message := queues[0].Messages[0]
+		fmt.Println(message.Values)
 		label, data := DecodeParams(message.Values)
 		logger.Info("consumer message", zap.String("id", message.ID), zap.String("label", label))
 		var spider Spider
