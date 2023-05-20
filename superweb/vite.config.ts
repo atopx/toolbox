@@ -38,21 +38,21 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
             /** 端口被占用时，是否直接退出 */
             strictPort: false,
             /** 接口代理 */
-            proxy: {
-                "/api/v1": {
-                    target: "http://127.0.0.1:18000",
-                    ws: true,
-                    /** 是否允许跨域 */
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace("/api/v1", "/api")
-                },
-                "/openapi": {
-                    target: "http://127.0.0.1:18020",
-                    ws: false,
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace("/openapi", "")
-                }
-            }
+            // proxy: {
+            //     "/api/v1": {
+            //         target: "http://127.0.0.1:18000",
+            //         ws: true,
+            //         /** 是否允许跨域 */
+            //         changeOrigin: true,
+            //         rewrite: (path) => path.replace("/api/v1", "/api")
+            //     },
+            //     "/openapi": {
+            //         target: "http://127.0.0.1:18020",
+            //         ws: false,
+            //         changeOrigin: true,
+            //         rewrite: (path) => path.replace("/openapi", "")
+            //     }
+            // }
         },
         build: {
             /** 消除打包大小超过 500kb 警告 */

@@ -122,12 +122,12 @@ const handleShowTagInput = (isTopic: boolean) => {
     if (isTopic) {
         topicInputRef.value.visible = true
         nextTick(() => {
-            topicInputRef.value!.text!.focus()
+            // topicInputRef.value!.text!.focus()
         })
     } else {
         labelInputRef.value.visible = true
         nextTick(() => {
-            labelInputRef.value!.text!.focus()
+            // labelInputRef.value!.text!.focus()
         })
     }
 }

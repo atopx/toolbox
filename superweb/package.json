@@ -1,7 +1,7 @@
 {
-  "name": "v3ep_temp",
+  "name": "superweb",
   "version": "0.1.0",
-  "description": "前端后台通用模板, 使用Vue3 + TypeScript + ElementPlus",
+  "description": "Super Admin",
   "author": {
     "name": "atopx",
     "email": "3940422@qq.com",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/atopx/v3ep_temp.git"
+    "url": "https://github.com/atopx/toolbox.git"
   },
   "scripts": {
     "dev": "vite",

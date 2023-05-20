@@ -14,8 +14,8 @@ const loginFormRef = ref<FormInstance | null>(null)
 const loading = ref(false)
 /** 登录表单数据 */
 const loginForm: ILoginRequestData = reactive({
-    username: "atopx",
-    password: "mengfei"
+    username: "",
+    password: ""
 })
 /** 登录表单校验规则 */
 const loginFormRules: FormRules = {
