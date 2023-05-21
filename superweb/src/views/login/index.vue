@@ -118,7 +118,7 @@ const handleLogin = () => {
             align-items: center;
             height: 150px;
             img {
-                height: 100%;
+                height: 50%;
             }
         }
         .content {

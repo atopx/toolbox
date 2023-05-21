@@ -20,10 +20,10 @@ lerna-debug.log*
 
 # Editor directories and files
 .vscode/*
+.idea/*
 !.vscode/extensions.json
 !.vscode/settings.json
 !.vscode/*.code-snippets
-.idea
 *.suo
 *.ntvs*
 *.njsproj

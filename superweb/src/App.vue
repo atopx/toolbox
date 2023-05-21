@@ -11,12 +11,12 @@ initTheme()
 /** 将 Element Plus 的语言设置为中文 */
 const locale = zhCn
 
-ElNotification({
-    title: "Hello",
-    message: h("a", { style: "color: teal", target: "_blank", href: "https://github.com/atopx/v3ep_temp" }, "hello"),
-    duration: 0,
-    position: "bottom-right"
-})
+// ElNotification({
+//     title: "Hello",
+//     message: h("a", { style: "color: teal", target: "_blank", href: "https://github.com/atopx/v3ep_temp" }, "hello"),
+//     duration: 0,
+//     position: "bottom-right"
+// })
 </script>
 
 <template>

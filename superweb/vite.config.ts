@@ -30,29 +30,22 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
             /** 设置 host: true 才可以使用 Network 的形式，以 IP 访问项目 */
             host: true, // host: "0.0.0.0"
             /** 端口号 */
-            port: 3333,
+            port: 18002,
             /** 是否自动打开浏览器 */
             open: false,
             /** 跨域设置允许 */
             cors: true,
             /** 端口被占用时，是否直接退出 */
-            strictPort: false,
+            strictPort: true,
             /** 接口代理 */
-            // proxy: {
-            //     "/api/v1": {
-            //         target: "http://127.0.0.1:18000",
-            //         ws: true,
-            //         /** 是否允许跨域 */
-            //         changeOrigin: true,
-            //         rewrite: (path) => path.replace("/api/v1", "/api")
-            //     },
-            //     "/openapi": {
-            //         target: "http://127.0.0.1:18020",
-            //         ws: false,
-            //         changeOrigin: true,
-            //         rewrite: (path) => path.replace("/openapi", "")
-            //     }
-            // }
+            proxy: {
+                "/api/v1": {
+                    target: "http://127.0.0.1:18000/api",
+                    ws: true,
+                    /** 是否允许跨域 */
+                    changeOrigin: true,
+                },
+            }
         },
         build: {
             /** 消除打包大小超过 500kb 警告 */
@@ -62,13 +55,13 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
             /** 在打包代码时移除 console.log、debugger 和 注释 */
             terserOptions: {
                 compress: {
-                    drop_console: false,
+                    drop_console: true,
                     drop_debugger: true,
                     pure_funcs: ["console.log"]
                 },
                 format: {
                     /** 删除注释 */
-                    comments: false
+                    comments: true
                 }
             },
             /** 打包后静态资源目录 */
