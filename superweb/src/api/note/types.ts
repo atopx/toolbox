@@ -23,3 +23,8 @@ export type noteSaveRequest = {
     topics: number[],
     labels: number[],
 }
+
+export type Tag = {
+    Id: number,
+    Name: string,
+}

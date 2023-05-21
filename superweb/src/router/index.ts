@@ -5,19 +5,6 @@ const Layout = () => import("@/layout/index.vue")
 /** 常驻路由 */
 export const constantRoutes: RouteRecordRaw[] = [
     {
-        path: "/redirect",
-        component: Layout,
-        meta: {
-            hidden: true
-        },
-        children: [
-            {
-                path: "/redirect/:path(.*)",
-                component: () => import("@/views/redirect/index.vue")
-            }
-        ]
-    },
-    {
         path: "/403",
         component: () => import("@/views/error-page/403.vue"),
         meta: {

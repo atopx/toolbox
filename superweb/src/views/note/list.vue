@@ -168,7 +168,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], handleR
                     <el-table-column prop="id" label="ID" width="50" align="center" />
                     <el-table-column prop="title" label="标题" align="center" />
                     <el-table-column label="主题" align="center">
-                        <template #default="scope">
+                        <!-- <template #default="scope">
                             <el-tag v-for="item in scope.row.topics" effect="light" closable @close="handleDelLebel(item)">
                                 {{ item }}
                             </el-tag>
@@ -176,11 +176,11 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], handleR
                                 size="small" @keyup.enter="handleNewTag(true)" @blur="handleNewTag(true)" />
                             <el-button v-else class="button-new-tag ml-1" size="small" @click="handleShowTagInput(true)">+
                                 New</el-button>
-                        </template>
+                        </template> -->
 
                     </el-table-column>
                     <el-table-column label="标签" align="center">
-                        <template #default="scope">
+                        <!-- <template #default="scope">
                             <el-tag v-for="item in scope.row.labels" effect="light" closable @close="handleDelLebel(item)">
                                 {{ item }}
                             </el-tag>
@@ -188,7 +188,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], handleR
                                 size="small" @keyup.enter="handleNewTag(false)" @blur="handleNewTag(false)" />
                             <el-button v-else class="button-new-tag ml-1" size="small" @click="handleShowTagInput(false)">+
                                 New</el-button>
-                        </template>
+                        </template> -->
                     </el-table-column>
                     <el-table-column prop="create_time" label="创建时间" align="center" />
                     <el-table-column prop="update_time" label="更新时间" align="center" />
