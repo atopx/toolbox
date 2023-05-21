@@ -1,4 +1,29 @@
 definitions:
+  addtag.Params:
+    properties:
+      is_topic:
+        type: boolean
+      label:
+        type: string
+      note_id:
+        type: integer
+    type: object
+  addtag.Reply:
+    type: object
+  auth_service.RoleNature:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      RoleNature_ROLE_CUSTOM: 自定义角色
+      RoleNature_ROLE_DEFAULT: 初始化角色
+      RoleNature_ROLE_SYSTEM: 系统角色
+    x-enum-varnames:
+    - RoleNature_ROLE_DEFAULT
+    - RoleNature_ROLE_SYSTEM
+    - RoleNature_ROLE_CUSTOM
   auth_service.User:
     properties:
       create_time:
@@ -33,20 +58,6 @@ definitions:
     - UserStatus_USER_NORMAL
     - UserStatus_USER_STATUS_DISABLED
     - UserStatus_USER_STATUS_BLACK
-  common.BooleanScope:
-    enum:
-    - 0
-    - 1
-    - 2
-    type: integer
-    x-enum-comments:
-      BooleanScope_BOOL_ALL: 默认
-      BooleanScope_BOOL_FALSE: "FALSE"
-      BooleanScope_BOOL_TRUE: "TRUE"
-    x-enum-varnames:
-    - BooleanScope_BOOL_ALL
-    - BooleanScope_BOOL_FALSE
-    - BooleanScope_BOOL_TRUE
   common.Pager:
     properties:
       count:
@@ -86,6 +97,8 @@ definitions:
     x-enum-varnames:
     - SortDirection_SORT_ASC
     - SortDirection_SORT_DESC
+  deltag.Reply:
+    type: object
   ecode.ECode:
     enum:
     - 0
@@ -137,18 +150,18 @@ definitions:
     - 520002
     - 520003
     - 521001
-    - 521002
-    - 521003
-    - 522001
     - 530001
     - 530002
     - 530003
     - 531001
     - 531002
     - 531003
-    - 532001
-    - 532002
-    - 532003
+    - 540001
+    - 540002
+    - 540003
+    - 541001
+    - 541002
+    - 541003
     type: integer
     x-enum-comments:
       ECode_ACCESS_Disabled: 接口已禁用
@@ -184,19 +197,19 @@ definitions:
       ECode_NOTE_PARAMS_ERROR_TitleRequired: 参数缺少标题
       ECode_NOTE_SERVICE_ERROR_BatchOperateNote: NOTE_SERVICE_ERROR_BatchOperateNote
       ECode_NOTE_SERVICE_ERROR_BatchOperateNoteLabel: NOTE_SERVICE_ERROR_BatchOperateNoteLabel
-      ECode_NOTE_SERVICE_ERROR_BatchOperateNoteTopic: NOTE_SERVICE_ERROR_BatchOperateNoteTopic
       ECode_NOTE_SERVICE_ERROR_ListNote: NOTE_SERVICE_ERROR_ListNote
       ECode_NOTE_SERVICE_ERROR_ListNoteLabel: NOTE_SERVICE_ERROR_ListNoteLabel
-      ECode_NOTE_SERVICE_ERROR_ListNoteTopic: NOTE_SERVICE_ERROR_ListNoteTopic
       ECode_NOTE_SERVICE_ERROR_OperateNote: NOTE_SERVICE_ERROR_OperateNote
       ECode_NOTE_SERVICE_ERROR_OperateNoteLabel: NOTE_SERVICE_ERROR_OperateNoteLabel
-      ECode_NOTE_SERVICE_ERROR_OperateNoteTopic: NOTE_SERVICE_ERROR_OperateNoteTopic
-      ECode_PUBLIC_SERVICE_ERROR_BatchOperateFolder: PUBLIC_SERVICE_ERROR_BatchOperateFolder
+      ECode_NOVEL_SERVICE_ERROR_BatchOperateBook: NOVEL_SERVICE_ERROR_BatchOperateBook
+      ECode_NOVEL_SERVICE_ERROR_BatchOperateChapter: NOVEL_SERVICE_ERROR_BatchOperateChapter
+      ECode_NOVEL_SERVICE_ERROR_ListBook: NOVEL_SERVICE_ERROR_ListBook
+      ECode_NOVEL_SERVICE_ERROR_ListChapter: NOVEL_SERVICE_ERROR_ListChapter
+      ECode_NOVEL_SERVICE_ERROR_OperateBook: NOVEL_SERVICE_ERROR_OperateBook
+      ECode_NOVEL_SERVICE_ERROR_OperateChapter: NOVEL_SERVICE_ERROR_OperateChapter
       ECode_PUBLIC_SERVICE_ERROR_BatchOperateLabel: PUBLIC_SERVICE_ERROR_BatchOperateLabel
       ECode_PUBLIC_SERVICE_ERROR_ListEnum: PUBLIC_SERVICE_ERROR_ListEnum
-      ECode_PUBLIC_SERVICE_ERROR_ListFolder: PUBLIC_SERVICE_ERROR_ListFolder
       ECode_PUBLIC_SERVICE_ERROR_ListLabel: PUBLIC_SERVICE_ERROR_ListLabel
-      ECode_PUBLIC_SERVICE_ERROR_OperateFolder: PUBLIC_SERVICE_ERROR_OperateFolder
       ECode_PUBLIC_SERVICE_ERROR_OperateLabel: PUBLIC_SERVICE_ERROR_OperateLabel
       ECode_ROLE_PARAMS_ERROR_NameExist: 角色名已存在
       ECode_ROLE_PARAMS_ERROR_NameInvalid: 无效的角色名
@@ -261,9 +274,6 @@ definitions:
     - ECode_PUBLIC_SERVICE_ERROR_ListLabel
     - ECode_PUBLIC_SERVICE_ERROR_OperateLabel
     - ECode_PUBLIC_SERVICE_ERROR_BatchOperateLabel
-    - ECode_PUBLIC_SERVICE_ERROR_ListFolder
-    - ECode_PUBLIC_SERVICE_ERROR_OperateFolder
-    - ECode_PUBLIC_SERVICE_ERROR_BatchOperateFolder
     - ECode_PUBLIC_SERVICE_ERROR_ListEnum
     - ECode_NOTE_SERVICE_ERROR_ListNote
     - ECode_NOTE_SERVICE_ERROR_OperateNote
@@ -271,30 +281,12 @@ definitions:
     - ECode_NOTE_SERVICE_ERROR_ListNoteLabel
     - ECode_NOTE_SERVICE_ERROR_OperateNoteLabel
     - ECode_NOTE_SERVICE_ERROR_BatchOperateNoteLabel
-    - ECode_NOTE_SERVICE_ERROR_ListNoteTopic
-    - ECode_NOTE_SERVICE_ERROR_OperateNoteTopic
-    - ECode_NOTE_SERVICE_ERROR_BatchOperateNoteTopic
-  info.Params:
-    type: object
-  info.Reply:
-    properties:
-      create_time:
-        type: integer
-      id:
-        type: integer
-      login_time:
-        type: integer
-      name:
-        type: string
-      roles:
-        items:
-          $ref: '#/definitions/info.Role'
-        type: array
-      update_time:
-        type: integer
-      username:
-        type: string
-    type: object
+    - ECode_NOVEL_SERVICE_ERROR_ListBook
+    - ECode_NOVEL_SERVICE_ERROR_OperateBook
+    - ECode_NOVEL_SERVICE_ERROR_BatchOperateBook
+    - ECode_NOVEL_SERVICE_ERROR_ListChapter
+    - ECode_NOVEL_SERVICE_ERROR_OperateChapter
+    - ECode_NOVEL_SERVICE_ERROR_BatchOperateChapter
   info.Role:
     properties:
       id:
@@ -324,6 +316,27 @@ definitions:
       username:
         type: string
     type: object
+  model.Note:
+    properties:
+      content:
+        type: string
+      create_time:
+        type: string
+      id:
+        type: integer
+      labels:
+        items:
+          $ref: '#/definitions/public_service.Label'
+        type: array
+      title:
+        type: string
+      topics:
+        items:
+          $ref: '#/definitions/public_service.Label'
+        type: array
+      update_time:
+        type: string
+    type: object
   model.Role:
     properties:
       create_time:
@@ -333,108 +346,17 @@ definitions:
       name:
         type: string
       nature:
+        $ref: '#/definitions/auth_service.RoleNature'
+      nature_desc:
         type: string
       update_time:
         type: string
-    type: object
-  note_service.Note:
-    properties:
-      content:
-        description: 笔记内容
-        type: string
-      create_time:
-        description: 创建时间 时间戳：秒
-        type: integer
-      creator:
-        description: 创建人
-        type: integer
-      delete_time:
-        description: 删除时间 时间戳：秒
-        type: integer
-      folder_id:
-        description: 文件夹ID
-        type: integer
-      id:
-        description: 主键
-        type: integer
-      public:
-        description: 公开的
-        type: boolean
-      sign:
-        description: 签名:内容+时间
-        type: string
-      title:
-        description: 标题
-        type: string
-      topic_id:
-        description: 主题ID
-        type: integer
-      update_time:
-        description: 最后更新时间 时间戳：秒
-        type: integer
-      updater:
-        description: 更新人
-        type: integer
-    type: object
-  note_service.NoteTopic:
-    properties:
-      create_time:
-        description: 创建时间 时间戳：秒
-        type: integer
-      creator:
-        description: 创建人
-        type: integer
-      delete_time:
-        description: 删除时间 时间戳：秒
-        type: integer
-      id:
-        description: 主键
-        type: integer
-      name:
-        description: 名称
-        type: string
-      update_time:
-        description: 最后更新时间 时间戳：秒
-        type: integer
-      updater:
-        description: 更新人
-        type: integer
-    type: object
-  public_service.Folder:
-    properties:
-      create_time:
-        description: 创建时间 时间戳：秒
-        type: integer
-      creator:
-        description: 创建人
-        type: integer
-      delete_time:
-        description: 删除时间 时间戳：秒
-        type: integer
-      id:
-        description: 主键
-        type: integer
-      name:
-        description: 名称
-        type: string
-      parent_id:
-        description: 父级ID
-        type: integer
-      path:
-        description: 存储路径,虚拟文件夹为空
-        type: string
-      source:
-        description: 来源,枚举
-        type: integer
-      update_time:
-        description: 最后更新时间 时间戳：秒
-        type: integer
-      updater:
-        description: 更新人
-        type: integer
     type: object
   public_service.Label:
     properties:
+      code:
+        description: 编码
+        type: string
       create_time:
         description: 创建时间 时间戳：秒
         type: integer
@@ -450,9 +372,6 @@ definitions:
       name:
         description: 名称
         type: string
-      source:
-        description: 来源,枚举
-        type: integer
       update_time:
         description: 最后更新时间 时间戳：秒
         type: integer
@@ -474,64 +393,32 @@ definitions:
       refresh_token:
         type: string
     type: object
-  superserver_internal_controller_folder_create.Params:
+  save.Params:
     properties:
-      name:
+      content:
+        description: 内容
         type: string
-      parent_id:
-        type: integer
-      path:
-        type: string
-      source:
-        type: integer
-    type: object
-  superserver_internal_controller_folder_create.Reply:
-    type: object
-  superserver_internal_controller_folder_delete.Params:
-    properties:
       id:
-        description: 文件夹ID
         type: integer
-    type: object
-  superserver_internal_controller_folder_delete.Reply:
-    type: object
-  superserver_internal_controller_folder_list.Params:
-    properties:
-      filter:
-        properties:
-          ids:
-            items:
-              type: integer
-            type: array
-          keyword:
-            type: string
-          parentIds:
-            items:
-              type: integer
-            type: array
-          sources:
-            items:
-              type: integer
-            type: array
-        type: object
-      pager:
-        $ref: '#/definitions/common.Pager'
-    type: object
-  superserver_internal_controller_folder_list.Reply:
-    properties:
-      list:
+      labels:
+        description: 标签
         items:
-          $ref: '#/definitions/public_service.Folder'
+          type: integer
         type: array
-      pager:
-        $ref: '#/definitions/common.Pager'
+      title:
+        description: 标题
+        type: string
+      topics:
+        items:
+          type: integer
+        type: array
+    type: object
+  save.Reply:
     type: object
   superserver_internal_controller_label_create.Params:
     properties:
       name:
         type: string
-      source:
-        type: integer
     type: object
   superserver_internal_controller_label_create.Reply:
     type: object
@@ -570,48 +457,39 @@ definitions:
       pager:
         $ref: '#/definitions/common.Pager'
     type: object
-  superserver_internal_controller_note_create.Params:
+  superserver_internal_controller_note_delete.Reply:
+    type: object
+  superserver_internal_controller_note_info.Reply:
     properties:
       content:
-        description: 内容
         type: string
-      folder_id:
-        description: 文件夹ID
+      create_time:
+        type: string
+      id:
         type: integer
       labels:
-        description: 标签
         items:
           $ref: '#/definitions/public_service.Label'
         type: array
-      public:
-        description: 是否公开
-        type: boolean
       title:
-        description: 标题
         type: string
-      topic:
-        allOf:
-        - $ref: '#/definitions/note_service.NoteTopic'
-        description: 主题
-    type: object
-  superserver_internal_controller_note_create.Reply:
+      topics:
+        items:
+          $ref: '#/definitions/public_service.Label'
+        type: array
+      update_time:
+        type: string
     type: object
   superserver_internal_controller_note_list.Params:
     properties:
       filter:
         properties:
-          folder_ids:
-            items:
-              type: integer
-            type: array
           keyword:
             type: string
           label_ids:
             items:
               type: integer
             type: array
-          public_elect:
-            $ref: '#/definitions/common.BooleanScope'
           topic_ids:
             items:
               type: integer
@@ -628,7 +506,7 @@ definitions:
     properties:
       list:
         items:
-          $ref: '#/definitions/note_service.Note'
+          $ref: '#/definitions/model.Note'
         type: array
       pager:
         $ref: '#/definitions/common.Pager'
@@ -676,6 +554,27 @@ definitions:
       username:
         type: string
     type: object
+  superserver_internal_controller_user_info.Params:
+    type: object
+  superserver_internal_controller_user_info.Reply:
+    properties:
+      create_time:
+        type: integer
+      id:
+        type: integer
+      login_time:
+        type: integer
+      name:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/info.Role'
+        type: array
+      update_time:
+        type: integer
+      username:
+        type: string
+    type: object
   system.Response:
     properties:
       data: {}
@@ -706,84 +605,6 @@ paths:
       summary: ping
       tags:
       - Basic
-  /api/folder/create:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: 请求参数
-        in: body
-        name: param
-        required: true
-        schema:
-          $ref: '#/definitions/superserver_internal_controller_folder_create.Params'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 调用成功
-          schema:
-            allOf:
-            - $ref: '#/definitions/system.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/superserver_internal_controller_folder_create.Reply'
-              type: object
-      summary: 创建文件夹
-      tags:
-      - 文件夹
-  /api/folder/delete:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: 请求参数
-        in: body
-        name: param
-        required: true
-        schema:
-          $ref: '#/definitions/superserver_internal_controller_folder_delete.Params'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 调用成功
-          schema:
-            allOf:
-            - $ref: '#/definitions/system.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/superserver_internal_controller_folder_delete.Reply'
-              type: object
-      summary: 删除文件夹
-      tags:
-      - 文件夹
-  /api/folder/list:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: 请求参数
-        in: body
-        name: param
-        required: true
-        schema:
-          $ref: '#/definitions/superserver_internal_controller_folder_list.Params'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 调用成功
-          schema:
-            allOf:
-            - $ref: '#/definitions/system.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/superserver_internal_controller_folder_list.Reply'
-              type: object
-      summary: 文件夹列表
-      tags:
-      - 文件夹
   /api/label/create:
     post:
       consumes:
@@ -862,7 +683,7 @@ paths:
       summary: 标签列表
       tags:
       - 标签
-  /api/note/create:
+  /api/note/addtag:
     post:
       consumes:
       - application/json
@@ -872,7 +693,7 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/superserver_internal_controller_note_create.Params'
+          $ref: '#/definitions/addtag.Params'
       produces:
       - application/json
       responses:
@@ -883,9 +704,80 @@ paths:
             - $ref: '#/definitions/system.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/superserver_internal_controller_note_create.Reply'
+                  $ref: '#/definitions/addtag.Reply'
               type: object
-      summary: 新建笔记
+      summary: 添加笔记标签
+      tags:
+      - 笔记
+  /api/note/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_note_delete.Reply'
+              type: object
+      summary: 删除笔记
+      tags:
+      - 笔记
+  /api/note/deltag:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: is_topic
+        type: boolean
+      - in: query
+        name: label_id
+        type: integer
+      - in: query
+        name: note_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/deltag.Reply'
+              type: object
+      summary: 删除笔记标签
+      tags:
+      - 笔记
+  /api/note/info:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/superserver_internal_controller_note_info.Reply'
+              type: object
+      summary: 笔记详情
       tags:
       - 笔记
   /api/note/list:
@@ -912,6 +804,32 @@ paths:
                   $ref: '#/definitions/superserver_internal_controller_note_list.Reply'
               type: object
       summary: 笔记列表
+      tags:
+      - 笔记
+  /api/note/save:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/save.Params'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 调用成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/system.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/save.Reply'
+              type: object
+      summary: 编辑笔记
       tags:
       - 笔记
   /api/role/create:
@@ -1028,7 +946,7 @@ paths:
         name: param
         required: true
         schema:
-          $ref: '#/definitions/info.Params'
+          $ref: '#/definitions/superserver_internal_controller_user_info.Params'
       produces:
       - application/json
       responses:
@@ -1039,7 +957,7 @@ paths:
             - $ref: '#/definitions/system.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/info.Reply'
+                  $ref: '#/definitions/superserver_internal_controller_user_info.Reply'
               type: object
       summary: 用户详情
       tags:

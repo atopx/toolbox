@@ -2,7 +2,9 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"superserver/internal/controller/note/addtag"
 	"superserver/internal/controller/note/delete"
+	"superserver/internal/controller/note/deltag"
 	"superserver/internal/controller/note/info"
 	"superserver/internal/controller/note/list"
 	"superserver/internal/controller/note/save"
@@ -45,7 +47,7 @@ func (a *Api) NoteInfo(ctx *gin.Context) {
 }
 
 // NoteDelete
-// @summary 笔记删除
+// @summary 删除笔记
 // @Tags 笔记
 // @Accept json
 // @Produce json
@@ -54,4 +56,28 @@ func (a *Api) NoteInfo(ctx *gin.Context) {
 // @Router /api/note/delete [delete]
 func (a *Api) NoteDelete(ctx *gin.Context) {
 	a.Scheduler(delete.NewController(ctx))
+}
+
+// NoteAddtag
+// @summary 添加笔记标签
+// @Tags 笔记
+// @Accept json
+// @Produce json
+// @Param param body addtag.Params true "请求参数"
+// @Response 200 object system.Response{data=addtag.Reply} "调用成功"
+// @Router /api/note/addtag [post]
+func (a *Api) NoteAddtag(ctx *gin.Context) {
+	a.Scheduler(addtag.NewController(ctx))
+}
+
+// NoteDeltag
+// @summary 删除笔记标签
+// @Tags 笔记
+// @Accept json
+// @Produce json
+// @Param param query deltag.Params true "请求参数"
+// @Response 200 object system.Response{data=deltag.Reply} "调用成功"
+// @Router /api/note/deltag [delete]
+func (a *Api) NoteDeltag(ctx *gin.Context) {
+	a.Scheduler(deltag.NewController(ctx))
 }

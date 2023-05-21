@@ -113,8 +113,9 @@ create table note_label
     update_time BIGINT DEFAULT 0 NOT NULL COMMENT '更新时间 时间戳：秒',
     delete_time BIGINT DEFAULT 0 NOT NULL COMMENT '删除时间 时间戳：秒'
 ) COMMENT '笔记标签';
-CREATE UNIQUE INDEX note_label_idx ON note_label (note_id, label_id);
-
+create index note_idx on note_label(note_id);
+create index label_idx on note_label(note_id);
+create unique index note_label_type_idx on note_label(note_id, label_id, label_type);
 
 create table book
 (

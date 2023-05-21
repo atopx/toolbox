@@ -1,9 +1,11 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"superserver/domain/auth_service"
 	"superserver/domain/note_service"
+	"superserver/domain/public/common"
 	"superserver/domain/public_service"
 	"superserver/pkg"
 
@@ -41,4 +43,9 @@ func GetClient() *Client {
 		client.initClient()
 	}
 	return client
+}
+
+type Business interface {
+	Context() *gin.Context
+	NewServiceHeader() *common.Header
 }

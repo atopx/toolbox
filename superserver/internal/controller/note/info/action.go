@@ -27,7 +27,13 @@ func (c *Controller) Deal() (any, ecode.ECode) {
 	if listNoteReply.Pager.Count != 1 {
 		return nil, code
 	}
-
-	reply := Reply(model.NewNote(listNoteReply.Data[0]))
+	note := listNoteReply.Data[0]
+	noteLabelMap, code := note_client.GetNoteLabelMap(c, []int32{note.Id})
+	if code != ecode.ECode_SUCCESS {
+		return nil, code
+	}
+	labels := noteLabelMap[note.Id][note_service.LabelType_TAG]
+	topics := noteLabelMap[note.Id][note_service.LabelType_TOPIC]
+	reply := Reply(model.NewNote(note, labels, topics))
 	return reply, ecode.ECode_SUCCESS
 }

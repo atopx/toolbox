@@ -28,6 +28,8 @@ func (a *Api) Route() *Api {
 		noteGroup.POST("/list", a.NoteList)
 		noteGroup.GET("/info", a.NoteInfo)
 		noteGroup.DELETE("/delete", a.NoteDelete)
+		noteGroup.DELETE("/deltag", a.NoteDeltag)
+		noteGroup.POST("/addtag", a.NoteAddtag)
 	}
 
 	// 标签

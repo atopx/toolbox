@@ -1,4 +1,4 @@
-package delete
+package addtag
 
 import (
 	"github.com/gin-gonic/gin"
@@ -14,7 +14,9 @@ func NewController(ctx *gin.Context) *Controller {
 }
 
 type Params struct {
-	Id *int32 `form:"id"`
+	NoteId  int32 `json:"note_id"`
+	LabelId int32 `json:"label_id"`
+	IsTopic bool  `json:"is_topic"`
 }
 
 type Reply struct{}
