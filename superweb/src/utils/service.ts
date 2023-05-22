@@ -90,7 +90,7 @@ function createService() {
 function createRequestFunction(service: AxiosInstance) {
     return function <T>(config: AxiosRequestConfig): Promise<T> {
         const configDefault = {
-            headers: { "Content-Type": get(config, "headers.Content-Type", "application/json"), "source": "super-web" },
+            headers: { "Content-Type": get(config, "headers.Content-Type", "application/json"), source: "super-web" },
             timeout: 60000,
             baseURL: import.meta.env.VITE_BASE_API,
             data: {}
@@ -98,7 +98,6 @@ function createRequestFunction(service: AxiosInstance) {
         return service(Object.assign(configDefault, config))
     }
 }
-
 
 /** 用于网络请求的实例 */
 export const service = createService()

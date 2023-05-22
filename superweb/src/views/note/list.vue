@@ -6,13 +6,18 @@ import { Search, Refresh, CirclePlus, RefreshRight } from "@element-plus/icons-v
 import { usePagination } from "@/hooks/usePagination"
 import { Note } from "@/api/note/types"
 import router from "@/router"
-import { tr } from "element-plus/es/locale"
 
 defineOptions({
     name: "NoteList"
 })
 
 const loading = ref<boolean>(false)
+const previewDialog = ref({
+    visible: false,
+    title: "",
+    content: ""
+})
+
 const { paginationData, handleCurrentChange, handleSizeChange } = usePagination()
 //#region 删
 const handleDelete = (row: Note) => {
@@ -90,13 +95,12 @@ const resetSearch = () => {
 //#region label
 const topicInputRef = ref({
     visible: false,
-    text: ''
+    text: ""
 })
 const labelInputRef = ref({
     visible: false,
-    text: ''
+    text: ""
 })
-
 
 const handleDelLebel = (id: number) => {
     // TODO delete note label/topic
@@ -107,15 +111,21 @@ const handleNewTag = (isTopic: boolean) => {
         topicInputRef.value.visible = false
         if (topicInputRef.value.text) {
             // TODO create note topic
-            topicInputRef.value.text = ''
+            topicInputRef.value.text = ""
         }
     } else {
         labelInputRef.value.visible = false
         if (labelInputRef.value.text) {
             // TODO create note label
-            labelInputRef.value.text = ''
+            labelInputRef.value.text = ""
         }
     }
+}
+
+const contentPreview = (row: Note) => {
+    previewDialog.value.visible = true
+    previewDialog.value.title = row.title
+    previewDialog.value.content = row.content
 }
 
 const handleShowTagInput = (isTopic: boolean) => {
@@ -132,7 +142,6 @@ const handleShowTagInput = (isTopic: boolean) => {
     }
 }
 //#endregion
-
 
 /** 监听分页参数的变化 */
 watch([() => paginationData.currentPage, () => paginationData.pageSize], handleRefresh, { immediate: true })
@@ -177,7 +186,6 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], handleR
                             <el-button v-else class="button-new-tag ml-1" size="small" @click="handleShowTagInput(true)">+
                                 New</el-button>
                         </template> -->
-
                     </el-table-column>
                     <el-table-column label="标签" align="center">
                         <!-- <template #default="scope">
@@ -192,19 +200,42 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], handleR
                     </el-table-column>
                     <el-table-column prop="create_time" label="创建时间" align="center" />
                     <el-table-column prop="update_time" label="更新时间" align="center" />
-                    <el-table-column fixed="right" label="操作" width="150" align="center">
+                    <el-table-column fixed="right" label="操作" width="200" align="center">
                         <template #default="scope">
-                            <el-button type="primary" text bg size="small" @click="handleSave(scope.row)">修改</el-button>
-                            <el-button type="danger" text bg size="small" @click="handleDelete(scope.row)">删除</el-button>
+                            <el-button type="primary" text bg size="small" @click="contentPreview(scope.row)"
+                                >预览</el-button
+                            >
+                            <el-button type="primary" text bg size="small" @click="handleSave(scope.row)"
+                                >修改</el-button
+                            >
+                            <el-button type="danger" text bg size="small" @click="handleDelete(scope.row)"
+                                >删除</el-button
+                            >
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
+            <el-dialog v-model="previewDialog.visible" :title="previewDialog.title" width="40%">
+                <!-- <span>{{ previewDialog.content }}</span> -->
+                <v-md-preview :text="previewDialog.content" />
+                <template #footer>
+                    <span class="dialog-footer">
+                        <!-- <el-button @click="previewDialog.visible = false">Cancel</el-button> -->
+                        <el-button type="primary" @click="previewDialog.visible = false"> 关闭 </el-button>
+                    </span>
+                </template>
+            </el-dialog>
             <div class="pager-wrapper">
-                <el-pagination background :layout="paginationData.layout" :page-sizes="paginationData.pageSizes"
-                    :total="paginationData.total" :page-size="paginationData.pageSize"
-                    :currentPage="paginationData.currentPage" @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange" />
+                <el-pagination
+                    background
+                    :layout="paginationData.layout"
+                    :page-sizes="paginationData.pageSizes"
+                    :total="paginationData.total"
+                    :page-size="paginationData.pageSize"
+                    :currentPage="paginationData.currentPage"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                />
             </div>
         </el-card>
     </div>
