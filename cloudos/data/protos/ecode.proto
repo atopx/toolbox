@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option go_package = "common/interface/ecode_iface";
+
+enum ECode {
+    SUCCESS = 0; // 默认无错误
+
+    // 客户端错误
+    BAD_REQUEST = 40000; // 请求异常
+    INVALID_PARAMS = 40001; // 无效的请求参数
+    RECODE_NOT_FOUND = 40002; // 查询的记录不存在
+    REQUEST_CONFLICT = 40003; // 资源冲突
+
+    AUTH_NOTIN = 40100; // 账户未登录
+    AUTH_INVALID = 40102; // 无效Token
+    AUTH_EXPIRED = 40103; // 账户已过期
+    AUTH_LIMIT = 40104; // 限制登录
+    AUTH_NOT_ACCESS_TOKEN = 40105; // 不是access-token
+
+    ACCESS_FORBIDDEN = 40300; // 禁止访问
+
+
+    // 服务端错误
+    SYSTEM_ERROR = 50000;
+    DB_ERROR = 50100;
+}

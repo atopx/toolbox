@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "common/interface/user_iface";
+
+enum UserStatus {
+    USER_NORMAL = 0; // 正常
+    USER_STATUS_DISABLED = 1; // 禁用
+    USER_STATUS_BLACK = 2; // 黑名单
+}
+
+
+enum UserTokenStatus {
+    USER_TOKEN_NORMAL = 0; //  正常
+    USER_TOKEN_DISABLED = 1; // 已禁用
+    USER_TOKEN_EXPIRED = 2; // 已过期
+}
+
+enum RoleNature {
+    ROLE_DEFAULT = 0; // 初始化角色
+    ROLE_SYSTEM = 1; // 系统角色
+    ROLE_CUSTOM = 2; // 自定义角色
+}
