@@ -1,0 +1,28 @@
+syntax = "proto3";
+package user;
+option go_package = "cloudos/common/pb";
+
+message User {
+    int64 id = 1;
+    string username = 2;
+    string password = 3;
+    string status = 4;
+    string role = 5;
+    string avatar = 6;
+    string email = 7;
+    string phone = 8;
+    int64 create_time = 1001;
+    int64 update_time = 1002;
+    int64 delete_time = 1003;
+}
+
+enum UserStatus {
+    DEFAULT = 0;
+    DISABLED = 1;
+}
+
+enum UserRole {
+    GUEST = 0;
+    USER = 1;
+    SUPER = 2;
+}

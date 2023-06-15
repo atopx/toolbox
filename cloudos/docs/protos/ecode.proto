@@ -1,0 +1,23 @@
+syntax = "proto3";
+package ecode;
+option go_package = "cloudos/common/pb";
+
+enum ECode {
+    SUCCESS = 0; // 请求成功
+
+    // 客户端错误
+    BadRequest = 40000000; 
+
+    // 无效参数
+    InvalidUsername = 40000001; // 无效用户名
+    InvalidPassword = 40000002; // 无效密码
+
+
+    // not found
+    NotFoundUser = 40040001; // 用户不存在
+
+
+    // 服务端错误
+    ServerInternalError = 50000000; 
+    Unimplemented = 50000001;
+}
