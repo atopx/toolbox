@@ -13,9 +13,13 @@ enum ECode {
     InvalidPassword = 40000002; // 无效密码
 
 
+    // auth
+    AuthTokenInvalid = 40010001; // 无效Token
+    AuthTokenExpired = 40010002; // Token过期
+
     // not found
     NotFoundUser = 40040001; // 用户不存在
-
+    NotFoundToken = 40040002; // Token不存在
 
     // 服务端错误
     ServerInternalError = 50000000; 

@@ -7,8 +7,8 @@ const (
 )
 
 const (
-	CK_TraceId  = "trace_id"
+	CK_TraceId  = "traceId"
 	CK_Response = "response"
-	CK_UserId   = "user_id"
-	CK_UserRole = "user_role"
+	CK_UserId   = "userId"
+	CK_UserRole = "userRole"
 )

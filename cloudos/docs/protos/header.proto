@@ -1,7 +1,0 @@
-syntax = "proto3";
-package header;
-option go_package = "cloudos/common/pb";
-
-message Header {
-    
-}

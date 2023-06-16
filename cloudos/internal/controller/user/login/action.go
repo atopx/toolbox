@@ -51,8 +51,17 @@ func (c *Controller) Deal() (any, pb.ECode) {
 	// save token
 	if err := authTokenDao.Save(token); err != nil {
 		logger.Error(c.Context(), "save token error", zap.Error(err))
-		return token, pb.ECode_ServerInternalError
+		return nil, pb.ECode_ServerInternalError
 	}
 
-	return token, pb.ECode_SUCCESS
+	return c.buildReply(token), pb.ECode_SUCCESS
+}
+
+func (c *Controller) buildReply(token *pb.AuthToken) *Reply {
+	return &Reply{
+		UserId:       token.UserId,
+		AccessToken:  token.AccessToken,
+		RefreshToken: token.RefreshToken,
+		ExpireTime:   token.ExpireTime,
+	}
 }

@@ -20,10 +20,8 @@ type Params struct {
 }
 
 type Reply struct {
-	UserId       int64  `json:"user_id"`
-	Name         string `json:"name"`
-	Username     string `json:"username"`
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	Expires      int64  `json:"expires"`
+	UserId       int64  `json:"userId"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+	ExpireTime   int64  `json:"expireTime"`
 }

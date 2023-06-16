@@ -36,7 +36,8 @@ func (dao *AuthTokenDao) DeleteAuthToken(authToken *pb.AuthToken) error {
 
 func (dao *AuthTokenDao) First(query any, args ...any) *pb.AuthToken {
 	authToken := new(pb.AuthToken)
-	if errors.Is(dao.Db().Where(query, args...).First(&authToken).Error, gorm.ErrRecordNotFound) {
+	err := dao.Db().Scopes(dao.NotDeleted).Where(query, args...).First(&authToken).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}
 	return authToken

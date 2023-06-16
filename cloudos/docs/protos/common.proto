@@ -1,0 +1,16 @@
+syntax = "proto3";
+package common;
+option go_package = "cloudos/common/pb";
+
+
+message Pager {
+    int64 index = 1; // 页码
+    int64 size = 2; // 数量
+    int64 count = 3; // 总数量
+    bool disabled = 5; // 禁用分页
+}
+
+message I64Range {
+    int64 left = 1;
+    int64 right = 2;
+}

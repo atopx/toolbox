@@ -29,3 +29,42 @@ create table auth_token
     constraint access_token_idx unique (access_token),
     constraint refresh_token_idx unique (refresh_token)
 ) comment '用户令牌表';
+
+
+create table folder
+(
+    id          bigint unsigned primary key auto_increment comment '主键',
+    name        varchar(64)                   not null default '' comment '文件夹名称',
+    parent_id   bigint unsigned               not null default 0 comment '父级文件夹',
+    domain      enum ('NONE', 'NOTE', 'FILE') not null default 'NONE' comment '作用域',
+    create_time bigint unsigned               not null default '0' comment '创建时间 时间戳：秒',
+    update_time bigint unsigned               not null default '0' comment '更新时间 时间戳：秒',
+    delete_time bigint unsigned               not null default '0' comment '删除时间 时间戳：秒'
+);
+create index parent_idx on folder (parent_id);
+
+
+create table note_label
+(
+    id          bigint unsigned primary key auto_increment comment '主键',
+    name        varchar(64)     not null default '' comment 'LABEL名称',
+    note_id     bigint unsigned not null default 0 comment '笔记ID',
+    create_time bigint unsigned not null default '0' comment '创建时间 时间戳：秒',
+    update_time bigint unsigned not null default '0' comment '更新时间 时间戳：秒',
+    delete_time bigint unsigned not null default '0' comment '删除时间 时间戳：秒'
+);
+create index note_idx on note_label (note_id);
+
+create table note
+(
+    id          bigint unsigned primary key auto_increment comment '主键',
+    title       varchar(128)    not null default '未命名' comment '笔记名称',
+    folder_id   bigint unsigned not null default 0 comment '文件夹ID',
+    topic       varchar(128)    not null default '' comment '主题名称',
+    content     mediumtext      null comment '笔记内容',
+    create_time bigint unsigned not null default '0' comment '创建时间 时间戳：秒',
+    update_time bigint unsigned not null default '0' comment '更新时间 时间戳：秒',
+    delete_time bigint unsigned not null default '0' comment '删除时间 时间戳：秒'
+);
+create index folder_idx on note (folder_id);
+create fulltext index note_full on note (title, content);
