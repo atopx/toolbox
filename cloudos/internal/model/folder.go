@@ -42,3 +42,9 @@ func (dao *FolderDao) First(query any, args ...any) *pb.Folder {
 	}
 	return folder
 }
+
+func (dao *FolderDao) Pager(tx *gorm.DB, pager *pb.Pager) (folders []*pb.Folder) {
+	tx.Offset(int(pager.Size * (pager.Index - 1))).Limit(int(pager.Size)).
+		Order("update_time desc").Find(&folders)
+	return folders
+}

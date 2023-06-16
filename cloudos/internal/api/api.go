@@ -5,6 +5,7 @@ import (
 	"cloudos/common/middleware"
 	"cloudos/common/pb"
 	"cloudos/internal/controller"
+	"net/http"
 
 	"go.uber.org/zap"
 
@@ -28,11 +29,16 @@ func Register(engine *gin.Engine) *Api {
 		api.middle.ContextMiddleware(),
 		api.middle.AuthMiddleware(),
 	)
-	api.router.GET("/ping", api.Ping)
+	api.router.GET("/ping", func(ctx *gin.Context) { ctx.String(http.StatusOK, "pong") })
 
 	userGroup := api.router.Group("/user")
 	{
 		userGroup.POST("/login", api.UserLogin)
+	}
+
+	folderGroup := api.router.Group("/folder")
+	{
+		folderGroup.POST("/list", api.FolderList)
 	}
 
 	return api.Route()
