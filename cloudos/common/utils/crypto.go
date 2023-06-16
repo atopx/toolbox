@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"cloudos/common/consts"
 	"crypto/md5"
 	crand "crypto/rand"
 	"encoding/binary"
@@ -17,7 +18,7 @@ import (
 var seed int64
 
 func Hash(value string) string {
-	if value == "" {
+	if value == consts.EmptyStr {
 		return value
 	}
 	buf := []byte(value)

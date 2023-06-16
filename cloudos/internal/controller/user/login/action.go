@@ -1,6 +1,7 @@
 package login
 
 import (
+	"cloudos/common/consts"
 	"cloudos/common/logger"
 	"cloudos/common/pb"
 	"cloudos/common/utils"
@@ -12,10 +13,10 @@ import (
 
 func (c *Controller) Deal() (any, pb.ECode) {
 	params := c.Params.(*Params)
-	if params.Username == "" {
+	if params.Username == consts.EmptyStr {
 		return nil, pb.ECode_InvalidUsername
 	}
-	if params.Password == "" {
+	if params.Password == consts.EmptyStr {
 		return nil, pb.ECode_InvalidPassword
 	}
 

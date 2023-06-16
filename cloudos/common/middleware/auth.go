@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"cloudos/common/consts"
 	"cloudos/common/pb"
 	"cloudos/common/system"
 	"cloudos/internal/model"
@@ -26,7 +27,7 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 			}
 		}()
 
-		if token == "" || !strings.HasPrefix(token, "Bearer ") {
+		if token == consts.EmptyStr || !strings.HasPrefix(token, "Bearer ") {
 			resp.Code = pb.ECode_AuthTokenInvalid
 			return
 		}

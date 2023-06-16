@@ -1,6 +1,7 @@
 package list
 
 import (
+	"cloudos/common/consts"
 	"cloudos/common/pb"
 	"cloudos/internal/model"
 	"time"
@@ -15,7 +16,7 @@ func (c *Controller) Deal() (any, pb.ECode) {
 	tx.Where("parent_id = ?", params.ParentId)
 	tx.Where("domain = ?", params.Domain)
 
-	if params.Keyword != "" {
+	if params.Keyword != consts.EmptyStr {
 		tx.Where("name like ?", dao.Like(params.Keyword))
 	}
 
@@ -29,11 +30,11 @@ func (c *Controller) Deal() (any, pb.ECode) {
 
 	reply := Reply{
 		Pager: params.Pager,
-		List:  make([]Folder, 0, len(folders)),
+		List:  make([]Item, 0, len(folders)),
 	}
 
 	for _, folder := range folders {
-		reply.List = append(reply.List, Folder{
+		reply.List = append(reply.List, Item{
 			Id:         folder.Id,
 			Name:       folder.Name,
 			CreateTime: time.Unix(folder.CreateTime, 0).Format(time.DateTime),

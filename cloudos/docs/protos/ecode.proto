@@ -11,6 +11,11 @@ enum ECode {
     // 无效参数
     InvalidUsername = 40000001; // 无效用户名
     InvalidPassword = 40000002; // 无效密码
+    InvalidName = 40000003; // 无效的名称
+    InvalidDomain = 40000004; // 无效的作用域
+
+    // 资源冲突
+    AlreadyExistName = 40001001; // 名称已存在
 
 
     // auth
@@ -20,6 +25,7 @@ enum ECode {
     // not found
     NotFoundUser = 40040001; // 用户不存在
     NotFoundToken = 40040002; // Token不存在
+    NotFoundId = 40040003; // ID不存在
 
     // 服务端错误
     ServerInternalError = 50000000; 

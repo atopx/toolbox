@@ -19,17 +19,11 @@ func (dao *FolderDao) CreateFolder(folder *pb.Folder) error {
 }
 
 func (dao *FolderDao) UpdateFolder(folder *pb.Folder) error {
-	if folder.GetId() == 0 {
-		return errors.New("missing folder.id")
-	}
 	folder.UpdateTime = time.Now().Local().Unix()
 	return dao.Db().Updates(folder).Error
 }
 
 func (dao *FolderDao) DeleteFolder(folder *pb.Folder) error {
-	if folder.GetId() == 0 {
-		return errors.New("missing folder.id")
-	}
 	ts := time.Now().Local().Unix()
 	return dao.Db().Model(folder).Where("id = ?", folder.Id).UpdateColumn("delete_time", ts).Error
 }

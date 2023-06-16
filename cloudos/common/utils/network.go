@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"cloudos/common/consts"
 	"fmt"
 	"math/big"
 	"net"
@@ -18,7 +19,7 @@ func IPEncode(ip string) int64 {
 	return value.Int64()
 }
 
-var macReplacer = strings.NewReplacer("-", "", ":", "")
+var macReplacer = strings.NewReplacer("-", consts.EmptyStr, ":", consts.EmptyStr)
 
 func MACEncode(mac string) string {
 	return macReplacer.Replace(mac)

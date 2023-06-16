@@ -17,8 +17,9 @@ func NewController(ctx *gin.Context) *Controller {
 
 type Params struct {
 	Pager    *pb.Pager `json:"pager"`
-	ParentId int64     `json:"parentId"`
-	Domain   string    `json:"domain"`
+	FolderId int64     `json:"parentId"`
+	TopicId  int64     `json:"topicId"`
+	Label    string    `json:"label"`
 	Keyword  string    `json:"keyword"`
 }
 
@@ -28,8 +29,15 @@ type Reply struct {
 }
 
 type Item struct {
-	Id         int64  `json:"id"`
-	Name       string `json:"name"`
-	CreateTime string `json:"createTime"`
-	UpdateTime string `json:"updateTime"`
+	Id         int64   `json:"id"`
+	Name       string  `json:"name"`
+	TopicName  string  `json:"topicName"`
+	CreateTime string  `json:"createTime"`
+	UpdateTime string  `json:"updateTime"`
+	Labels     []Label `json:"labels"`
+}
+
+type Label struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
 }

@@ -39,6 +39,9 @@ func Register(engine *gin.Engine) *Api {
 	folderGroup := api.router.Group("/folder")
 	{
 		folderGroup.POST("/list", api.FolderList)
+		folderGroup.POST("/create", api.FolderCreate)
+		folderGroup.POST("/update", api.FolderUpdate)
+		folderGroup.POST("/delete", api.FolderDelete)
 	}
 
 	return api.Route()

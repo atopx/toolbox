@@ -12,3 +12,8 @@ const (
 	CK_UserId   = "userId"
 	CK_UserRole = "userRole"
 )
+
+var (
+	EmptyStr = ""
+	EmptyObj = struct{}{}
+)
