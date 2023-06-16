@@ -1,5 +1,5 @@
 syntax = "proto3";
-package note;
+package folder;
 option go_package = "cloudos/common/pb";
 
 message Folder {
