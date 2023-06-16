@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SERVICE_NAME="cloudos"
-VERSION="v1.0.0"
+VERSION="v0.1.0"
 
 function build() {
 	go build -o $SERVICE_NAME -tags=jsoniter -ldflags "-w -s"

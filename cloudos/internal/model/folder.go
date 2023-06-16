@@ -12,33 +12,33 @@ type FolderDao struct {
 	Base
 }
 
-func (dao *FolderDao) CreateFolder(folder *pb.Folder) error {
-	folder.CreateTime = time.Now().Local().Unix()
-	folder.UpdateTime = folder.CreateTime
-	return dao.Db().Create(folder).Error
+func (dao *FolderDao) Create(obj *pb.Folder) error {
+	obj.CreateTime = time.Now().Local().Unix()
+	obj.UpdateTime = obj.CreateTime
+	return dao.Db().Create(obj).Error
 }
 
-func (dao *FolderDao) UpdateFolder(folder *pb.Folder) error {
-	folder.UpdateTime = time.Now().Local().Unix()
-	return dao.Db().Updates(folder).Error
+func (dao *FolderDao) Update(obj *pb.Folder) error {
+	obj.UpdateTime = time.Now().Local().Unix()
+	return dao.Db().Updates(obj).Error
 }
 
-func (dao *FolderDao) DeleteFolder(folder *pb.Folder) error {
+func (dao *FolderDao) Delete(obj *pb.Folder) error {
 	ts := time.Now().Local().Unix()
-	return dao.Db().Model(folder).Where("id = ?", folder.Id).UpdateColumn("delete_time", ts).Error
+	return dao.Db().Model(obj).Where("id = ?", obj.Id).UpdateColumn("delete_time", ts).Error
 }
 
 func (dao *FolderDao) First(query any, args ...any) *pb.Folder {
-	folder := new(pb.Folder)
-	err := dao.Db().Scopes(dao.NotDeleted).Where(query, args...).First(&folder).Error
+	obj := new(pb.Folder)
+	err := dao.Db().Scopes(dao.NotDeleted).Where(query, args...).First(&obj).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}
-	return folder
+	return obj
 }
 
-func (dao *FolderDao) Pager(tx *gorm.DB, pager *pb.Pager) (folders []*pb.Folder) {
+func (dao *FolderDao) Pager(tx *gorm.DB, pager *pb.Pager) (objs []*pb.Folder) {
 	tx.Offset(int(pager.Size * (pager.Index - 1))).Limit(int(pager.Size)).
-		Order("update_time desc").Find(&folders)
-	return folders
+		Order("update_time desc").Find(&objs)
+	return objs
 }

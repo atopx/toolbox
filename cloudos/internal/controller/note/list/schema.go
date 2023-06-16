@@ -19,8 +19,8 @@ type Params struct {
 	Pager    *pb.Pager `json:"pager"`
 	FolderId int64     `json:"parentId"`
 	TopicId  int64     `json:"topicId"`
-	Label    string    `json:"label"`
-	Keyword  string    `json:"keyword"`
+	Label    string    `json:"label"`   // like labels
+	Keyword  string    `json:"keyword"` // like name or content
 }
 
 type Reply struct {

@@ -31,7 +31,7 @@ func (c *Controller) Deal() (any, pb.ECode) {
 	folder.Name = params.Name
 	folder.ParentId = params.ParentId
 
-	if err := dao.UpdateFolder(folder); err != nil {
+	if err := dao.Update(folder); err != nil {
 		return nil, pb.ECode_ServerInternalError
 	}
 

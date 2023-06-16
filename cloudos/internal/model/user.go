@@ -13,34 +13,28 @@ type UserDao struct {
 	Base
 }
 
-func (dao *UserDao) CreateUser(user *pb.User) error {
-	user.Password = utils.Hash(user.Password)
-	user.CreateTime = time.Now().Local().Unix()
-	user.UpdateTime = user.CreateTime
-	return dao.Db().Create(user).Error
+func (dao *UserDao) CreateUser(obj *pb.User) error {
+	obj.Password = utils.Hash(obj.Password)
+	obj.CreateTime = time.Now().Local().Unix()
+	obj.UpdateTime = obj.CreateTime
+	return dao.Db().Create(obj).Error
 }
 
-func (dao *UserDao) UpdateUser(user *pb.User) error {
-	if user.GetId() == 0 {
-		return errors.New("missing user.id")
-	}
-	user.UpdateTime = time.Now().Local().Unix()
-	return dao.Db().Updates(user).Error
+func (dao *UserDao) Update(obj *pb.User) error {
+	obj.UpdateTime = time.Now().Local().Unix()
+	return dao.Db().Updates(obj).Error
 }
 
-func (dao *UserDao) DeleteUser(user *pb.User) error {
-	if user.GetId() == 0 {
-		return errors.New("missing user.id")
-	}
+func (dao *UserDao) Delete(obj *pb.User) error {
 	ts := time.Now().Local().Unix()
-	return dao.Db().Model(user).Where("id = ?", user.Id).UpdateColumn("delete_time", ts).Error
+	return dao.Db().Model(obj).Where("id = ?", obj.Id).UpdateColumn("delete_time", ts).Error
 }
 
 func (dao *UserDao) First(query any, args ...any) *pb.User {
-	user := new(pb.User)
-	err := dao.Db().Scopes(dao.NotDeleted).Where(query, args...).First(&user).Error
+	obj := new(pb.User)
+	err := dao.Db().Scopes(dao.NotDeleted).Where(query, args...).First(&obj).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	}
-	return user
+	return obj
 }

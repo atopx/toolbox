@@ -30,7 +30,7 @@ func (c *Controller) Deal() (any, pb.ECode) {
 		Domain:   params.Domain,
 	}
 
-	if err := dao.CreateFolder(folder); err != nil {
+	if err := dao.Create(folder); err != nil {
 		return nil, pb.ECode_ServerInternalError
 	}
 

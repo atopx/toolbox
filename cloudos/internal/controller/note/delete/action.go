@@ -13,13 +13,13 @@ func (c *Controller) Deal() (any, pb.ECode) {
 		return nil, pb.ECode_BadRequest
 	}
 
-	dao := new(model.FolderDao)
-	folder := dao.First("id = ?", params.Id)
-	if folder == nil {
+	dao := new(model.NoteDao)
+	note := dao.First("id = ?", params.Id)
+	if note == nil {
 		return nil, pb.ECode_NotFoundId
 	}
 
-	if err := dao.Delete(folder); err != nil {
+	if err := dao.Delete(note); err != nil {
 		return nil, pb.ECode_ServerInternalError
 	}
 
