@@ -29,7 +29,7 @@ create table auth_token
     constraint access_token_idx unique (access_token),
     constraint refresh_token_idx unique (refresh_token)
 ) comment '用户令牌表';
-
+create index user_idx on auth_token (user_id);
 
 create table folder
 (
