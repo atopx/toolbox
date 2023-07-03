@@ -21,8 +21,13 @@ enum ECode {
     // auth
     AuthTokenInvalid = 40010001; // 无效Token
     AuthTokenExpired = 40010002; // Token过期
+    UserDisabled = 40010003; // 用户被禁用
+
+    // 禁止访问
+    Forbidden = 40030000; // 禁止访问
 
     // not found
+    RecordNotFound = 40040000; // 请求资源不存在
     NotFoundUser = 40040001; // 用户不存在
     NotFoundToken = 40040002; // Token不存在
     NotFoundId = 40040003; // ID不存在

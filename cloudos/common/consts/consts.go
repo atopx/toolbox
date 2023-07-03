@@ -1,9 +1,8 @@
 package consts
 
 const (
-	ServiceName    = "super-server"
-	RequestHeader  = "REQUEST_HEADER"
-	ResponseHeader = "RESPONSE_HEADER"
+	ServiceName = "cloudos"
+	Version     = "v0.1.0"
 )
 
 const (

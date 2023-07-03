@@ -10,6 +10,8 @@ message Folder {
     int64 create_time = 1001;
     int64 update_time = 1002;
     int64 delete_time = 1003;
+    int64 creator = 1004;
+    int64 updater = 1005;
 }
 
 enum DomainFolder {

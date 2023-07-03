@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"cloudos/common/consts"
 	"cloudos/common/pb"
 	"cloudos/common/system"
 	"net/http"
@@ -26,6 +27,14 @@ func New(ctx *gin.Context, params any) *Controller {
 		resp:    system.GetResponse(ctx),
 		error:   err,
 	}
+}
+
+func (ctl *Controller) UserId() int64 {
+	return ctl.context.GetInt64(consts.CK_UserId)
+}
+
+func (ctl *Controller) UserRole() pb.UserRole {
+	return pb.UserRole(ctl.context.GetInt(consts.CK_UserRole))
 }
 
 func (ctl *Controller) Deal() (any, pb.ECode) {

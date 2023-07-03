@@ -39,7 +39,9 @@ create table folder
     domain      enum ('NONE', 'NOTE', 'FILE') not null default 'NONE' comment '作用域',
     create_time bigint unsigned               not null default '0' comment '创建时间 时间戳：秒',
     update_time bigint unsigned               not null default '0' comment '更新时间 时间戳：秒',
-    delete_time bigint unsigned               not null default '0' comment '删除时间 时间戳：秒'
+    delete_time bigint unsigned               not null default '0' comment '删除时间 时间戳：秒',
+    creator     bigint unsigned default '0'      not null comment '创建人',
+    updater     bigint unsigned default '0'      not null comment '修改人'
 );
 create index parent_idx on folder (parent_id);
 
@@ -64,7 +66,9 @@ create table note
     content     mediumtext      null comment '笔记内容',
     create_time bigint unsigned not null default '0' comment '创建时间 时间戳：秒',
     update_time bigint unsigned not null default '0' comment '更新时间 时间戳：秒',
-    delete_time bigint unsigned not null default '0' comment '删除时间 时间戳：秒'
+    delete_time bigint unsigned not null default '0' comment '删除时间 时间戳：秒',
+    creator     bigint unsigned default '0'      not null comment '创建人',
+    updater     bigint unsigned default '0'      not null comment '修改人'
 );
 create index folder_idx on note (folder_id);
 create fulltext index note_full on note (title, content);

@@ -5,12 +5,13 @@ option go_package = "cloudos/common/pb";
 message Note {
     int64 id = 1;
     string title = 2;
-    int64 folder_id = 3;
-    string topic = 4;
-    string content = 5;
+    string topic = 3;
+    string content = 4;
     int64 create_time = 1001;
     int64 update_time = 1002;
     int64 delete_time = 1003;
+    int64 creator = 1004;
+    int64 updater = 1005;
 }
 
 message NoteLabel {

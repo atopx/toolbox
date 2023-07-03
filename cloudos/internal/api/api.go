@@ -12,17 +12,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (a *Api) Route() *Api {
-	return a
-}
-
 type Api struct {
-	router *gin.RouterGroup
-	middle *middleware.Middleware
+	router    *gin.RouterGroup
+	middle    *middleware.Middleware
+	AccessMap map[string]pb.UserRole
 }
 
 func Register(engine *gin.Engine) *Api {
-	api := &Api{router: engine.Group("/api"), middle: middleware.New()}
+	api := &Api{router: &engine.RouterGroup, middle: middleware.New()}
 	api.router.Use(
 		api.middle.CorsMiddleware(),
 		api.middle.RecoverMiddleware(),
@@ -31,20 +28,31 @@ func Register(engine *gin.Engine) *Api {
 	)
 	api.router.GET("/ping", func(ctx *gin.Context) { ctx.String(http.StatusOK, "pong") })
 
-	userGroup := api.router.Group("/user")
-	{
-		userGroup.POST("/login", api.UserLogin)
-	}
+	// user
+	api.route(http.MethodPost, "/api/v1/user/login", api.UserLogin, pb.UserRole_GUEST)
+	api.route(http.MethodPost, "/api/v1/user/refresh", api.UserRefresh, pb.UserRole_GUEST)
 
-	folderGroup := api.router.Group("/folder")
-	{
-		folderGroup.POST("/list", api.FolderList)
-		folderGroup.POST("/create", api.FolderCreate)
-		folderGroup.POST("/update", api.FolderUpdate)
-		folderGroup.POST("/delete", api.FolderDelete)
-	}
+	// folder
+	api.route(http.MethodPost, "/api/v1/folder/list", api.FolderList, pb.UserRole_USER)
+	api.route(http.MethodPost, "/api/v1/folder/create", api.FolderCreate, pb.UserRole_USER)
+	api.route(http.MethodPost, "/api/v1/folder/update", api.FolderUpdate, pb.UserRole_USER)
+	api.route(http.MethodPost, "/api/v1/folder/delete", api.FolderDelete, pb.UserRole_USER)
 
-	return api.Route()
+	// note
+	api.route(http.MethodPost, "/api/v1/note/list", api.NoteList, pb.UserRole_USER)
+	api.route(http.MethodPost, "/api/v1/note/save", api.NoteSave, pb.UserRole_USER)
+	api.route(http.MethodPost, "/api/v1/note/delete", api.NoteDelete, pb.UserRole_USER)
+	api.route(http.MethodPost, "/api/v1/note/addtag", api.NoteAddtag, pb.UserRole_USER)
+	api.route(http.MethodPost, "/api/v1/note/deltag", api.NoteDeltag, pb.UserRole_USER)
+	api.route(http.MethodGet, "/api/v1/note/topics", api.NoteTopics, pb.UserRole_USER)
+	api.route(http.MethodGet, "/api/v1/note/info", api.NoteInfo, pb.UserRole_USER)
+
+	return api
+}
+
+func (a *Api) route(method, path string, handler gin.HandlerFunc, role pb.UserRole) {
+	a.middle.SetAccess(method, path, role)
+	a.router.Handle(method, path, handler)
 }
 
 func (a *Api) Scheduler(ctl controller.Iface) {
