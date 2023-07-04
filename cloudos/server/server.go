@@ -3,7 +3,6 @@ package server
 import (
 	"cloudos/common/logger"
 	"cloudos/internal/api"
-	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -25,15 +24,9 @@ type Server struct {
 	server *http.Server
 }
 
-func (srv *Server) InitData() {
-	ctx := context.Background()
-	initEnums(ctx)
-}
-
 // Start api服务入口
 func (srv *Server) Start() error {
 	api.Register(srv.engine)
-	srv.InitData()
 	srv.server = &http.Server{
 		Addr:           fmt.Sprintf("%s:%d", viper.GetString("server.host"), viper.GetInt("server.port")),
 		Handler:        srv.engine,

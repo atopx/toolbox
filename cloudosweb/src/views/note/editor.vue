@@ -22,6 +22,7 @@ const formData = ref({
 const handleChange = (_text: string, _html: string) => {}
 
 const handleSave = (_text: string, _html: string) => {
+    console.log(_html)
     noteSaveApi({
         id: formData.value.id,
         title: formData.value.title,

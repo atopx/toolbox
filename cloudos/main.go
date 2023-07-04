@@ -3,6 +3,7 @@ package main
 import (
 	"cloudos/common/logger"
 	"cloudos/common/system"
+	"cloudos/internal/worker/workmail"
 	"cloudos/server"
 	"flag"
 	"log"
@@ -20,6 +21,7 @@ import (
 func main() {
 	// 配置初始化
 	path := flag.String("c", "config.yaml", "config file path.")
+	wkmail := flag.String("wkmail", "", "send work mail, params: noteId/datetime, example: -wkmail 123/2006-01-02 15:04:05")
 	flag.Parse()
 
 	system.SetHandler(*path)
@@ -27,6 +29,13 @@ func main() {
 	// 日志初始化
 	if err := logger.Setup(system.GetHandler().Config.Server.Loglevel); err != nil {
 		log.Panicf("logger setup failed: %s", err.Error())
+	}
+
+	if *wkmail != "" {
+		if err := workmail.Scheduler(*wkmail); err != nil {
+			panic(err)
+		}
+		return
 	}
 
 	// 启动服务

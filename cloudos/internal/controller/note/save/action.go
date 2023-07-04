@@ -4,11 +4,12 @@ import (
 	"cloudos/common/consts"
 	"cloudos/common/pb"
 	"cloudos/internal/model"
+	"fmt"
 )
 
 func (c *Controller) Deal() (any, pb.ECode) {
 	params := c.Params.(*Params)
-
+	fmt.Println(params.HtmlContent)
 	if params.Title == "" {
 		return nil, pb.ECode_InvalidName
 	}

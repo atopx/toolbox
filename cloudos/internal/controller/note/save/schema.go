@@ -15,11 +15,12 @@ func NewController(ctx *gin.Context) *Controller {
 }
 
 type Params struct {
-	Id      int64    `json:"id"`
-	Title   string   `json:"title"`
-	Topic   string   `json:"topic"`
-	Content string   `json:"content"`
-	Labels  []string `json:"labels"`
+	Id          int64    `json:"id"`
+	Title       string   `json:"title"`
+	Topic       string   `json:"topic"`
+	Content     string   `json:"content"`
+	HtmlContent string   `json:"htmlContent"`
+	Labels      []string `json:"labels"`
 }
 
 type Reply struct{}

@@ -1,10 +1,11 @@
 package config
 
 type Config struct {
-	Server *ServerConfig `yaml:"server"`
-	Admin  *AdminConfig  `yaml:"admin"`
-	Redis  *RedisConfig  `yaml:"redis"`
-	Mysql  *MysqlConfig  `yaml:"mysql"`
+	Server   *ServerConfig   `yaml:"server"`
+	Admin    *AdminConfig    `yaml:"admin"`
+	Redis    *RedisConfig    `yaml:"redis"`
+	Mysql    *MysqlConfig    `yaml:"mysql"`
+	Workmail *WorkmailConfig `yaml:"workmail"`
 }
 
 type ServerConfig struct {
@@ -32,4 +33,14 @@ type MysqlConfig struct {
 	Port  int
 	Name  string
 	Debug bool
+}
+
+type WorkmailConfig struct {
+	Server   string
+	Port     int
+	Nickname string
+	Email    string
+	Password string
+	To       string
+	Cc       string
 }
