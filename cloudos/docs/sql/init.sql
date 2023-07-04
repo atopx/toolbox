@@ -31,19 +31,25 @@ create table auth_token
 ) comment '用户令牌表';
 create index user_idx on auth_token (user_id);
 
-create table folder
+create table file
 (
     id          bigint unsigned primary key auto_increment comment '主键',
-    name        varchar(64)                   not null default '' comment '文件夹名称',
+    owner       bigint unsigned not null default 0 comment '拥有者ID',
     parent_id   bigint unsigned               not null default 0 comment '父级文件夹',
-    domain      enum ('NONE', 'NOTE', 'FILE') not null default 'NONE' comment '作用域',
+    name        varchar(64)                   not null default '' comment '文件名',
+    feature     enum ('FILE', 'FOLDER') not null default 'FILE' comment '文件特征',
+    md5         varchar(45)                   not null default '' comment 'md5',
+    size        bigint unsigned               not null default 0 comment '文件大小, KB',
+    path        varchar(1024)                 not null default '' comment '文件路径',
+    content_type varchar(128)                  not null default '' comment '文件类别',
+    password     varchar(64)                   not null default '' comment '文件密码',
     create_time bigint unsigned               not null default '0' comment '创建时间 时间戳：秒',
     update_time bigint unsigned               not null default '0' comment '更新时间 时间戳：秒',
     delete_time bigint unsigned               not null default '0' comment '删除时间 时间戳：秒',
     creator     bigint unsigned default '0'      not null comment '创建人',
     updater     bigint unsigned default '0'      not null comment '修改人'
 );
-create index parent_idx on folder (parent_id);
+create index parent_idx on file (parent_id);
 
 
 create table note_label

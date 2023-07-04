@@ -1,21 +1,26 @@
 syntax = "proto3";
-package folder;
+package file;
 option go_package = "cloudos/common/pb";
 
-message Folder {
+message File {
     int64 id = 1;
-    string name = 2;
+    int64 owner = 2;
     int64 parent_id = 3;
-    string domain = 4;
+    string name = 4;
+    string feature = 5;
+    string md5 = 6;
+    int64 size = 7;
+    string path = 8;
+    string content_type = 9;
+    string password = 10;
+
     int64 create_time = 1001;
     int64 update_time = 1002;
     int64 delete_time = 1003;
-    int64 creator = 1004;
-    int64 updater = 1005;
 }
 
-enum DomainFolder {
-    NONE = 0;
-    NOTE = 1;
-    FILE = 2;
+
+enum FileFeature {
+    FILE = 0; // 文件
+    FOLDER = 1; // 文件夹
 }
