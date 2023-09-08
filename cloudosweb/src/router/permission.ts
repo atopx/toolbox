@@ -1,20 +1,26 @@
 import router from "@/router"
 import { whiteList } from "@/config/white-list"
-import { getAccessToken } from "@/utils/cache/cookies"
+import { getToken } from "@/utils/cache/cookies"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
+import { useUserStoreHook } from "@/store/modules/user"
 
 NProgress.configure({ showSpinner: false })
 
 router.beforeEach(async (to, _from, next) => {
     NProgress.start()
     // 判断该用户是否登录
-    if (getAccessToken()) {
+    const token = getToken()
+    if (token.expireTime > 0 ) {
         if (to.path === "/login") {
             // 如果已经登录，并准备进入 Login 页面，则重定向到主页
             next({ path: "/" })
             NProgress.done()
         } else {
+            // 判断是否过期, 如果过期则尝试刷新token
+            if (Date.now() > token.expireTime) {
+                useUserStoreHook().refreshToken({ refresh_token: useUserStoreHook().token.refreshToken })
+            }
             next()
         }
     } else {
