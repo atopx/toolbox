@@ -26,6 +26,7 @@ CLASSES = [
 @app.post("/dector")
 async def dector(file: UploadFile = File(...)):
     body = await file.read()
+    await file.close()
     output = onnx.inference(body)
     data = onnx.filter_box(output, 0.7)
     result = []
