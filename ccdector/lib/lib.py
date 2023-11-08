@@ -82,16 +82,20 @@ class OnnxModel():
             curr_cls_box = np.array(curr_cls_box)
             curr_cls_box = self.xywh2xyxy(curr_cls_box)
             curr_out_box = self.nms(curr_cls_box, conf_thres)
+            # yield curr_cls_box
             for k in curr_out_box:
-                output.append(curr_cls_box[k])
-        return output
+                yield curr_cls_box[k]
+                # output.append(curr_cls_box[k])
+        # return output
 
     def dector(self, filepath: str, threshold=0.7) -> list[list]:
         output = self.inference(filepath)
         return self.filter_box(output, threshold)
 
 if __name__ == "__main__":
-    model = OnnxModel('../model.onnx')
-    output = model.inference('test.png')
+    model = OnnxModel('model.onnx')
+    with open("test.png", "rb") as fp:
+        output = model.inference(fp.read())
     result = model.filter_box(output, 0.7)
-    print(result)
+    for i in result:
+        print(i)

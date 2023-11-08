@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package ccdector;
+
+service Dector {
+  rpc Predict(Params) returns (Reply) {}
+}
+
+message Params {
+  bytes file = 1;
+}
+
+message Reply {
+  repeated Record data = 1;
+
+  message Record {
+    optional int32 label = 1;
+    double confidence = 2;
+    double left = 3;
+    double top = 4;
+    double right = 5;
+    double bottom = 6;
+  }
+}
+
+// build: python3 -m grpc_tools.protoc -I. --python_out=./lib --grpc_python_out=./lib ./ccdector.proto
