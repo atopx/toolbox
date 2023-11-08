@@ -1,3 +1,4 @@
+import sys
 import grpc
 import asyncio
 from concurrent import futures
@@ -37,12 +38,16 @@ async def start_server():
     rpc.add_DectorServicer_to_server(
         Dector(OnnxModel('model.onnx')), server)  # 加入服务
 
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:20088')
     server.start()
+    print("start service listen [::]:20088")
     server.wait_for_termination()
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
+    if sys.version_info < (3, 10):
+        loop = asyncio.get_event_loop()
+    else:
+        loop = asyncio.new_event_loop()
     loop.run_until_complete(asyncio.wait([start_server()]))
     loop.close()
